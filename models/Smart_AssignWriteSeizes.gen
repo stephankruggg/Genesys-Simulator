@@ -1,36 +1,36 @@
-# Genesys Simulation Model 
+# Genesys Simulation Model
 # Simulator, Model and Simulation infos
-0   Simulator  "GenESyS - GENeric and Expansible SYstem Simulator" versionNumber=220131 
-0   ModelInfo  "Model 1" analystName="" description="" projectTitle="" version="1.0" 
-0   ModelSimulation "" numberOfReplications=5 replicationLength=100.000000 traceLevel=4 
+0   Simulator  "GenESyS - GENeric and Expansible SYstem Simulator" versionNumber=220517 
+0   ModelInfo  "Model 1" version="1.0" projectTitle="" description="" analystName="" 
+0   ModelSimulation "" traceLevel=4 replicationLength=100.000000 numberOfReplications=5 
 
 # Model Data Definitions
-484 EntityType "Part" 
-486 Variable   "varNextIndex" 
-487 Attribute  "index" 
-489 Resource   "Machine_1" 
-490 Resource   "Machine_2" capacity=2 
-491 Resource   "Machine_3" capacity=3 
-492 Set        "Machine_Set" member[0]="Machine_1" member[1]="Machine_2" member[2]="Machine_3" members=3 type="Resource" 
-494 Queue      "Queue_Seize_1" 
-498 Queue      "Queue_Seize_2" 
-502 Queue      "Queue_Seize_3" 
+62  EntityType "Part" 
+64  Variable   "varNextIndex" 
+65  Attribute  "index" 
+67  Resource   "Machine_1" 
+68  Resource   "Machine_2" 
+69  Resource   "Machine_3" 
+70  Set        "Machine_Set" member[1]="Machine_2" member[0]="Machine_1" member[2]="Machine_3" members=3 type="Resource" 
+72  Queue      "Queue_Seize_1" 
+76  Queue      "Queue_Seize_2" 
+80  Queue      "Queue_Seize_3" 
 
 # Model Components
-483 Create     "Create_1" entityType="Part" timeBetweenCreations="norm(1.5,0.5)" nextId=485 
-485 Assign     "Assign_1" assignDest[0]="varNextIndex" assignDest[2]="index" assignExpr[0]="varNextIndex + 1" assignExpr[2]="varNextIndex" assignIsAttrib[0]=0 assignments=2 nextId=488 
-488 Write      "Write_1" write[0]="
-" write[1]="Atributo index: " write[2]="'index'" write[3]="
-" write[4]="Variável nextIndex: " write[5]="'varNextIndex'" write[6]="
-" writes=7 nextId=493 
-493 Decide     "Decide_1" condition[0]="NR(Machine_1) < MR(Machine_1)" condition[1]="NR(Machine_2) < MR(Machine_2)" conditions=2 nexts=3 nextId[0]=495 nextId[1]=499 nextId[2]=503 
-495 Seize      "Seize_1" queueable="Queue_Seize_1" requestSeizable[0]="Machine_1" nextId=496 
-496 Delay      "Delay_1" delayExpression="norm(15,1)" nextId=497 
-497 Release    "Release_1" requestSeizable[0]="Machine_1" nextId=506 
-499 Seize      "Seize_2" queueable="Queue_Seize_2" requestSeizable[0]="Machine_2" nextId=500 
-500 Delay      "Delay_2" delayExpression="norm(15,1)" nextId=501 
-501 Release    "Release_2" requestSeizable[0]="Machine_2" nextId=506 
-503 Seize      "Seize_3" queueable="Queue_Seize_3" requestSeizable[0]="Machine_3" nextId=504 
-504 Delay      "Delay_3" delayExpression="norm(15,1)" nextId=505 
-505 Release    "Release_3" requestSeizable[0]="Machine_3" nextId=506 
-506 Dispose    "Dispose_1" nexts=0 
+61  Create     "Create_1" entityType="Part" nextId=63 timeBetweenCreations="norm(1.5,0.5)" 
+63  Assign     "Assign_1" assignIsAttrib[0]=0 assignExpr[0]="varNextIndex + 1" assignments=2 nextId=66 assignExpr[2]="varNextIndex" assignDest[2]="index" assignDest[0]="varNextIndex" 
+66  Write      "Write_1" write[4]="Variável nextIndex: " write[2]="'index'" write[1]="Atributo index: " write[3]="
+" write[0]="
+" writes=7 write[6]="
+" nextId=71 write[5]="'varNextIndex'" 
+71  Decide     "Decide_1" condition[1]="NR(Machine_2) < MR(Machine_2)" condition[0]="NR(Machine_1) < MR(Machine_1)" conditions=2 nextId[2]=81 nextId[0]=73 nextId[1]=77 nexts=3 
+73  Seize      "Seize_1" queueable="Queue_Seize_1" nextId=74 requestSeizable[0]="Machine_1" 
+74  Delay      "Delay_1" delayExpression="norm(15,1)" nextId=75 
+75  Release    "Release_1" nextId=84 requestSeizable[0]="Machine_1" 
+77  Seize      "Seize_2" queueable="Queue_Seize_2" nextId=78 requestSeizable[0]="Machine_2" 
+78  Delay      "Delay_2" delayExpression="norm(15,1)" nextId=79 
+79  Release    "Release_2" nextId=84 requestSeizable[0]="Machine_2" 
+81  Seize      "Seize_3" queueable="Queue_Seize_3" nextId=82 requestSeizable[0]="Machine_3" 
+82  Delay      "Delay_3" delayExpression="norm(15,1)" nextId=83 
+83  Release    "Release_3" nextId=84 requestSeizable[0]="Machine_3" 
+84  Dispose    "Dispose_1" nexts=0 

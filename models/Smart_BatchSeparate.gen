@@ -1,18 +1,18 @@
-# Genesys Simulation Model 
+# Genesys Simulation Model
 # Simulator, Model and Simulation infos
-0   Simulator  "GenESyS - GENeric and Expansible SYstem Simulator" versionNumber=220131 
-0   ModelInfo  "Model 1" analystName="" description="" projectTitle="" version="1.0" 
-0   ModelSimulation "" replicationLength=100.000000 showReportsAfterReplicaton=0 showReportsAfterSimulation=0 traceLevel=7 
+0   Simulator  "GenESyS - GENeric and Expansible SYstem Simulator" versionNumber=220517 
+0   ModelInfo  "Model 1" version="1.0" projectTitle="" description="" analystName="" 
+0   ModelSimulation "" traceLevel=7 showReportsAfterSimulation=0 showReportsAfterReplicaton=0 replicationLength=100.000000 
 
 # Model Data Definitions
-911 EntityType "normal" 
-913 Attribute  "batchNum" 
-915 EntityType "grouped" 
+597 EntityType "normal" 
+599 Attribute  "batchNum" 
+601 EntityType "grouped" 
 
 # Model Components
-910 Create     "Create_1" entityType="normal" maxCreations="50" nextId=912 
-912 Assign     "Assign_1" assignDest[0]="batchNum" assignExpr[0]="trunc(unif(0,5))" nextId=914 
-914 Batch      "Batch_1" attributeName="batchNum" batchSize="4" groupedAttributes=2 groupedEntityType="grouped" rule=1 nextId=916 
-916 Delay      "Delay_1" delayExpression="25.000000" nextId=917 
-917 Separate   "Separate_1" nextId=918 
-918 Dispose    "Dispose_1" nexts=0 
+596 Create     "Create_1" entityType="normal" maxCreations="50" nextId=598 
+598 Assign     "Assign_1" assignExpr[0]="trunc(unif(0,5))" nextId=600 assignDest[0]="batchNum" 
+600 Batch      "Batch_1" groupedEntityType="grouped" batchSize="4" attributeName="batchNum" groupedAttributes=2 rule=1 nextId=602 
+602 Delay      "Delay_1" delayExpression="25.000000" nextId=603 
+603 Separate   "Separate_1" nextId=604 
+604 Dispose    "Dispose_1" nexts=0 

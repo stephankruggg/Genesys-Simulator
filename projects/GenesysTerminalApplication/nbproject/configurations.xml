@@ -228,6 +228,36 @@
         <itemPath>../../source/applications/GenesysApplication_if.h</itemPath>
         <itemPath>../../source/applications/TraitsApp.h</itemPath>
       </logicalFolder>
+      <logicalFolder name="gtest" displayName="gtest" projectFiles="true">
+        <logicalFolder name="internal" displayName="internal" projectFiles="true">
+          <logicalFolder name="custom" displayName="custom" projectFiles="true">
+            <itemPath>../../source/gtest/gtest/internal/custom/README.md</itemPath>
+            <itemPath>../../source/gtest/gtest/internal/custom/gtest-port.h</itemPath>
+            <itemPath>../../source/gtest/gtest/internal/custom/gtest-printers.h</itemPath>
+            <itemPath>../../source/gtest/gtest/internal/custom/gtest.h</itemPath>
+          </logicalFolder>
+          <itemPath>../../source/gtest/gtest/internal/gtest-death-test-internal.h</itemPath>
+          <itemPath>../../source/gtest/gtest/internal/gtest-filepath.h</itemPath>
+          <itemPath>../../source/gtest/gtest/internal/gtest-internal.h</itemPath>
+          <itemPath>../../source/gtest/gtest/internal/gtest-param-util.h</itemPath>
+          <itemPath>../../source/gtest/gtest/internal/gtest-port-arch.h</itemPath>
+          <itemPath>../../source/gtest/gtest/internal/gtest-port.h</itemPath>
+          <itemPath>../../source/gtest/gtest/internal/gtest-string.h</itemPath>
+          <itemPath>../../source/gtest/gtest/internal/gtest-type-util.h</itemPath>
+        </logicalFolder>
+        <itemPath>../../source/gtest/gtest/gtest-assertion-result.h</itemPath>
+        <itemPath>../../source/gtest/gtest/gtest-death-test.h</itemPath>
+        <itemPath>../../source/gtest/gtest/gtest-matchers.h</itemPath>
+        <itemPath>../../source/gtest/gtest/gtest-message.h</itemPath>
+        <itemPath>../../source/gtest/gtest/gtest-param-test.h</itemPath>
+        <itemPath>../../source/gtest/gtest/gtest-printers.h</itemPath>
+        <itemPath>../../source/gtest/gtest/gtest-spi.h</itemPath>
+        <itemPath>../../source/gtest/gtest/gtest-test-part.h</itemPath>
+        <itemPath>../../source/gtest/gtest/gtest-typed-test.h</itemPath>
+        <itemPath>../../source/gtest/gtest/gtest.h</itemPath>
+        <itemPath>../../source/gtest/gtest/gtest_pred_impl.h</itemPath>
+        <itemPath>../../source/gtest/gtest/gtest_prod.h</itemPath>
+      </logicalFolder>
       <logicalFolder name="kernel" displayName="kernel" projectFiles="true">
         <logicalFolder name="simulator" displayName="simulator" projectFiles="true">
           <itemPath>../../source/kernel/simulator/Attribute.cpp</itemPath>
@@ -499,10 +529,6 @@
           <itemPath>../../source/plugins/data/Variable.cpp</itemPath>
           <itemPath>../../source/plugins/data/Variable.h</itemPath>
         </logicalFolder>
-      </logicalFolder>
-      <logicalFolder name="f1" displayName="tests" projectFiles="true">
-        <itemPath>../../source/tests/Tests.cpp</itemPath>
-        <itemPath>../../source/tests/Tests.h</itemPath>
       </logicalFolder>
       <logicalFolder name="tools" displayName="tools" projectFiles="true">
         <itemPath>../../source/tools/DataAnalyser_if.h</itemPath>
@@ -1406,6 +1432,123 @@
             flavor2="0">
       </item>
       <item path="../../source/applications/terminal/examples/teaching/OperatingSystem03.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../source/gtest/gtest/gtest-assertion-result.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../source/gtest/gtest/gtest-death-test.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../source/gtest/gtest/gtest-matchers.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../source/gtest/gtest/gtest-message.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../source/gtest/gtest/gtest-param-test.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../source/gtest/gtest/gtest-printers.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../source/gtest/gtest/gtest-spi.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../source/gtest/gtest/gtest-test-part.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../source/gtest/gtest/gtest-typed-test.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../source/gtest/gtest/gtest.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="../../source/gtest/gtest/gtest_pred_impl.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../source/gtest/gtest/gtest_prod.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../source/gtest/gtest/internal/custom/README.md"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../source/gtest/gtest/internal/custom/gtest-port.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../source/gtest/gtest/internal/custom/gtest-printers.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../source/gtest/gtest/internal/custom/gtest.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../source/gtest/gtest/internal/gtest-death-test-internal.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../source/gtest/gtest/internal/gtest-filepath.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../source/gtest/gtest/internal/gtest-internal.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../source/gtest/gtest/internal/gtest-param-util.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../source/gtest/gtest/internal/gtest-port-arch.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../source/gtest/gtest/internal/gtest-port.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../source/gtest/gtest/internal/gtest-string.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../source/gtest/gtest/internal/gtest-type-util.h"
             ex="false"
             tool="3"
             flavor2="0">
@@ -2620,10 +2763,6 @@
             ex="false"
             tool="3"
             flavor2="0">
-      </item>
-      <item path="../../source/tests/Tests.cpp" ex="false" tool="1" flavor2="0">
-      </item>
-      <item path="../../source/tests/Tests.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="../../source/tests/testTerminalApps.cpp"
             ex="false"
@@ -3576,6 +3715,123 @@
             tool="3"
             flavor2="0">
       </item>
+      <item path="../../source/gtest/gtest/gtest-assertion-result.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../source/gtest/gtest/gtest-death-test.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../source/gtest/gtest/gtest-matchers.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../source/gtest/gtest/gtest-message.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../source/gtest/gtest/gtest-param-test.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../source/gtest/gtest/gtest-printers.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../source/gtest/gtest/gtest-spi.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../source/gtest/gtest/gtest-test-part.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../source/gtest/gtest/gtest-typed-test.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../source/gtest/gtest/gtest.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="../../source/gtest/gtest/gtest_pred_impl.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../source/gtest/gtest/gtest_prod.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../source/gtest/gtest/internal/custom/README.md"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../source/gtest/gtest/internal/custom/gtest-port.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../source/gtest/gtest/internal/custom/gtest-printers.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../source/gtest/gtest/internal/custom/gtest.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../source/gtest/gtest/internal/gtest-death-test-internal.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../source/gtest/gtest/internal/gtest-filepath.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../source/gtest/gtest/internal/gtest-internal.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../source/gtest/gtest/internal/gtest-param-util.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../source/gtest/gtest/internal/gtest-port-arch.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../source/gtest/gtest/internal/gtest-port.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../source/gtest/gtest/internal/gtest-string.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../source/gtest/gtest/internal/gtest-type-util.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
       <item path="../../source/gtest/src/gtest-all.cc"
             ex="false"
             tool="1"
@@ -4786,10 +5042,6 @@
             ex="false"
             tool="3"
             flavor2="0">
-      </item>
-      <item path="../../source/tests/Tests.cpp" ex="false" tool="1" flavor2="0">
-      </item>
-      <item path="../../source/tests/Tests.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="../../source/tests/testTerminalApps.cpp"
             ex="false"

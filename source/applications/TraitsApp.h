@@ -16,9 +16,6 @@
 
 #include "../kernel/util/Util.h"
 
-// TEMPORARY TESTS
-#include "../tests/Tests.h"
-
 // TERMINAL USER INTERFACES
 #include "terminal/GenesysShell/GenesysShell.h"
 //

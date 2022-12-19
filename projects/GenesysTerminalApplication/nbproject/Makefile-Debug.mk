@@ -223,7 +223,6 @@ OBJECTFILES= \
 	${OBJECTDIR}/_ext/ccae408d/Station.o \
 	${OBJECTDIR}/_ext/ccae408d/Storage.o \
 	${OBJECTDIR}/_ext/ccae408d/Variable.o \
-	${OBJECTDIR}/_ext/d18a80cd/Tests.o \
 	${OBJECTDIR}/_ext/d18efc87/FitterDummyImpl.o \
 	${OBJECTDIR}/_ext/d18efc87/HypothesisTesterDefaultImpl1.o \
 	${OBJECTDIR}/_ext/d18efc87/ProbabilityDistribution.o \
@@ -1206,11 +1205,6 @@ ${OBJECTDIR}/_ext/ccae408d/Variable.o: ../../source/plugins/data/Variable.cpp
 	${MKDIR} -p ${OBJECTDIR}/_ext/ccae408d
 	${RM} "$@.d"
 	$(COMPILE.cc) -g -O -Wall -I../../source/gtest -std=c++14 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/_ext/ccae408d/Variable.o ../../source/plugins/data/Variable.cpp
-
-${OBJECTDIR}/_ext/d18a80cd/Tests.o: ../../source/tests/Tests.cpp
-	${MKDIR} -p ${OBJECTDIR}/_ext/d18a80cd
-	${RM} "$@.d"
-	$(COMPILE.cc) -g -O -Wall -I../../source/gtest -std=c++14 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/_ext/d18a80cd/Tests.o ../../source/tests/Tests.cpp
 
 ${OBJECTDIR}/_ext/d18efc87/FitterDummyImpl.o: ../../source/tools/FitterDummyImpl.cpp
 	${MKDIR} -p ${OBJECTDIR}/_ext/d18efc87
@@ -3708,19 +3702,6 @@ ${OBJECTDIR}/_ext/ccae408d/Variable_nomain.o: ${OBJECTDIR}/_ext/ccae408d/Variabl
 	    $(COMPILE.cc) -g -O -Wall -I../../source/gtest -std=c++14 -Dmain=__nomain -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/_ext/ccae408d/Variable_nomain.o ../../source/plugins/data/Variable.cpp;\
 	else  \
 	    ${CP} ${OBJECTDIR}/_ext/ccae408d/Variable.o ${OBJECTDIR}/_ext/ccae408d/Variable_nomain.o;\
-	fi
-
-${OBJECTDIR}/_ext/d18a80cd/Tests_nomain.o: ${OBJECTDIR}/_ext/d18a80cd/Tests.o ../../source/tests/Tests.cpp 
-	${MKDIR} -p ${OBJECTDIR}/_ext/d18a80cd
-	@NMOUTPUT=`${NM} ${OBJECTDIR}/_ext/d18a80cd/Tests.o`; \
-	if (echo "$$NMOUTPUT" | ${GREP} '|main$$') || \
-	   (echo "$$NMOUTPUT" | ${GREP} 'T main$$') || \
-	   (echo "$$NMOUTPUT" | ${GREP} 'T _main$$'); \
-	then  \
-	    ${RM} "$@.d";\
-	    $(COMPILE.cc) -g -O -Wall -I../../source/gtest -std=c++14 -Dmain=__nomain -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/_ext/d18a80cd/Tests_nomain.o ../../source/tests/Tests.cpp;\
-	else  \
-	    ${CP} ${OBJECTDIR}/_ext/d18a80cd/Tests.o ${OBJECTDIR}/_ext/d18a80cd/Tests_nomain.o;\
 	fi
 
 ${OBJECTDIR}/_ext/d18efc87/FitterDummyImpl_nomain.o: ${OBJECTDIR}/_ext/d18efc87/FitterDummyImpl.o ../../source/tools/FitterDummyImpl.cpp 
