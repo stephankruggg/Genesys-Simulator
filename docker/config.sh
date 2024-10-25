@@ -34,7 +34,7 @@ DOCKER_CACHE=1
 GENESYS_DOCKERFILE="Dockerfile"
 
 # Link para o repositório git
-GENESYS_REPO=https://github.com/RaquelBehrens/modsim
+GENESYS_REPO=https://github.com/rlcancian/Genesys-Simulator
 
 # Branch do repositório a ser utilizada
 GENESYS_BRANCH=main
