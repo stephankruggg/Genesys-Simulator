@@ -1,4 +1,4 @@
-/* 
+/*
  * File:   SelectingShorterQueue.cpp
  * Author: genesys
  *
@@ -17,6 +17,7 @@
 #include "../../../../plugins/components/Dispose.h"
 #include "../../../../plugins/components/Process.h"
 #include "../../../../plugins/components/Decide.h"
+#include "../../../TraitsApp.h"
 
 Smart_SelectingShorterQueue::Smart_SelectingShorterQueue() {
 }
@@ -27,13 +28,13 @@ Smart_SelectingShorterQueue::Smart_SelectingShorterQueue() {
  */
 int Smart_SelectingShorterQueue::main(int argc, char** argv) {
 	Simulator* genesys = new Simulator();
-	this->setDefaultTraceHandlers(genesys->getTracer());
-	this->insertFakePluginsByHand(genesys);
-        genesys->getTracer()->setTraceLevel(TraceManager::Level::L2_results);
-	// create model
-	Model* model = genesys->getModels()->newModel();
+	genesys->getTracer()->setTraceLevel(TraitsApp<GenesysApplication_if>::traceLevel);
+	setDefaultTraceHandlers(genesys->getTracer());
 	PluginManager* plugins = genesys->getPlugins();
-        
+	plugins->autoInsertPlugins("autoloadplugins.txt");
+	Model* model = genesys->getModels()->newModel();
+	// create model
+
         //create 1
         // entities per arrival padrão: 1, max arrivals padrão: infinite, first_creation padrão: 0.0
 	Create* create1 = plugins->newInstance<Create>(model);

@@ -10,123 +10,70 @@
  * Created on 7 de agosto de 2022, 12:14
  */
 
-#ifndef EXFISTATMAC_H
-#define EXFISTATMAC_H
+#ifndef EFSM_H
+#define EFSM_H
 
 #include "../../kernel/simulator/ModelDataDefinition.h"
+#include "../../kernel/simulator/PluginInformation.h"
+#include "../../kernel/simulator/Attribute.h"
+#include "../data/AssignmentItem.h"
+#include "../data/Variable.h"
 #include "../../kernel/util/List.h"
+#include "../components/FSM_Transition.h"
+#include "../components/FSM_State.h"
+#include <vector>
+#include <map>
+#include <string>
 
-class FSM_State : public PersistentObject_base {
-public:
-
-	FSM_State(std::string name, std::string refinementName = "", bool isInitialState = false, bool isFinalState = false) {
-		_name = name;
-		_refinementName = refinementName;
-		_isInitialState = isInitialState;
-		_isFinalState = isFinalState;
-	}
-
-	void setName(std::string _name) {
-		this->_name = _name;
-	}
-
-	std::string getName() const {
-		return _name;
-	}
-
-	void setIsFinalState(bool _isFinalState) {
-		this->_isFinalState = _isFinalState;
-	}
-
-	bool isFinalState() const {
-		return _isFinalState;
-	}
-
-	void setIsInitialState(bool _isInitialState) {
-		this->_isInitialState = _isInitialState;
-	}
-
-	bool isInitialState() const {
-		return _isInitialState;
-	}
-
-	void setRefinementName(std::string _refinementName) {
-		this->_refinementName = _refinementName;
-	}
-
-	std::string getRefinementName() const {
-		return _refinementName;
-	}
-private:
-	std::string _name;
-	std::string _refinementName;
-	bool _isInitialState;
-	bool _isFinalState;
-};
-
-class FSM_Transition : public PersistentObject_base {
-public:
-
-	struct TransitionType {
-		bool isdefault = false;
-		bool nondeterministic = false;
-		bool immediatbe = false;
-		bool preemptive = false;
-		bool history = false;
-		bool error = false;
-		bool termination = false;
-	};
-public:
-
-	FSM_Transition(std::string parameterName, FSM_State* originState, FSM_State* destinationState, std::string guardExpression = "", TransitionType* transitionType = nullptr) {
-		_parameterName = parameterName;
-		_originState = originState;
-		_destinationState = destinationState;
-		_guardExpression = guardExpression;
-		if (transitionType == nullptr)
-			transitionType = new TransitionType();
-		_type = transitionType;
-	}
-private:
-	std::string _parameterName;
-	std::string _guardExpression;
-	FSM_State* _originState;
-	FSM_State* _destinationState;
-	TransitionType* _type;
-	List<std::string*>* _outputActions = new List<std::string*>();
-	List<std::string*>* _setActions = new List<std::string*>();
-};
+class FSM_State;
 
 class ExtendedFSM : public ModelDataDefinition {
-public:
-	ExtendedFSM(Model* model, std::string name = "");
-	virtual ~ExtendedFSM() = default;
-public: // static
-	static ModelDataDefinition* LoadInstance(Model* model, PersistenceRecord *fields);
-	static PluginInformation* GetPluginInformation();
-	static ModelDataDefinition* NewInstance(Model* model, std::string name = "");
-public:
-	virtual std::string show();
-protected: // must be overriden 
-	virtual bool _loadInstance(PersistenceRecord *fields);
-	virtual void _saveInstance(PersistenceRecord *fields, bool saveDefaultValues);
-protected: // could be overriden .
-	virtual bool _check(std::string* errorMessage);
-	virtual void _initBetweenReplications();
-	virtual void _createInternalAndAttachedData();
-	//virtual ParserChangesInformation* _getParserChangesInformation();
+public: /// constructors
+    ExtendedFSM(Model* model, std::string name = "");
+    virtual ~ExtendedFSM() = default;
+
+public: /// new public user methods for this component
+    std::vector<Variable*>* getVariables() {
+         return _variables;
+    }
+
+    std::string getCurrentState();
+
+    void setInitialState(FSM_State* state);
+    
+    void insertVariable(Variable* variable);
+    void enterEFSM(Entity* entity, ModelComponent* returnState);
+    void leaveEFSM(Entity* entity, FSM_State* newCurrentState);
+    void reset();
+ 
 private:
+    void setCurrentState(FSM_State* state);
 
-	const struct DEFAULT_VALUES {
-		const std::string someString = "Test";
-		const unsigned int someUint = 1;
-	} DEFAULT;
-	std::string _someString = DEFAULT.someString;
-	unsigned int _someUint = DEFAULT.someUint;
-	List<FSM_State*>* _states = new List<FSM_State*>();
-	List<FSM_Transition*>* _transitions = new List<FSM_Transition*>();
+public: /// virtual public methods
+    virtual std::string show();
 
+public: /// static public methods that must have implementations (Load and New just the same. GetInformation must provide specific infos for the new component
+    static PluginInformation* GetPluginInformation();
+    static ModelDataDefinition* LoadInstance(Model* model, PersistenceRecord *fields);
+    static ModelDataDefinition* NewInstance(Model* model, std::string name = "");
+
+protected: /// virtual protected method that must be overriden
+    virtual bool _loadInstance(PersistenceRecord *fields);
+    virtual void _saveInstance(PersistenceRecord *fields, bool saveDefaultValues);
+
+protected: // could be overriden .
+    virtual bool _check(std::string* errorMessage);
+    virtual void _initBetweenReplications();
+    virtual void _createInternalAndAttachedData();
+    //virtual ParserChangesInformation* _getParserChangesInformation();
+
+private:
+    std::vector<Variable*>* _variables = new std::vector<Variable*>();
+    std::vector<ModelComponent*>* _returnModels = new std::vector<ModelComponent*>();
+
+    FSM_State* _initialState;
+    FSM_State* _currentState;
 };
 
-#endif /* EXFISTATMAC_H */
+#endif /* EFSM_H */
 

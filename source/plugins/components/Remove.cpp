@@ -14,6 +14,7 @@
 #include "Remove.h"
 #include "../../kernel/simulator/Model.h"
 #include "../../kernel/simulator/Simulator.h"
+#include "../../kernel/simulator/SimulationControlAndResponse.h"
 #include "../../plugins/data/EntityGroup.h"
 #include "../../plugins/data/Queue.h"
 
@@ -60,7 +61,38 @@ ModelDataDefinition* Remove::getRemoveFrom() const {
 	return _removeFrom;
 }
 
+std::string Remove::convertEnumToStr(RemoveFromType type) {
+	switch (static_cast<int> (type)) {
+		case 0: return "QUEUE";
+		case 1: return "ENTITYGROUP";
+	}
+	return "Unknown";
+}
+
 Remove::Remove(Model* model, std::string name) : ModelComponent(model, Util::TypeOf<Remove>(), name) {
+	SimulationControlGeneric<std::string>* propRemoveStart = new SimulationControlGeneric<std::string>(
+									std::bind(&Remove::getRemoveStartRank, this), std::bind(&Remove::setRemoveStartRank,  this, std::placeholders::_1),
+									Util::TypeOf<Remove>(), getName(), "RemoveStartRank", "");
+	SimulationControlGeneric<std::string>* propRemoveEnd = new SimulationControlGeneric<std::string>(
+									std::bind(&Remove::getRemoveEndRank, this), std::bind(&Remove::setRemoveEndRank, this, std::placeholders::_1),
+									Util::TypeOf<Remove>(), getName(), "RemoveEndRank", "");
+    SimulationControlGenericEnum<Remove::RemoveFromType, Remove>* propRemoveType = new SimulationControlGenericEnum<Remove::RemoveFromType, Remove>(
+                                    std::bind(&Remove::getRemoveFromType, this), std::bind(&Remove::setRemoveFromType, this, std::placeholders::_1),
+                                    Util::TypeOf<Remove>(), getName(), "RemoveEndRank", "");
+	// SimulationControlGeneric<ModelDataDefinition*>* propRemoveFrom = new SimulationControlGeneric<ModelDataDefinition*>(
+	// 								std::bind(&Remove::getRemoveFrom, this), std::bind(&Remove::setRemoveFrom, this, std::placeholders::_1),
+	// 								Util::TypeOf<Remove>(), getName(), "RemoveFrom", "");								
+
+	
+	// _parentModel->getControls()->insert(propRemoveFrom);
+    _parentModel->getControls()->insert(propRemoveType);
+	_parentModel->getControls()->insert(propRemoveStart);
+	_parentModel->getControls()->insert(propRemoveEnd);
+
+	// _addProperty(propRemoveFrom);
+    _addProperty(propRemoveType);
+	_addProperty(propRemoveStart);
+	_addProperty(propRemoveEnd);
 }
 
 std::string Remove::show() {
@@ -83,9 +115,9 @@ void Remove::_onDispatchEvent(Entity* entity, unsigned int inputPortNumber) {
 		unsigned int startRank = _parentModel->parseExpression(_removeStartRank);
 		unsigned int endRank = _parentModel->parseExpression(_removeEndRank);
 		if (startRank == endRank) {
-			_parentModel->getTracer()->traceSimulation(this, TraceManager::Level::L7_internal, "Removing entity from queue \"" + queue->getName() + "\" at rank " + std::to_string(startRank) + "  // " + _removeStartRank);
+			traceSimulation(this, TraceManager::Level::L7_internal, "Removing entity from queue \"" + queue->getName() + "\" at rank " + std::to_string(startRank) + "  // " + _removeStartRank);
 		} else {
-			_parentModel->getTracer()->traceSimulation(this, TraceManager::Level::L7_internal, "Removing entities from queue \"" + queue->getName() + "\" from rank " + std::to_string(startRank) + " to rank " + std::to_string(endRank) + "  // " + _removeStartRank + "  // " + _removeEndRank);
+			traceSimulation(this, TraceManager::Level::L7_internal, "Removing entities from queue \"" + queue->getName() + "\" from rank " + std::to_string(startRank) + " to rank " + std::to_string(endRank) + "  // " + _removeStartRank + "  // " + _removeEndRank);
 		}
 		Waiting* waiting;
 		for (unsigned int rank = startRank; rank < endRank; rank++) {
@@ -93,10 +125,10 @@ void Remove::_onDispatchEvent(Entity* entity, unsigned int inputPortNumber) {
 			if (waiting != nullptr) {
 				//queue->removeElement(waiting); // will remove later, on other loop
 				Entity* removedEntity = waiting->getEntity();
-				_parentModel->getTracer()->traceSimulation(this, TraceManager::Level::L8_detailed, "Entity \"" + removedEntity->getName() + "\" was removed from queue \"" + queue->getName() + "\" at rank "+std::to_string(rank));
+				traceSimulation(this, TraceManager::Level::L8_detailed, "Entity \"" + removedEntity->getName() + "\" was removed from queue \"" + queue->getName() + "\" at rank "+std::to_string(rank));
 				_parentModel->sendEntityToComponent(removedEntity, this->getConnections()->getConnectionAtPort(1)); // port 1 is the removed entities output
 			} else {
-				_parentModel->getTracer()->traceSimulation(this, TraceManager::Level::L8_detailed, "Could not remove entity from queue \"" + queue->getName() + "\" at rank " + std::to_string(rank));
+				traceSimulation(this, TraceManager::Level::L8_detailed, "Could not remove entity from queue \"" + queue->getName() + "\" at rank " + std::to_string(rank));
 			}
 		}
 		for (unsigned int rank = startRank; rank < endRank; rank++) {
@@ -164,5 +196,3 @@ PluginInformation* Remove::GetPluginInformation() {
 	// ...
 	return info;
 }
-
-

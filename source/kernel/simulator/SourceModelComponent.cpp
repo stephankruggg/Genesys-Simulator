@@ -13,11 +13,47 @@
 
 #include "SourceModelComponent.h"
 #include "Model.h"
-#include "Attribute.h"
+#include "PropertyGenesys.h"
 
 //using namespace GenesysKernel;
 
 SourceModelComponent::SourceModelComponent(Model* model, std::string componentTypename, std::string name) : ModelComponent(model, componentTypename, name) {
+	std::string className = this->getClassname();
+
+	SimulationControlGeneric<double>* propFirstCreation = new SimulationControlGeneric<double>(
+				std::bind(&SourceModelComponent::getFirstCreation, this),
+				std::bind(&SourceModelComponent::setFirstCreation, this, std::placeholders::_1),
+				className, name, "FirstCreation", "The instant when the first entity arrives");
+	SimulationControlGeneric<unsigned int>* propEntitiesPerCreation = new SimulationControlGeneric<unsigned int>(
+				std::bind(&SourceModelComponent::getEntitiesPerCreation, this),
+				std::bind(&SourceModelComponent::setEntitiesPerCreation, this, std::placeholders::_1),
+				className, name, "EntitiesPerCreation", "The amount of entities to be created on each arrival");
+	// SimulationControlString* propMaxCreation = new SimulationControlString(
+	// 			std::bind(&SourceModelComponent::getMaxCreations, this),
+	// 			std::bind(&SourceModelComponent::setMaxCreations, this, std::placeholders::_1),
+	// 			className, name, "MaxCreations", "");
+	SimulationControlGeneric<std::string>* propTimeBetweenCreations = new SimulationControlGeneric<std::string>(
+				std::bind(&SourceModelComponent::getTimeBetweenCreationsExpression, this),
+				std::bind(&SourceModelComponent::setTimeBetweenCreationsExpression, this, std::placeholders::_1, Util::TimeUnit::unknown),
+				className, name, "TimeBetweenArrivals", "Expression that defines the interval between two consecutive arrivals");
+    SimulationControlGenericEnum<Util::TimeUnit, Util>* propTimeUnit = new SimulationControlGenericEnum<Util::TimeUnit, Util>(
+				std::bind(&SourceModelComponent::getTimeUnit, this),
+				std::bind(&SourceModelComponent::setTimeUnit, this, std::placeholders::_1),
+				className, name, "TimeUnit", "The time unit of time between arrivals");
+
+
+	_parentModel->getControls()->insert(propFirstCreation);
+	_parentModel->getControls()->insert(propEntitiesPerCreation);
+	// _parentModel->getControls()->insert(propMaxCreation);
+	_parentModel->getControls()->insert(propTimeBetweenCreations);
+	_parentModel->getControls()->insert(propTimeUnit);
+
+	// setting properties
+	_addProperty(propFirstCreation);
+	_addProperty(propEntitiesPerCreation);
+	// _addProperty(propMaxCreation);
+	_addProperty(propTimeBetweenCreations);
+	_addProperty(propTimeUnit);
 }
 
 std::string SourceModelComponent::show() {
@@ -82,10 +118,15 @@ bool SourceModelComponent::_check(std::string* errorMessage) {
 
 void SourceModelComponent::_createInternalAndAttachedData() {
 	_attachedAttributesInsert({"Entity.ArrivalTime", "Entity.Type"});
-	if (_parentModel->isAutomaticallyCreatesModelDataDefinitions()) {
-		if (this->_entityType == nullptr) {
-			_entityType = new EntityType(_parentModel, DEFAULT.entityTypename);
+	if (this->_entityType == nullptr) {
+		std::string defaulName = DEFAULT.entityTypename;
+		for (ModelDataDefinition* elem : *_parentModel->getDataManager()->getDataDefinitionList(Util::TypeOf<EntityType>())->list()) {
+			if (elem->getName() == defaulName) { // there is an entitytype wich the same default name.
+				_entityType = static_cast<EntityType*>(elem);
+				return;
+			}
 		}
+		_entityType = new EntityType(_parentModel, DEFAULT.entityTypename);
 	}
 	_attachedDataInsert("EntityType", _entityType);
 }
@@ -123,13 +164,15 @@ Util::TimeUnit SourceModelComponent::getTimeUnit() const {
 	return this->_timeBetweenCreationsTimeUnit;
 }
 
-void SourceModelComponent::setTimeBetweenCreationsExpression(std::string _timeBetweenCreations) {
-	this->_timeBetweenCreationsExpression = _timeBetweenCreations;
-}
+//void SourceModelComponent::setTimeBetweenCreationsExpression(std::string _timeBetweenCreations) {
+//	this->_timeBetweenCreationsExpression = _timeBetweenCreations;
+//}
 
 void SourceModelComponent::setTimeBetweenCreationsExpression(std::string _timeBetweenCreations, Util::TimeUnit _timeUnit) {
 	this->_timeBetweenCreationsExpression = _timeBetweenCreations;
-	this->_timeBetweenCreationsTimeUnit = _timeUnit;
+	if (_timeUnit != Util::TimeUnit::unknown) {
+		this->_timeBetweenCreationsTimeUnit = _timeUnit;
+	}
 }
 
 std::string SourceModelComponent::getTimeBetweenCreationsExpression() const {

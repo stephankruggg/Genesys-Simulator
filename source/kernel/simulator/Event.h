@@ -33,11 +33,31 @@ public:
 	Event(double time, Entity* entity, Connection* connection);
 	virtual ~Event() = default;
 public:
+	/*!
+	 * \brief getTime
+	 * \return
+	 */
 	double getTime() const;
+	/*!
+	 * \brief getComponent
+	 * \return
+	 */
 	ModelComponent* getComponent() const;
+	/*!
+	 * \brief getEntity
+	 * \return
+	 */
 	Entity* getEntity() const;
+	/*!
+	 * \brief getComponentinputPortNumber
+	 * \return
+	 */
 	unsigned int getComponentinputPortNumber() const;
-    void setEntity(Entity* _entity);
+	/*!
+	 * \brief setEntity
+	 * \param _entity
+	 */
+	void setEntity(Entity* _entity);
 public: // virtual
 	virtual std::string show();
 protected:
@@ -83,7 +103,7 @@ public:
 		return _description;
 	}
 
-	const void dispatchEvent() const {
+	void dispatchEvent() const {
 		_handler(_parameter);
 	}
 

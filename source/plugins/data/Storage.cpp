@@ -12,6 +12,7 @@
  */
 
 #include "Storage.h"
+#include "../../kernel/simulator/Model.h"
 
 #ifdef PLUGINCONNECT_DYNAMIC
 
@@ -25,6 +26,19 @@ ModelDataDefinition* Storage::NewInstance(Model* model, std::string name) {
 }
 
 Storage::Storage(Model* model, std::string name) : ModelDataDefinition(model, Util::TypeOf<Storage>(), name) {
+	//controls
+	_parentModel->getControls()->insert(new SimulationControlDouble(
+					 std::bind(&Storage::getCapacity, this),
+					 std::bind(&Storage::setCapacity, this, std::placeholders::_1),
+					 Util::TypeOf<Storage>(), getName(), "Capacity"));
+	_parentModel->getControls()->insert(new SimulationControlDouble(
+					 std::bind(&Storage::getTotalArea, this),
+					 std::bind(&Storage::setTotalArea, this, std::placeholders::_1),
+					 Util::TypeOf<Storage>(), getName(), "TotalArea"));
+	_parentModel->getControls()->insert(new SimulationControlDouble(
+					 std::bind(&Storage::getUnitsPerArea, this),
+					 std::bind(&Storage::setUnitsPerArea, this, std::placeholders::_1),
+					 Util::TypeOf<Storage>(), getName(), "UnitsPerArea"));
 }
 
 std::string Storage::show() {

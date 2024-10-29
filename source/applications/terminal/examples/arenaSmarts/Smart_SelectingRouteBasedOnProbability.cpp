@@ -33,6 +33,7 @@
 
 #include "../../../../plugins/data/Resource.h"
 #include "../../../../plugins/data/Queue.h"
+#include "../../../TraitsApp.h"
 
 // Model data definitions
 
@@ -45,13 +46,13 @@ Smart_SelectingRouteBasedOnProbability::Smart_SelectingRouteBasedOnProbability()
  */
 int Smart_SelectingRouteBasedOnProbability::main(int argc, char** argv) {
 	Simulator* genesys = new Simulator();
-	this->setDefaultTraceHandlers(genesys->getTracer());
-	this->insertFakePluginsByHand(genesys);
-	// crete model
-	Model* model = genesys->getModels()->newModel();
+	genesys->getTracer()->setTraceLevel(TraitsApp<GenesysApplication_if>::traceLevel);
+	setDefaultTraceHandlers(genesys->getTracer());
 	PluginManager* plugins = genesys->getPlugins();
-	genesys->getTracer()->setTraceLevel(TraceManager::Level::L2_results);
-	
+	plugins->autoInsertPlugins("autoloadplugins.txt");
+	Model* model = genesys->getModels()->newModel();
+	// create model
+
         //arrival
 	Create* part_arrive = plugins->newInstance<Create>(model, "PartArrive");
 	part_arrive->setEntityTypeName("Entity1");

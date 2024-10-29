@@ -58,7 +58,7 @@ bool ModelManager::saveModel(std::string filename) {
 	return false;
 }
 
-bool ModelManager::loadModel(std::string filename) {
+Model* ModelManager::loadModel(std::string filename) {
 	Model* model = new Model(_simulator);
 	bool res = model->load(filename);
 	if (res) {
@@ -68,10 +68,10 @@ bool ModelManager::loadModel(std::string filename) {
 		delete model; //->~Model();
 		_simulator->getTracer()->trace(TraceManager::Level::L2_results, "Model coud not be loaded");
 	}
-	return res;
+	return model;
 }
 
-bool ModelManager::createFromLanguage(std::string modelSpecification) {
+Model* ModelManager::createFromLanguage(std::string modelSpecification) {
 	std::string randomTempFilename = "_tmp";
 	const char alphanum[] =
 			"0123456789_."
@@ -86,10 +86,10 @@ bool ModelManager::createFromLanguage(std::string modelSpecification) {
 	savefile.open(randomTempFilename, std::ofstream::out);
 	savefile << modelSpecification;
 	savefile.close();
-	bool result = this->loadModel(randomTempFilename);
+	Model* model = this->loadModel(randomTempFilename);
 	const char* fname = randomTempFilename.c_str();
 	std::remove(fname);
-	return result;
+	return model;
 }
 
 void ModelManager::setCurrent(Model* model) {

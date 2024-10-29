@@ -24,6 +24,7 @@
 #include "../../../../plugins/components/Delay.h"
 #include "../../../../plugins/components/Dispose.h"
 #include "../../../../plugins/components/Record.h"
+#include "../../../TraitsApp.h"
 
 Smart_Record::Smart_Record() {
 }
@@ -33,11 +34,13 @@ Smart_Record::Smart_Record() {
  * It instanciates the simulator, builds a simulation model and then simulate that model.
  */
 int Smart_Record::main(int argc, char** argv) {
-    Simulator* genesys = new Simulator();
-    genesys -> getTracer() -> setTraceLevel(TraceManager::Level::L2_results);
-    this->setDefaultTraceHandlers(genesys->getTracer());
-    this->insertFakePluginsByHand(genesys);
-    Model* model = genesys->getModels()->newModel();
+	Simulator* genesys = new Simulator();
+	genesys->getTracer()->setTraceLevel(TraitsApp<GenesysApplication_if>::traceLevel);
+	setDefaultTraceHandlers(genesys->getTracer());
+	PluginManager* plugins = genesys->getPlugins();
+	plugins->autoInsertPlugins("autoloadplugins.txt");
+	Model* model = genesys->getModels()->newModel();
+	// create model
 
     EntityType* entityType = new EntityType(model, "Person");
     Create* create = new Create(model);

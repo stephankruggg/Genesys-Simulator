@@ -22,6 +22,7 @@
 #include "../../../../plugins/components/Create.h"
 #include "../../../../plugins/components/Delay.h"
 #include "../../../../plugins/components/Dispose.h"
+#include "../../../TraitsApp.h"
 
 Smart_OnEvent::Smart_OnEvent() {
 }
@@ -80,9 +81,12 @@ void Smart_OnEvent::onSimulationResumeHandler(SimulationEvent* re) {
  */
 int Smart_OnEvent::main(int argc, char** argv) {
 	Simulator* genesys = new Simulator();
-	this->insertFakePluginsByHand(genesys);
-	Model* model = genesys->getModels()->newModel();
+	genesys->getTracer()->setTraceLevel(TraitsApp<GenesysApplication_if>::traceLevel);
+	setDefaultTraceHandlers(genesys->getTracer());
 	PluginManager* plugins = genesys->getPlugins();
+	plugins->autoInsertPlugins("autoloadplugins.txt");
+	Model* model = genesys->getModels()->newModel();
+	// create model
 	model->getTracer()->setTraceLevel(TraceManager::Level::L0_noTraces); // NO TRACES. Genesys will show anything!
 	// set event handler to the previous methods. All outputs will come from these handlers
 	OnEventManager* oem = model->getOnEvents();

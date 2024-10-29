@@ -13,6 +13,7 @@
 
 #include "Record.h"
 #include "../../kernel/simulator/Model.h"
+#include "../../kernel/simulator/SimulationControlAndResponse.h"
 #include <fstream>
 #include <cstdio>
 #include <iostream>
@@ -29,6 +30,29 @@ ModelDataDefinition* Record::NewInstance(Model* model, std::string name) {
 }
 
 Record::Record(Model* model, std::string name) : ModelComponent(model, Util::TypeOf<Record>(), name) {
+	SimulationControlGeneric<bool>* propTime = new SimulationControlGeneric<bool>(
+									std::bind(&Record::getTimeDependent, this), std::bind(&Record::setTimeDependent, this, std::placeholders::_1),
+									Util::TypeOf<Record>(), getName(), "TimeDependent", "");
+	SimulationControlGeneric<std::string>* propExpression = new SimulationControlGeneric<std::string>(
+									std::bind(&Record::getExpression, this), std::bind(&Record::setExpression, this, std::placeholders::_1),
+									Util::TypeOf<Record>(), getName(), "Expression", "");
+	SimulationControlGeneric<std::string>* propExpressionName = new SimulationControlGeneric<std::string>(
+									std::bind(&Record::getExpressionName, this), std::bind(&Record::setExpressionName, this, std::placeholders::_1),
+									Util::TypeOf<Record>(), getName(), "ExpressionName", "");
+	SimulationControlGeneric<std::string>* propFilename = new SimulationControlGeneric<std::string>(
+									std::bind(&Record::getFileName, this), std::bind(&Record::setFilename, this, std::placeholders::_1),
+									Util::TypeOf<Record>(), getName(), "Filename", "");
+
+	_parentModel->getControls()->insert(propTime);
+	_parentModel->getControls()->insert(propExpression);
+	_parentModel->getControls()->insert(propExpressionName);
+	_parentModel->getControls()->insert(propFilename);
+
+	// setting properties
+	_addProperty(propTime);
+	_addProperty(propExpression);
+	_addProperty(propExpressionName);
+	_addProperty(propFilename);
 }
 
 Record::~Record() {
@@ -79,7 +103,10 @@ void Record::_onDispatchEvent(Entity* entity, unsigned int inputPortNumber) {
 		// @TODO: open and close for every data is not a good idea. Should open when replication starts and close when it finishes.
 		std::ofstream file;
 		file.open(_filename, std::ofstream::out | std::ofstream::app);
-		file << value << std::endl;
+		if (_timeDependent)
+			file << _parentModel->getSimulation()->getSimulatedTime() << _separator << value << std::endl;
+		else
+			file << value << std::endl;
 		file.close();
 	}
 	_parentModel->getTracer()->traceSimulation(this, _parentModel->getSimulation()->getSimulatedTime(), entity, this, "Recording value " + std::to_string(value));
@@ -104,7 +131,20 @@ bool Record::_loadInstance(PersistenceRecord *fields) {
 	return res;
 }
 
-//void Record::_initBetweenReplications() {}
+void Record::_initBetweenReplications() {
+		try {
+			unsigned int numRep =  _parentModel->getSimulation()->getCurrentReplicationNumber();
+			std::ofstream file;
+			file.open(_filename, std::ofstream::app);
+				if (numRep==1) { // header
+					file << "#Expression=\""+_expression+"\", ExpressionName=\""+_expressionName+"\"" << std::endl;
+				}
+			file << "#ReplicationNumber=" <<numRep << std::endl; //"/" << _parentModel->getSimulation()->getNumberOfReplications() << std::endl;
+			file.close();
+		} catch (...) {
+
+		}
+}
 
 bool Record::_check(std::string* errorMessage) {
 	// when cheking the model (before simulating it), remove the file if exists
@@ -123,6 +163,14 @@ void Record::_createInternalAndAttachedData() {
 	}
 }
 
+bool Record::getTimeDependent() const {
+	return _timeDependent;
+}
+
+void Record::setTimeDependent(bool timeDependent) {
+	_timeDependent = timeDependent;
+}
+
 PluginInformation* Record::GetPluginInformation() {
 	PluginInformation* info = new PluginInformation(Util::TypeOf<Record>(), &Record::LoadInstance, &Record::NewInstance);
 	info->setCategory("Input Output");
@@ -139,4 +187,3 @@ ModelComponent* Record::LoadInstance(Model* model, PersistenceRecord *fields) {
 	return newComponent;
 
 }
-

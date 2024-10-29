@@ -79,9 +79,13 @@
 
 	/****end_Includes_plugins****/
 
+#ifdef YYDEBUG
+  yydebug = 1;
+#endif
+
 	class genesyspp_driver;
 
-#line 85 "../GenesysParser.h"
+#line 89 "../GenesysParser.h"
 
 # include <cassert>
 # include <cstdlib> // std::abort
@@ -221,7 +225,7 @@
 #endif
 
 namespace yy {
-#line 225 "../GenesysParser.h"
+#line 229 "../GenesysParser.h"
 
 
 
@@ -697,7 +701,7 @@ namespace yy {
     {
       enum symbol_kind_type
       {
-        YYNTOKENS = 95, ///< Number of tokens.
+        YYNTOKENS = 94, ///< Number of tokens.
         S_YYEMPTY = -2,
         S_YYEOF = 0,                             // "end of file"
         S_YYerror = 1,                           // error
@@ -792,31 +796,30 @@ namespace yy {
         S_ASSIGN = 90,                           // "="
         S_COMMA = 91,                            // ","
         S_NEG = 92,                              // NEG
-        S_93_n_ = 93,                            // '\n'
-        S_94_USER_ = 94,                         // "USER"
-        S_YYACCEPT = 95,                         // $accept
-        S_input = 96,                            // input
-        S_expression = 97,                       // expression
-        S_number = 98,                           // number
-        S_arithmetic = 99,                       // arithmetic
-        S_logical = 100,                         // logical
-        S_relacional = 101,                      // relacional
-        S_command = 102,                         // command
-        S_commandIF = 103,                       // commandIF
-        S_commandFOR = 104,                      // commandFOR
-        S_function = 105,                        // function
-        S_kernelFunction = 106,                  // kernelFunction
-        S_elementFunction = 107,                 // elementFunction
-        S_trigonFunction = 108,                  // trigonFunction
-        S_mathFunction = 109,                    // mathFunction
-        S_probFunction = 110,                    // probFunction
-        S_userFunction = 111,                    // userFunction
-        S_listaparm = 112,                       // listaparm
-        S_attribute = 113,                       // attribute
-        S_variable = 114,                        // variable
-        S_formula = 115,                         // formula
-        S_assigment = 116,                       // assigment
-        S_pluginFunction = 117                   // pluginFunction
+        S_93_USER_ = 93,                         // "USER"
+        S_YYACCEPT = 94,                         // $accept
+        S_input = 95,                            // input
+        S_expression = 96,                       // expression
+        S_number = 97,                           // number
+        S_arithmetic = 98,                       // arithmetic
+        S_logical = 99,                          // logical
+        S_relacional = 100,                      // relacional
+        S_command = 101,                         // command
+        S_commandIF = 102,                       // commandIF
+        S_commandFOR = 103,                      // commandFOR
+        S_function = 104,                        // function
+        S_kernelFunction = 105,                  // kernelFunction
+        S_elementFunction = 106,                 // elementFunction
+        S_trigonFunction = 107,                  // trigonFunction
+        S_mathFunction = 108,                    // mathFunction
+        S_probFunction = 109,                    // probFunction
+        S_userFunction = 110,                    // userFunction
+        S_listaparm = 111,                       // listaparm
+        S_attribute = 112,                       // attribute
+        S_variable = 113,                        // variable
+        S_formula = 114,                         // formula
+        S_assigment = 115,                       // assigment
+        S_pluginFunction = 116                   // pluginFunction
       };
     };
 
@@ -1215,9 +1218,7 @@ switch (yykind)
 #if !defined _MSC_VER || defined __clang__
         YY_ASSERT (tok == token::END
                    || (token::YYerror <= tok && tok <= token::YYUNDEF)
-                   || (token::LPAREN <= tok && tok <= token::NEG)
-                   || tok == 10
-                   || tok == 348);
+                   || (token::LPAREN <= tok && tok <= 348));
 #endif
       }
 #if 201103L <= YY_CPLUSPLUS
@@ -3005,9 +3006,9 @@ switch (yykind)
     /// Constants.
     enum
     {
-      yylast_ = 1900,     ///< Last index in yytable_.
+      yylast_ = 1804,     ///< Last index in yytable_.
       yynnts_ = 23,  ///< Number of nonterminal symbols.
-      yyfinal_ = 129 ///< Termination state number.
+      yyfinal_ = 127 ///< Termination state number.
     };
 
 
@@ -3027,7 +3028,7 @@ switch (yykind)
     translate_table[] =
     {
        0,     2,     2,     2,     2,     2,     2,     2,     2,     2,
-      93,     2,     2,     2,     2,     2,     2,     2,     2,     2,
+       2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
        2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
        2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
        2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
@@ -3060,7 +3061,7 @@ switch (yykind)
       55,    56,    57,    58,    59,    60,    61,    62,    63,    64,
       65,    66,    67,    68,    69,    70,    71,    72,    73,    74,
       75,    76,    77,    78,    79,    80,    81,    82,    83,    84,
-      85,    86,    87,    88,    89,    90,    91,    92,    94
+      85,    86,    87,    88,    89,    90,    91,    92,    93
     };
     // Last valid token kind.
     const int code_max = 348;
@@ -3381,7 +3382,7 @@ switch (yykind)
 
 
 } // yy
-#line 3385 "../GenesysParser.h"
+#line 3386 "../GenesysParser.h"
 
 
 

@@ -101,22 +101,59 @@ void genesyspp_driver::setSampler(Sampler_if* _sampler) {
 	this->_sampler = _sampler;
 }
 
-Sampler_if* genesyspp_driver::sampler() const {
+Sampler_if* genesyspp_driver::getSampler() const {
 	return _sampler;
 }
 
-void
-genesyspp_driver::error(const yy::location& l, const std::string& m) {
+void genesyspp_driver::setRegisterReferedDataElements(bool value) {
+	_isRegisterReferedDataElements = value;
+}
+
+bool genesyspp_driver::getRegisterReferedDataElements() {
+	return _isRegisterReferedDataElements;
+}
+
+std::map<std::string, std::list<std::string>*>* genesyspp_driver::getReferedDataElements() {
+	return _referedDataElements;
+}
+void genesyspp_driver::clearReferedDataElements() {
+	_referedDataElements->clear();
+}
+
+void genesyspp_driver::addRefered(std::pair<std::string,std::string> referedElement) { // pair<DataElementTypename, name>
+	if (_isRegisterReferedDataElements) {
+		std::list<std::string> *listNamesRefered;
+		if (_referedDataElements->find(referedElement.first) == _referedDataElements->end()) { // dataElemTyper never refered before
+			_referedDataElements->insert({referedElement.first, new std::list<std::string>()});
+		}
+		auto it = _referedDataElements->find(referedElement.first);
+		listNamesRefered = (*it).second;
+		if (listNamesRefered==nullptr) {
+			listNamesRefered = new std::list<std::string>();
+			(*it).second = listNamesRefered;
+		}
+		for(std::string name: *listNamesRefered) {
+			if (name==referedElement.second)
+				return; // already exists. return and do not insert again
+		}
+		// not found. insert
+		listNamesRefered->insert(listNamesRefered->end(), referedElement.second);
+	}
+	//_referedDataElements->insert(_referedDataElements->end(), referedElement);
+}
+
+void genesyspp_driver::error(const yy::location& l, const std::string& m) {
+	//std::cout << "Location: "<<l.begin<<" - "<<l.end<<std::endl;
 	std::string erro(m);
+	erro.append(" from line "+ std::to_string(l.begin.line) + " column "+std::to_string(l.begin.column));
+	erro.append(" to line "+std::to_string(l.end.line)+" column "+std::to_string(l.end.column));
 	erro.append("\n");
 	setErrorMessage(m);
 	setResult(-1);
-	_model->getTracer()->trace(/*GenesysKernel::*/TraceManager::Level::L1_errorFatal, erro);
 }
 
 void
 genesyspp_driver::error(const std::string& m) {
 	setErrorMessage(m);
 	setResult(-1);
-	_model->getTracer()->trace(/*GenesysKernel::*/TraceManager::Level::L1_errorFatal, m);
 }

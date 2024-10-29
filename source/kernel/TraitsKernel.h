@@ -47,7 +47,6 @@ template <> struct TraitsKernel<Simulator> {
 template <> struct TraitsKernel<SimulationReporter_if> {
 	typedef SimulationReporterDefaultImpl1 Implementation;
 	typedef Counter CounterImplementation;
-	static constexpr bool showSimulationResponses = false;
 	static const TraceManager::Level traceLevel = TraceManager::Level::L2_results;
 };
 
@@ -68,7 +67,7 @@ template <> struct TraitsKernel<Parser_if> {
 template <> struct TraitsKernel<Model> {
 	typedef StatisticsDefaultImpl1 StatisticsCollector_StatisticsImplementation;
 	typedef CollectorDefaultImpl1 StatisticsCollector_CollectorImplementation;
-	static constexpr bool automaticallyCreatesModelDatas = true; //@TODO: Need to be supported by every component
+	static constexpr bool automaticallyCreatesModelData = true;
 	static const TraceManager::Level traceLevel = TraceManager::Level::L5_event;
 };
 

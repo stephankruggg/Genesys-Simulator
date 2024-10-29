@@ -16,7 +16,7 @@
 
 #include "../util/List.h"
 #include "SimulationScenario.h"
-#include "Property.h"
+#include "PropertyGenesys.h"
 #include "TraceManager.h"
 
 /*!
@@ -25,10 +25,10 @@
 class ExperimentManager_if {
 public:
 	virtual List<SimulationScenario*>* getScenarios() const = 0;
-	//virtual List<SimulationControl*>* getControls() const = 0;
-	//virtual List<SimulationResponse*>* getResponses() const = 0;
-	//virtual List<SimulationControl*>* extractControlsFromModel(std::string modelFilename) const = 0;
-	//virtual List<SimulationResponse*>* extractResponsesFromModel(std::string modelFilename) const = 0;
+	//virtual List<PropertyBase*>* getControls() const = 0;
+	//virtual List<PropertyBase*>* getResponses() const = 0;
+	//virtual List<PropertyBase*>* extractControlsFromModel(std::string modelFilename) const = 0;
+	//virtual List<PropertyBase*>* extractResponsesFromModel(std::string modelFilename) const = 0;
 	virtual void startSimulationOfScenario(SimulationScenario* scenario) = 0;
 	virtual void startExperiment() = 0;
 	virtual void stopExperiment() = 0;

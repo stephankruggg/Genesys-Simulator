@@ -7,13 +7,13 @@ else
     echo "Executando a partir do código local"
 fi
 
-if [ $1 == "gui" ]; then
+if [[ $1 == "gui" ]]; then
     $GENESYS_ROOT/$GENESYS_GUI_SUBPATH
-elif [ $1 == "nogui" ]; then
+elif [[ $1 == "nogui" ]]; then
     $GENESYS_ROOT/$GENESYS_NOGUI_SUBPATH
-elif [ $1 == "qt" ]; then
+elif [[ $1 == "qt" ]]; then
     /usr/bin/qtcreator $GENESYS_ROOT/$GENESYS_PROJECT_SUBPATH
-elif [ $1 == "debug" ]; then
+elif [[ $1 == "debug" ]]; then
     /bin/bash
 fi
 

@@ -14,6 +14,7 @@
 #include "Wait.h"
 #include "../../kernel/simulator/Model.h"
 #include "../../kernel/simulator/Simulator.h"
+#include "../../kernel/simulator/SimulationControlAndResponse.h"
 #include "../../kernel/simulator/PluginManager.h"
 #include "../../plugins/data/Queue.h"
 
@@ -30,7 +31,40 @@ ModelDataDefinition* Wait::NewInstance(Model* model, std::string name) {
 	return new Wait(model, name);
 }
 
+std::string Wait::convertEnumToStr(WaitType type) {
+	switch (static_cast<int> (type)) {
+		case 0: return "WaitForSignal";
+		case 1: return "InfiniteHold";
+		case 2: return "ScanForCondition";
+	}
+	return "Unknown";
+}
+
 Wait::Wait(Model* model, std::string name) : ModelComponent(model, Util::TypeOf<Wait>(), name) {
+	SimulationControlGeneric<std::string>* propCondition = new SimulationControlGeneric<std::string>(
+									std::bind(&Wait::getCondition, this), std::bind(&Wait::setCondition, this, std::placeholders::_1),
+									Util::TypeOf<Wait>(), getName(), "Condition", "");
+	SimulationControlGeneric<std::string>* propExpression = new SimulationControlGeneric<std::string>(
+									std::bind(&Wait::getlimitExpression, this), std::bind(&Wait::setLimitExpression, this, std::placeholders::_1),
+									Util::TypeOf<Wait>(), getName(), "LimitExpression", "");
+    SimulationControlGenericEnum<Wait::WaitType, Wait>* propWaitType = new SimulationControlGenericEnum<Wait::WaitType, Wait>(
+                                    std::bind(&Wait::getWaitType, this), std::bind(&Wait::setWaitType, this, std::placeholders::_1),
+                                    Util::TypeOf<Wait>(), getName(), "WaitType", "");
+	SimulationControlGenericClass<Queue*, Model*, Queue>* propQueue = new SimulationControlGenericClass<Queue*, Model*, Queue>(
+									_parentModel,
+									std::bind(&Wait::getQueue, this), std::bind(&Wait::setQueue, this, std::placeholders::_1),
+									Util::TypeOf<Wait>(), getName(), "Queue", "");																			
+
+	_parentModel->getControls()->insert(propQueue);
+    _parentModel->getControls()->insert(propWaitType);
+	_parentModel->getControls()->insert(propCondition);
+	_parentModel->getControls()->insert(propExpression);
+
+	// setting properties
+	_addProperty(propQueue);
+    _addProperty(propWaitType);
+	_addProperty(propCondition);
+	_addProperty(propExpression);
 }
 
 // public
@@ -65,6 +99,14 @@ Queue* Wait::getQueue() const {
 
 void Wait::setQueue(Queue* queue) {
 	_queue = queue;
+}
+
+std::string Wait::getlimitExpression() const {
+	return limitExpression;
+}
+
+void Wait::setLimitExpression(const std::string &newLimitExpression){
+	limitExpression = newLimitExpression;
 }
 
 
@@ -123,7 +165,7 @@ bool Wait::_check(std::string * errorMessage) {
 	bool resultAll = true;
 	if (_waitType == Wait::WaitType::ScanForCondition) {
 		resultAll = _parentModel->checkExpression(_condition, "Condition", errorMessage);
-		if (resultAll) { // add handler to event AfterProcessEvent 
+		if (resultAll) { // add handler to event AfterProcessEvent
 			_parentModel->getOnEvents()->addOnAfterProcessEventHandler(this, &Wait::_handlerForAfterProcessEventEvent);
 		}
 	}
@@ -140,9 +182,7 @@ void Wait::_createInternalAndAttachedData() {
 	//attached
 	if (_waitType == Wait::WaitType::WaitForSignal) {
 		if (_signalData == nullptr) {
-			if (_parentModel->isAutomaticallyCreatesModelDataDefinitions()) {
-				_signalData = pm->newInstance<SignalData>(_parentModel);
-			}
+			_signalData = pm->newInstance<SignalData>(_parentModel);
 		}
 		SignalData::SignalDataEventHandler handler = SignalData::SetSignalDataEventHandler<Wait>(&Wait::_handlerForSignalDataEvent, this);
 		_signalData->addSignalDataEventHandler(handler, this);
@@ -160,7 +200,8 @@ void Wait::_initBetweenReplications() {
 
 unsigned int Wait::_handlerForSignalDataEvent(SignalData* signalData) {
 	unsigned int freed = 0;
-	while (_queue->size() > 0 && signalData->remainsToLimit() > 0) {
+	unsigned int waitLimit = _parentModel->parseExpression(limitExpression);
+	while (_queue->size() > 0 && signalData->remainsToLimit() > 0 &&  freed <= waitLimit) {
 		Waiting* w = _queue->getAtRank(0);
 		_queue->removeElement(w);
 		freed++;
@@ -176,7 +217,7 @@ unsigned int Wait::_handlerForSignalDataEvent(SignalData* signalData) {
 void Wait::_handlerForAfterProcessEventEvent(SimulationEvent* event) {
 	double result = _parentModel->parseExpression(_condition);
 	//std::string message = "Condition \"" + _condition + "\" evaluates to " + std::to_string(result);
-	//_parentModel->getTracer()->traceSimulation(this, TraceManager::Level::L7_internal, _parentModel->getSimulation()->getSimulatedTime(), event->getCurrentEvent()->getEntity(), this, message);
+	//traceSimulation(this, TraceManager::Level::L7_internal, _parentModel->getSimulation()->getSimulatedTime(), event->getCurrentEvent()->getEntity(), this, message);
 	if (result) { // condition is true. Remove entities from the queue
 		while (_queue->size() > 0) {
 			Waiting* w = _queue->getAtRank(0);

@@ -28,11 +28,12 @@ SimulationReporterDefaultImpl1::SimulationReporterDefaultImpl1(ModelSimulation* 
 void SimulationReporterDefaultImpl1::showSimulationControls() {
 	_model->getTracer()->traceReport("Simulation Controls:");
 	Util::IncIndent();
-	{
-		for (PropertyBase* control : *_model->getControls()->list()) {
-			_model->getTracer()->traceReport(control->getName() + ": " + std::to_string(control->getValue()));
-		}
-	}
+// 	{
+// 		for (SimulationControl* control : *_model->getControls()->list()) {
+// //			_model->getTracer()->traceReport(control->getClassname() + "." +control->getName() + ": " + control->getValue());
+// 			_model->getTracer()->traceReport("("+control->getClassname() + ") "+ control->getElementName()+"." +control->getName() + ": " + control->getValue());
+// 		}
+// 	}
 	Util::DecIndent();
 }
 
@@ -47,8 +48,6 @@ void SimulationReporterDefaultImpl1::showReplicationStatistics() {
 	const std::string UtilTypeOfCounter = Util::TypeOf<Counter>();
 	// runs over all elements and list the statistics for each one, and then the statistics with no parent
 	Util::IncIndent();
-	if (_simulation->isShowSimulationControlsInReport())
-		this->showSimulationControls();
 	// copy the list of statistics and counters into a single new list
 	std::list<ModelDataDefinition*>* statisticsAndCounters = new std::list<ModelDataDefinition*>(*(_model->getDataManager()->getDataDefinitionList(UtilTypeOfStatisticsCollector)->list()));
 	std::list<ModelDataDefinition*>* counters = new std::list<ModelDataDefinition*>(*(_model->getDataManager()->getDataDefinitionList(UtilTypeOfCounter)->list()));
@@ -104,11 +103,11 @@ void SimulationReporterDefaultImpl1::showReplicationStatistics() {
 	Util::DecIndent();
 	Util::DecIndent();
 	const unsigned short _w1 = _w - 1;
-	for (auto const mapmapItem : *mapMapTypeStat) {
+	for (auto mapmapItem : *mapMapTypeStat) {
 		_model->getTracer()->traceReport("Statistics for " + mapmapItem.first + ":");
 		Util::IncIndent();
 		{
-			for (auto const mapItem : *(mapmapItem.second)) {
+			for (auto mapItem : *(mapmapItem.second)) {
 				_model->getTracer()->traceReport(mapItem.first + ":");
 				Util::IncIndent();
 				{
@@ -116,7 +115,7 @@ void SimulationReporterDefaultImpl1::showReplicationStatistics() {
 					for (ModelDataDefinition * const item : *(mapItem.second)) {
 						if (item->getClassname() == UtilTypeOfStatisticsCollector) {
 							Statistics_if* stat = dynamic_cast<StatisticsCollector*> (item)->getStatistics();
-							_model->getTracer()->traceReport(TraceManager::Level::L2_results,
+							_model->getTracer()->traceReport(
 									Util::SetW(item->getName() + std::string(_nameW, '.'), _nameW - 1) + " " +
 									Util::SetW(Util::StrTruncIfInt(stat->numElements()), _w1) + " " +
 									Util::SetW(Util::StrTruncIfInt(stat->min()), _w1) + " " +
@@ -126,15 +125,15 @@ void SimulationReporterDefaultImpl1::showReplicationStatistics() {
 									Util::SetW(Util::StrTruncIfInt(stat->stddeviation()), _w1) + " " +
 									Util::SetW(Util::StrTruncIfInt(stat->variationCoef()), _w1) + " " +
 									Util::SetW(Util::StrTruncIfInt(stat->halfWidthConfidenceInterval()), _w1) + " " +
-									Util::SetW(Util::StrTruncIfInt(stat->getConfidenceLevel()), _w)
-									);
+									Util::SetW(Util::StrTruncIfInt(stat->confidenceLevel()), _w)
+									, TraceManager::Level::L2_results);
 						} else {
 							if (item->getClassname() == UtilTypeOfCounter) {
 								Counter* count = dynamic_cast<Counter*> (item);
-								_model->getTracer()->traceReport(TraceManager::Level::L2_results,
+								_model->getTracer()->traceReport(
 										Util::SetW(count->getName() + std::string(_nameW, '.'), _nameW - 1) + " " +
 										Util::SetW(Util::StrTruncIfInt(count->getCountValue()), _w)
-										);
+										, TraceManager::Level::L2_results);
 							}
 						}
 					}
@@ -154,8 +153,8 @@ void SimulationReporterDefaultImpl1::showSimulationResponses() {
 	_model->getTracer()->traceReport("Simulation Responses:");
 	Util::IncIndent();
 	{
-		for (PropertyBase* response : *_model->getResponses()->list()) {
-			_model->getTracer()->traceReport(response->getName() + ": " + std::to_string(response->getValue()));
+		for (SimulationControl* response : *_model->getResponses()->list()) {
+			_model->getTracer()->traceReport("("+response->getClassname() + ") "+ response->getElementName()+"." +response->getName() + ": " + response->getValue());
 		}
 	}
 	Util::DecIndent();
@@ -166,8 +165,10 @@ void SimulationReporterDefaultImpl1::showSimulationStatistics() {//List<Statisti
 	_model->getTracer()->traceReport("Begin of Report for Simulation (based on " + std::to_string(_model->getSimulation()->getNumberOfReplications()) + " replications)");
 	const std::string UtilTypeOfStatisticsCollector = Util::TypeOf<StatisticsCollector>();
 	const std::string UtilTypeOfCounter = Util::TypeOf<Counter>();
-	// runs over all elements and list the statistics for each one, and then the statistics with no parent
 	Util::IncIndent();
+	if (_simulation->isShowSimulationControlsInReport())
+		this->showSimulationControls(); // assumed the controls are the same for all replications, show them only for the whole simulation
+	// runs over all elements and list the statistics for each one, and then the statistics with no parent
 	// COPY the list of statistics and counters into a single new list
 	//std::list<ModelDataDefinition*>* statisticsAndCounters = //new std::list<ModelDataDefinition*>(*(this->_statsCountersSimulation->list()));
 	// organizes statistics into a map of maps
@@ -218,20 +219,20 @@ void SimulationReporterDefaultImpl1::showSimulationStatistics() {//List<Statisti
 	_model->getTracer()->traceReport(Util::SetW("name", _nameW) + Util::SetW("elems", _w) + Util::SetW("min", _w) + Util::SetW("max", _w) + Util::SetW("average", _w) + Util::SetW("variance", _w) + Util::SetW("stddev", _w) + Util::SetW("varCoef", _w) + Util::SetW("confInterv", _w) + Util::SetW("confLevel", _w));
 	Util::DecIndent();
 	Util::DecIndent();
-	/// @TODO: USE REFERENCE TO MAPITEM TO AVOID COPY
+	// @TODO: USE REFERENCE TO MAPITEM TO AVOID COPY
 	const unsigned short _w1 = _w - 1;
-	for (auto const mapmapItem : *mapMapTypeStat) {
+	for (auto mapmapItem : *mapMapTypeStat) {
 		_model->getTracer()->traceReport("Statistics for " + mapmapItem.first + ":");
 		Util::IncIndent();
 		{
-			for (auto const mapItem : *(mapmapItem.second)) {
+			for (auto mapItem : *(mapmapItem.second)) {
 				_model->getTracer()->traceReport(mapItem.first + ":");
 				Util::IncIndent();
 				{
 					for (ModelDataDefinition * const item : *(mapItem.second)) {
 						if (item->getClassname() == UtilTypeOfStatisticsCollector) {
 							Statistics_if* stat = dynamic_cast<StatisticsCollector*> (item)->getStatistics();
-							_model->getTracer()->traceReport(TraceManager::Level::L2_results,
+							_model->getTracer()->traceReport(
 									Util::SetW(item->getName() + std::string(_nameW, '.'), _nameW - 1) + " " +
 									Util::SetW(Util::StrTruncIfInt(stat->numElements()), _w1) + " " +
 									Util::SetW(Util::StrTruncIfInt(stat->min()), _w1) + " " +
@@ -241,15 +242,15 @@ void SimulationReporterDefaultImpl1::showSimulationStatistics() {//List<Statisti
 									Util::SetW(Util::StrTruncIfInt(stat->stddeviation()), _w1) + " " +
 									Util::SetW(Util::StrTruncIfInt(stat->variationCoef()), _w1) + " " +
 									Util::SetW(Util::StrTruncIfInt(stat->halfWidthConfidenceInterval()), _w1) + " " +
-									Util::SetW(Util::StrTruncIfInt(stat->getConfidenceLevel()), _w)
-									);
+									Util::SetW(Util::StrTruncIfInt(stat->confidenceLevel()), _w)
+									, TraceManager::Level::L2_results);
 						} else {
 							if (item->getClassname() == UtilTypeOfCounter) {
 								Counter* cnt = dynamic_cast<Counter*> (item);
-								_model->getTracer()->traceReport(TraceManager::Level::L2_results,
+								_model->getTracer()->traceReport(
 										Util::SetW(cnt->getName() + std::string(_nameW, '.'), _nameW - 1) + " " +
 										Util::SetW(Util::StrTruncIfInt(cnt->getCountValue()), _w)
-										);
+										, TraceManager::Level::L2_results);
 							}
 						}
 					}

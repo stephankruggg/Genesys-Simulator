@@ -38,7 +38,7 @@ public:
 		",entity=" + std::to_string(_entity->getId()) +
 				",component=\"" + _thisComponent->getName() + "\"" +
 				",inputPort=\"" + std::to_string(_thisComponentOutputPort) + "\"" +
-				",timeStatedWaiting=" + std::to_string(_timeStartedWaiting);
+				",timeStartedWaiting=" + std::to_string(_timeStartedWaiting);
 	}
 public:
 	double getTimeStartedWaiting() const {
@@ -93,9 +93,10 @@ class Queue : public ModelDataDefinition {
 public:
 
 	enum class OrderRule : int {
-		FIFO = 1, LIFO = 2, HIGHESTVALUE = 3, SMALLESTVALUE = 4
+		FIFO = 0, LIFO = 1, HIGHESTVALUE = 2, SMALLESTVALUE = 3, num_elements = 4
 	};
-
+public:
+	static std::string convertEnumToStr(OrderRule rule);
 public:
 	Queue(Model* model, std::string name = "");
 	virtual ~Queue();
@@ -115,6 +116,8 @@ public:
 	std::string getAttributeName() const;
 	void setOrderRule(OrderRule _orderRule);
 	Queue::OrderRule getOrderRule() const;
+	void setOrderRuleInt(int orderRule);
+	int getOrderRuleInt() const;
 public: // to implement SIMAN functions
 	double sumAttributesFromWaiting(Util::identification attributeID); // use to implement SIMAN SAQUE function
 	double getAttributeFromWaitingRank(unsigned int rank, Util::identification attributeID);
@@ -131,8 +134,9 @@ protected: // could be overriden
 
 private:
 	void _initCStats();
-private: //1::n
+private:
 	List<Waiting*>* _list = new List<Waiting*>();
+	double _lastTimeNumberInQueueChanged;
 private: //1::1
 
 	const struct DEFAULT_VALUES {
@@ -141,7 +145,7 @@ private: //1::1
 	} DEFAULT;
 	OrderRule _orderRule = DEFAULT.orderRule;
 	std::string _attributeName = DEFAULT.attributeName;
-private: // inner internel elements
+private: // inner internal elements
 	StatisticsCollector* _cstatNumberInQueue = nullptr;
 	StatisticsCollector* _cstatTimeInQueue;
 };

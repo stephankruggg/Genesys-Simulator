@@ -14,6 +14,7 @@
 #include "Release.h"
 #include "../../kernel/simulator/Model.h"
 #include "../../kernel/simulator/Simulator.h"
+#include "../../kernel/simulator/SimulationControlAndResponse.h"
 #include "../data/Resource.h"
 //#include "../../kernel/simulator/Attribute.h"
 #include <assert.h>
@@ -31,6 +32,20 @@ ModelDataDefinition* Release::NewInstance(Model* model, std::string name) {
 }
 
 Release::Release(Model* model, std::string name) : ModelComponent(model, Util::TypeOf<Release>(), name) {
+	SimulationControlGeneric<unsigned short>* propPriority = new SimulationControlGeneric<unsigned short>(
+									std::bind(&Release::priority, this), std::bind(&Release::setPriority, this, std::placeholders::_1),
+									Util::TypeOf<Release>(), getName(), "Priority", "");
+	SimulationControlGenericListPointer<SeizableItem*, Model*, SeizableItem>* propReleaseRequests = new SimulationControlGenericListPointer<SeizableItem*, Model*, SeizableItem> (
+									_parentModel,
+                                    std::bind(&Release::getReleaseRequests, this), std::bind(&Release::addReleaseRequests, this, std::placeholders::_1), std::bind(&Release::removeReleaseRequests, this, std::placeholders::_1),
+									Util::TypeOf<Release>(), getName(), "ReleaseRequests", "");	
+
+	_parentModel->getControls()->insert(propPriority);
+	_parentModel->getControls()->insert(propReleaseRequests);
+	
+	// setting properties
+	_addProperty(propPriority);
+	_addProperty(propReleaseRequests);
 }
 
 std::string Release::show() {
@@ -57,6 +72,14 @@ List<SeizableItem*>* Release::getReleaseRequests() const {
 	return _releaseRequests;
 }
 
+void Release::addReleaseRequests(SeizableItem* newRequest) {
+	_releaseRequests->insert(newRequest);
+}
+
+void Release::removeReleaseRequests(SeizableItem* request) {
+	_releaseRequests->remove(request);
+}
+
 //void Release::setResource(Resource* _resource) {
 //	this->_resource = _resource;
 //}
@@ -78,7 +101,7 @@ Resource* Release::_getResourceFromSeizableItem(SeizableItem* seizable, Entity* 
 		switch (rule) {
 			case SeizableItem::SelectionRule::CYCLICAL:
 				index = (seizable->getLastMemberSeized() + 1) % _releaseRequests->list()->size();
-				_parentModel->getTracer()->trace("Member index " + std::to_string(index) + " was cyclically choosen", TraceManager::Level::L9_mostDetailed);
+				trace("Member index " + std::to_string(index) + " was cyclically choosen", TraceManager::Level::L9_mostDetailed);
 				break;
 			case SeizableItem::SelectionRule::LARGESTREMAININGCAPACITY:
 				unsigned int bestIndex;
@@ -91,7 +114,7 @@ Resource* Release::_getResourceFromSeizableItem(SeizableItem* seizable, Entity* 
 						bestValue = value;
 						bestIndex = index;
 					}
-					_parentModel->getTracer()->trace("Member index " + std::to_string(index) + " has " + Util::StrTruncIfInt(value) + " remaining capacity. Largest one is " + Util::StrTruncIfInt(bestValue) + " from index " + std::to_string(bestIndex), TraceManager::Level::L9_mostDetailed);
+					trace("Member index " + std::to_string(index) + " has " + Util::StrTruncIfInt(value) + " remaining capacity. Largest one is " + Util::StrTruncIfInt(bestValue) + " from index " + std::to_string(bestIndex), TraceManager::Level::L9_mostDetailed);
 					index++;
 				}
 				index = bestIndex;
@@ -99,7 +122,7 @@ Resource* Release::_getResourceFromSeizableItem(SeizableItem* seizable, Entity* 
 			case SeizableItem::SelectionRule::RANDOM:
 				// @TODO: RANDOM IS REALLY A PROBLEM!!! NOW IT MAY CAUSE AN ERROR (DEQUEUE AN ENTITY BECAUSE IT CAN SEIZE ALL REQUESTS, BUT ANOTHER RANDOM REQUEST MY BE SELECTED AFTER, IT IT MAY BE BUSY
 				index = std::trunc(rand() * this->_releaseRequests->list()->size());
-				_parentModel->getTracer()->trace("Member index " + std::to_string(index) + " was randomlly choosen", TraceManager::Level::L9_mostDetailed);
+				trace("Member index " + std::to_string(index) + " was randomlly choosen", TraceManager::Level::L9_mostDetailed);
 				break;
 			case SeizableItem::SelectionRule::SMALLESTNUMBERBUSY:
 				bestValue = std::numeric_limits<double>::max();
@@ -111,14 +134,14 @@ Resource* Release::_getResourceFromSeizableItem(SeizableItem* seizable, Entity* 
 						bestValue = value;
 						bestIndex = index;
 					}
-					_parentModel->getTracer()->trace("Member index " + std::to_string(index) + " has " + Util::StrTruncIfInt(value) + " number busy. Smallest one is " + Util::StrTruncIfInt(bestValue) + " from index " + std::to_string(bestIndex), TraceManager::Level::L9_mostDetailed);
+					trace("Member index " + std::to_string(index) + " has " + Util::StrTruncIfInt(value) + " number busy. Smallest one is " + Util::StrTruncIfInt(bestValue) + " from index " + std::to_string(bestIndex), TraceManager::Level::L9_mostDetailed);
 					index++;
 				}
 				index = bestIndex;
 				break;
 			case SeizableItem::SelectionRule::SPECIFICMEMBER:
 				index = _parentModel->parseExpression(seizable->getSaveAttribute());
-				_parentModel->getTracer()->trace("Member index " + std::to_string(index) + " was specifically choosen", TraceManager::Level::L9_mostDetailed);
+				trace("Member index " + std::to_string(index) + " was specifically choosen", TraceManager::Level::L9_mostDetailed);
 				break;
 			case SeizableItem::SelectionRule::PREFEREDORDER:
 				bestValue = 0;
@@ -138,12 +161,12 @@ Resource* Release::_getResourceFromSeizableItem(SeizableItem* seizable, Entity* 
 					if (++lastPreferedOrder < seizable->getSet()->getElementSet()->size()) {
 						index = lastPreferedOrder;
 					}
-					_parentModel->getTracer()->trace("There is no available resources. Will request the " + std::to_string(index) + "th member index", TraceManager::Level::L9_mostDetailed);
+					trace("There is no available resources. Will request the " + std::to_string(index) + "th member index", TraceManager::Level::L9_mostDetailed);
 				} else {
 					seizable->setLastPreferedOrder(++lastPreferedOrder);
 					if (lastPreferedOrder >= numRecAvaliable) {
 						seizable->setLastPreferedOrder(1);
-						_parentModel->getTracer()->trace("There isn't " + std::to_string(lastPreferedOrder) + " available resources. Preferable order is now the 1th", TraceManager::Level::L9_mostDetailed);
+						trace("There isn't " + std::to_string(lastPreferedOrder) + " available resources. Preferable order is now the 1th", TraceManager::Level::L9_mostDetailed);
 					}
 					for (ModelDataDefinition* dd : *seizable->getSet()->getElementSet()->list()) {
 						resource = static_cast<Resource*> (dd);
@@ -152,12 +175,12 @@ Resource* Release::_getResourceFromSeizableItem(SeizableItem* seizable, Entity* 
 							if (bestValue <= lastPreferedOrder) { // changed "==" to "<=" so if not enought available resources, entity will not be always on the index=0 resource's queue
 								bestIndex = index;
 							}
-							_parentModel->getTracer()->trace("Member index " + std::to_string(index) + " is the " + Util::StrTruncIfInt(bestValue) + "th available one. Will chosse the  " + Util::StrTruncIfInt(lastPreferedOrder) + "th one.", TraceManager::Level::L9_mostDetailed);
+							trace("Member index " + std::to_string(index) + " is the " + Util::StrTruncIfInt(bestValue) + "th available one. Will chosse the  " + Util::StrTruncIfInt(lastPreferedOrder) + "th one.", TraceManager::Level::L9_mostDetailed);
 							if (bestValue == lastPreferedOrder) {
 								break;
 							}
 						} else {
-							_parentModel->getTracer()->trace("Member index " + std::to_string(index) + " is not available", TraceManager::Level::L9_mostDetailed);
+							trace("Member index " + std::to_string(index) + " is not available", TraceManager::Level::L9_mostDetailed);
 						}
 						index++;
 					}
@@ -165,7 +188,7 @@ Resource* Release::_getResourceFromSeizableItem(SeizableItem* seizable, Entity* 
 				}
 				break;
 		}
-		_parentModel->getTracer()->trace("Member of set " + set->getName() + " chosen index " + std::to_string(index), TraceManager::Level::L8_detailed);
+		trace("Member of set " + set->getName() + " chosen index " + std::to_string(index), TraceManager::Level::L8_detailed);
 		resource = static_cast<Resource*> (set->getElementSet()->getAtRank(index));
 		assert(resource != nullptr);
 	}
@@ -184,8 +207,9 @@ void Release::_onDispatchEvent(Entity* entity, unsigned int inputPortNumber) {
 			double timeSeized = resource->getLastTimeSeized();
 			double allocationEntityResource = entity->getAttributeValue("Entity.Allocation."+resource->getName()); //@TODO: Seize is not setting this attribute. Fiz it.
 			std::string allocationCategory = Util::StrAllocation(static_cast<Util::AllocationType>((int) allocationEntityResource));
+			std::string attribIndex="";
 			entity->getEntityType()->addGetStatisticsCollector(entity->getEntityTypeName() + "."+allocationCategory+"Time")->getStatistics()->getCollector()->addValue(timeSeized);
-			entity->setAttributeValue("Entity.Total"+allocationCategory+"Time", entity->getAttributeValue("Entity.Total"+allocationCategory+"Time") + timeSeized, true);			
+			entity->setAttributeValue("Entity.Total"+allocationCategory+"Time", entity->getAttributeValue("Entity.Total"+allocationCategory+"Time") + timeSeized, attribIndex, true);			
 		}
 	}
 	_parentModel->sendEntityToComponent(entity, this->getConnections()->getFrontConnection());
@@ -231,13 +255,13 @@ void Release::_createInternalAndAttachedData() {
 	for (SeizableItem* seizable : * _releaseRequests->list()) {
 		if (seizable->getSeizableType() == SeizableItem::SeizableType::RESOURCE) {
 			Resource* resource = seizable->getResource();
-			if (resource == nullptr && _parentModel->isAutomaticallyCreatesModelDataDefinitions()) {
+			if (resource == nullptr) {
 				resource = _parentModel->getParentSimulator()->getPlugins()->newInstance<Resource>(_parentModel);
 			}
 			_attachedDataInsert("SeizableItem" + Util::StrIndex(i), resource);
 		} else if (seizable->getSeizableType() == SeizableItem::SeizableType::SET) {
 			Set* set = seizable->getSet();
-			if (set == nullptr && _parentModel->isAutomaticallyCreatesModelDataDefinitions()) {
+			if (set == nullptr) {
 				set = _parentModel->getParentSimulator()->getPlugins()->newInstance<Set>(_parentModel);
 			}
 			_attachedDataInsert("SeizableItem" + Util::StrIndex(i), set);

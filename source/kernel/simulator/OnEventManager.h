@@ -25,6 +25,26 @@
 //typedef double (*memberFunctionGetDoubleVarHandler)(); //template<> ... typedef double (T::*getDoubleVarHandler)() or something like that
 //typedef void (*memberFunctionSetDoubleVarHandler)(double);
 
+
+/*! Stores an event that happened on a specific model
+ */
+class ModelEvent {
+public:
+	ModelEvent(Model* model){
+		_model = model;
+	};
+public:
+	const Model* getModel() {
+		return _model;
+	}
+private:
+	Model* _model;
+};
+typedef void (*modelEventHandler)(ModelEvent*);
+// for handlers that are class members (methods)
+typedef std::function<void(ModelEvent*) > modelEventHandlerMethod;
+
+
 /*! Stores an event that happened on a specific replication
  */
 class SimulationEvent {
@@ -156,7 +176,6 @@ private:
 	bool pauseRequested = false;
 	bool stopRequested = false;
 };
-
 typedef void (*simulationEventHandler)(SimulationEvent*);
 // for handlers that are class members (methods)
 typedef std::function<void(SimulationEvent*) > simulationEventHandlerMethod;
@@ -170,6 +189,9 @@ public:
 	OnEventManager();
 	virtual ~OnEventManager() = default;
 public: // event listeners (handlers)
+	void addOnModelCheckSucessHandler(modelEventHandler EventHandler);
+	void addOnModelLoadHandler(modelEventHandler EventHandler);
+	void addOnModelSaveHandler(modelEventHandler EventHandler);
 	void addOnReplicationStartHandler(simulationEventHandler EventHandler);
 	void addOnReplicationStepHandler(simulationEventHandler EventHandler);
 	void addOnReplicationEndHandler(simulationEventHandler EventHandler);
@@ -185,6 +207,9 @@ public: // event listeners (handlers)
 	void addOnBreakpointHandler(simulationEventHandler EventHandler);
 public: // event listeners (method handlers)
 	// for handlers that are class members (methods)
+	template<typename Class> void addOnModelCheckSuccessHandler(Class * object, void (Class::*function)(ModelEvent*));
+	template<typename Class> void addOnModelLoadHandler(Class * object, void (Class::*function)(ModelEvent*));
+	template<typename Class> void addOnModelSaveHandler(Class * object, void (Class::*function)(ModelEvent*));
 	template<typename Class> void addOnReplicationStartHandler(Class * object, void (Class::*function)(SimulationEvent*));
 	template<typename Class> void addOnReplicationStepHandler(Class * object, void (Class::*function)(SimulationEvent*));
 	template<typename Class> void addOnReplicationEndHandler(Class * object, void (Class::*function)(SimulationEvent*));
@@ -198,7 +223,11 @@ public: // event listeners (method handlers)
 	template<typename Class> void addOnSimulationResumeHandler(Class * object, void (Class::*function)(SimulationEvent*));
 	template<typename Class> void addOnSimulationEndHandler(Class * object, void (Class::*function)(SimulationEvent*));
 	template<typename Class> void addOnBreakpointHandler(Class * object, void (Class::*function)(SimulationEvent*));
+
 public:
+	void NotifyModelCheckSuccessHandlers(ModelEvent* se);
+	void NotifyModelLoadHandlers(ModelEvent* se);
+	void NotifyModelSaveHandlers(ModelEvent* se);
 	void NotifyReplicationStartHandlers(SimulationEvent* se);
 	void NotifyReplicationStepHandlers(SimulationEvent* se);
 	void NotifyReplicationEndHandlers(SimulationEvent* se);
@@ -212,11 +241,18 @@ public:
 	void NotifySimulationResumeHandlers(SimulationEvent* se);
 	void NotifySimulationEndHandlers(SimulationEvent* se);
 	void NotifyBreakpointHandlers(SimulationEvent* se);
+
 private:
+	void _NotifyHandlers(List<modelEventHandler>* list, ModelEvent* se);
 	void _NotifyHandlers(List<simulationEventHandler>* list, SimulationEvent* se);
+	void _NotifyHandlerMethods(List<modelEventHandlerMethod>* list, ModelEvent* se);
 	void _NotifyHandlerMethods(List<simulationEventHandlerMethod>* list, SimulationEvent* se);
+	void _addOnHandler(List<modelEventHandler>* list, modelEventHandler EventHandler);
 	void _addOnHandler(List<simulationEventHandler>* list, simulationEventHandler EventHandler);
 private: // events listener
+	List<modelEventHandler>* _onModelCheckSuccessHandlers = new List<modelEventHandler>();
+	List<modelEventHandler>* _onModelLoadHandlers = new List<modelEventHandler>();
+	List<modelEventHandler>* _onModelSaveHandlers = new List<modelEventHandler>();
 	List<simulationEventHandler>* _onReplicationStartHandlers = new List<simulationEventHandler>();
 	List<simulationEventHandler>* _onReplicationStepHandlers = new List<simulationEventHandler>();
 	List<simulationEventHandler>* _onReplicationEndHandlers = new List<simulationEventHandler>();
@@ -231,6 +267,9 @@ private: // events listener
 	List<simulationEventHandler>* _onSimulationEndHandlers = new List<simulationEventHandler>();
 	List<simulationEventHandler>* _onBreakpointHandlers = new List<simulationEventHandler>();
 private: // events listener for handlers that are class members (methods)
+	List<modelEventHandlerMethod>* _onModelCheckSuccessHandlerMethods = new List<modelEventHandlerMethod>();
+	List<modelEventHandlerMethod>* _onModelLoadHandlerMethods = new List<modelEventHandlerMethod>();
+	List<modelEventHandlerMethod>* _onModelSaveHandlerMethods = new List<modelEventHandlerMethod>();
 	List<simulationEventHandlerMethod>* _onReplicationStartHandlerMethods = new List<simulationEventHandlerMethod>();
 	List<simulationEventHandlerMethod>* _onReplicationStepHandlerMethods = new List<simulationEventHandlerMethod>();
 	List<simulationEventHandlerMethod>* _onReplicationEndHandlerMethods = new List<simulationEventHandlerMethod>();
@@ -256,6 +295,20 @@ private: // events listener for handlers that are class members (methods)
 //  @TODO: probabily to override == operator for type simulationEventHandlerMethod
 // ...
 
+template<typename Class> void OnEventManager::addOnModelCheckSuccessHandler(Class * object, void (Class::*function)(ModelEvent*)) {
+	modelEventHandlerMethod handlerMethod = std::bind(function, object, std::placeholders::_1);
+	this->_onModelCheckSuccessHandlerMethods->insert(handlerMethod);
+}
+
+template<typename Class> void OnEventManager::addOnModelLoadHandler(Class * object, void (Class::*function)(ModelEvent*)) {
+	modelEventHandlerMethod handlerMethod = std::bind(function, object, std::placeholders::_1);
+	this->_onModelLoadHandlerMethods->insert(handlerMethod);
+}
+
+template<typename Class> void OnEventManager::addOnModelSaveHandler(Class * object, void (Class::*function)(ModelEvent*)) {
+	modelEventHandlerMethod handlerMethod = std::bind(function, object, std::placeholders::_1);
+	this->_onModelSaveHandlerMethods->insert(handlerMethod);
+}
 template<typename Class> void OnEventManager::addOnReplicationStartHandler(Class * object, void (Class::*function)(SimulationEvent*)) {
 	simulationEventHandlerMethod handlerMethod = std::bind(function, object, std::placeholders::_1);
 	this->_onReplicationStartHandlerMethods->insert(handlerMethod);

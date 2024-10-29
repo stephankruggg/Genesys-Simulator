@@ -80,8 +80,9 @@ void Dispose::_createInternalAndAttachedData() {
 		// include StatisticsCollector needed for each EntityType
 		std::list<ModelDataDefinition*>* enttypes = _parentModel->getDataManager()->getDataDefinitionList(Util::TypeOf<EntityType>())->list();
 		for (ModelDataDefinition* modeldatum : *enttypes) {
-			if (modeldatum->isReportStatistics())
-				static_cast<EntityType*> (modeldatum)->addGetStatisticsCollector(modeldatum->getName() + "." + "TotalTimeInSystem"); // force create this CStat before model checking
+			if (modeldatum->isReportStatistics()) {
+				static_cast<EntityType*> (modeldatum)->addGetStatisticsCollector(modeldatum->getName() + "." + "TotalTimeInSystem");
+				}// force create this CStat before model checking
 		}
 	} else if (!_reportStatistics && _numberOut != nullptr) {
 

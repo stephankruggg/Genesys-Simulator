@@ -22,6 +22,7 @@
 #include "../../../../plugins/components/Create.h"
 #include "../../../../plugins/components/Delay.h"
 #include "../../../../plugins/components/Dispose.h"
+#include "../../../TraitsApp.h"
 
 Smart_Delay::Smart_Delay() {
 }
@@ -32,12 +33,12 @@ Smart_Delay::Smart_Delay() {
  */
 int Smart_Delay::main(int argc, char** argv) {
 	Simulator* genesys = new Simulator();
-	this->setDefaultTraceHandlers(genesys->getTracer());
-	this->insertFakePluginsByHand(genesys);
-	genesys->getTracer()->setTraceLevel(TraceManager::Level::L6_arrival);
-	// create model
-	Model* model = genesys->getModels()->newModel();
+	genesys->getTracer()->setTraceLevel(TraitsApp<GenesysApplication_if>::traceLevel);
+	setDefaultTraceHandlers(genesys->getTracer());
 	PluginManager* plugins = genesys->getPlugins();
+	plugins->autoInsertPlugins("autoloadplugins.txt");
+	Model* model = genesys->getModels()->newModel();
+	// create model
 	Create* create1 = plugins->newInstance<Create>(model);
 	Delay* delay1 = plugins->newInstance<Delay>(model); // the default delay time is 1.0 s
 	delay1->setDelayExpression("unif(1,0.2)");

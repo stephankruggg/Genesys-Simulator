@@ -13,7 +13,11 @@
 #pragma once
 
 #include "../../kernel/simulator/ModelComponent.h"
+#include "../../kernel/simulator/Simulator.h"
 #include "../data/CppCompiler.h"
+
+extern "C" typedef void (*initBetweenReplications_t)(Model* model);
+extern "C" typedef void (*onDispatchEvent_t)(Simulator* simulator, Model* model, Entity* entity);
 
 /*!
  This component ...
@@ -65,9 +69,10 @@ private: // attributes 1:1
 	//
 	std::string _sourceFilename;
 	std::string _outputFilename;
-	void (*dispatchEvent)(Entity*, Model*);
-	void (*initBetweenReplications)(Model*);
-private: // internel
+	// pointers to functions on a shared libraty
+	onDispatchEvent_t dispatchEvent_SharedLibHandler;
+	initBetweenReplications_t initBetweenReplications_SharedLibHandler;
+private: // internal (TODO: should be Attached??)
 	CppCompiler* _cppCompiler = nullptr;
 private: // attributes 1:n
 };

@@ -13,7 +13,7 @@
 
 
 //
-// VINCULADOR 
+// VINCULADOR
 // SAIDA
 // ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/genesysterminalapplication
 //
@@ -53,7 +53,11 @@ public:
 
 	//@TODO: Should be insde ModelSimulation, where time goes on
 
+	/*!
+	 * \brief The TimeUnit enum
+	 */
 	enum class TimeUnit : int {
+		unknown = 0,
 		picosecond = 1,
 		nanosecond = 2,
 		microsecond = 3,
@@ -62,15 +66,34 @@ public:
 		minute = 6,
 		hour = 7,
 		day = 8,
-		week = 9
+		week = 9,
+		num_elements = 10
 	};
+	/*!
+	 * \brief StrTimeUnitShort
+	 * \param timeUnit
+	 * \return
+	 */
 	static std::string StrTimeUnitShort(Util::TimeUnit timeUnit);
+	/*!
+	 * \brief StrTimeUnitLong
+	 * \param timeUnit
+	 * \return
+	 */
 	static std::string StrTimeUnitLong(Util::TimeUnit timeUnit);
+	static std::string convertEnumToStr(Util::TimeUnit timeUnit);
 
+	// TODO check: here? Shouldn´t it be on SimulationReport interface?
 	enum class AllocationType : int {
-		ValueAdded = 1, NonValueAdded = 2, Transfer = 3, Wait = 4, Others = 5
+        ValueAdded = 0, NonValueAdded = 1, Transfer = 2, Wait = 3, Others = 4, num_elements = 5
 	};
 	static std::string StrAllocation(Util::AllocationType allocation);
+	static std::string convertEnumToStr(Util::AllocationType allocation);
+
+	enum class TimeFormat : unsigned int {
+        twelve = 12,
+        twentyFour = 24,
+    };
 
 private:
 	static unsigned int _S_indentation;
@@ -82,13 +105,14 @@ public: // indentation and string
 	static void SetIndent(const unsigned short indent);
 	static void IncIndent();
 	static void DecIndent();
-	static void SepKeyVal(std::string str, std::string *key, std::string *value);
+	static void SepKeyVal(std::string str, std::string &key, std::string &value);
 	static std::string Indent();
 	static std::string SetW(std::string text, unsigned short width);
 	static std::string StrTruncIfInt(double value);
 	static std::string StrTruncIfInt(std::string strValue);
 	static std::string Trim(std::string str);
 	static std::string StrReplace(std::string text, std::string searchFor, std::string replaceBy);
+	static std::string StrReplaceSpecialChars(std::string text);
 	static std::string StrIndex(int index);
 	//static char* Str2CharPtr(std::string str);
 	static void Trimwithin(std::string &str);
@@ -120,7 +144,7 @@ public: // template implementations
 	/*!
 	 * Return the name of the class used as T.
 	 */
-	template<class T> static std::string TypeOf() {
+	template<typename T> static std::string TypeOf() {
 		std::string name = typeid (T).name();
 		std::map<std::string, std::string>::iterator it = _S_TypeOf.find(name);
 		if (it != _S_TypeOf.end()) {

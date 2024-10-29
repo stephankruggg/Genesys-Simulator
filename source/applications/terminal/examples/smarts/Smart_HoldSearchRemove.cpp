@@ -35,12 +35,12 @@ Smart_HoldSearchRemove::Smart_HoldSearchRemove() {
  */
 int Smart_HoldSearchRemove::main(int argc, char** argv) {
 	Simulator* genesys = new Simulator();
-	this->setDefaultTraceHandlers(genesys->getTracer());
-	genesys->getTracer()->setTraceLevel(TraceManager::Level::L9_mostDetailed);
-	this->insertFakePluginsByHand(genesys);
-	// crete model
-	Model* model = genesys->getModels()->newModel();
+	//genesys->getTracer()->setTraceLevel(TraitsApp<GenesysApplication_if>::traceLevel);
+	setDefaultTraceHandlers(genesys->getTracer());
 	PluginManager* plugins = genesys->getPlugins();
+	plugins->autoInsertPlugins("autoloadplugins.txt");
+	Model* model = genesys->getModels()->newModel();
+	// crete model
 	Create* create1 = plugins->newInstance<Create>(model);
 	Create* create2 = plugins->newInstance<Create>(model);
 	Assign* assign1 = plugins->newInstance<Assign>(model);

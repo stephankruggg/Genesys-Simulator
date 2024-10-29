@@ -5,7 +5,7 @@ parser:
 # 	-Wcounterexamples --update
 #	bison --update --graph=bisongraph.dot --locations --verbose --xml=bisonreport.xml --defines=../GenesysParser.h -o ../GenesysParser.cpp bisonparser.yy
 	#--report=all -rcex --report-file=bisonparser.report \
-	bison --locations --debug  --feature=caret \
+	bison --locations --debug --feature=caret \
 	-Wall \
 	--xml=bisonparser.xml \
 	--defines=../GenesysParser.h \
@@ -14,4 +14,5 @@ parser:
 	bisonparser.yy 
 
 lexer:
+#	flex --debug --full -o ../Genesys++-scanner.cpp lexerparser.ll
 	flex --full -o ../Genesys++-scanner.cpp lexerparser.ll

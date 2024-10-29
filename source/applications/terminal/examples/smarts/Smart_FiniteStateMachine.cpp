@@ -33,7 +33,6 @@ Smart_FiniteStateMachine::Smart_FiniteStateMachine() {
 int Smart_FiniteStateMachine::main(int argc, char** argv) {
 	Simulator* genesys = new Simulator();
 	this->setDefaultTraceHandlers(genesys->getTracer());
-	this->insertFakePluginsByHand(genesys);
 	// crete model
 	Model* model = genesys->getModels()->newModel();
 	PluginManager* plugins = genesys->getPlugins();

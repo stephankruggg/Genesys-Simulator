@@ -1,16 +1,16 @@
-FROM ubuntu:22.04
+FROM debian:latest
 
 # Versão do Dockerfile
 ARG VERSION=0.1.0
 
 # URL do repositório
-ARG GENESYS_REPO=https://github.com/RaquelBehrens/modsim
+ARG GENESYS_REPO=https://github.com/rlcancian/Genesys-Simulator
 
 # Se o modo de execução é local ou remoto
-ENV REMOTE=1
+ENV REMOTE=0
 
 # A branch que o container usa
-ENV GENESYS_BRANCH=main
+ENV GENESYS_BRANCH=master
 
 # Caminho onde o GenESyS vai ser clonado
 ENV GENESYS_ROOT=/home/genesys/remote
@@ -19,7 +19,7 @@ ENV GENESYS_ROOT=/home/genesys/remote
 ENV GENESYS_PROJECT_SUBPATH=source/applications/gui/qt/GenesysQtGUI/GenesysQtGUI.pro
 
 # Sub-caminho onde está o binário do Genesys com GUI
-ENV GENESYS_GUI_SUBPATH=source/applications/gui/qt/build-GenesysQtGUI-Desktop-Debug/GenesysQtGUI
+ENV GENESYS_GUI_SUBPATH=source/applications/gui/qt/GenesysQtGUI/build-GenesysQtGUI-Desktop-Debug
 
 # Sub-caminho onde está o binário do Genesys sem GUI
 ENV GENESYS_NOGUI_SUBPATH=GenesysShell
@@ -33,7 +33,7 @@ version=$VERSION
 RUN echo "Instalando pre-requisitos" && \
     apt-get update && \
     apt-get upgrade --assume-yes && \
-    DEBIAN_FRONTEND=noninteractive apt-get --assume-yes dist-upgrade && \
+DEBIAN_FRONTEND=noninteractive apt-get --assume-yes dist-upgrade && \
     DEBIAN_FRONTEND=noninteractive apt-get --assume-yes install \
         build-essential \
         curl \
@@ -45,7 +45,7 @@ RUN echo "Instalando pre-requisitos" && \
         qtcreator \
         qtbase5-dev \
         qttools5-*
-
+        
 # Diminui o tamanho da imagem
 RUN echo "Limpando" && \
     apt-get autoremove --assume-yes && \

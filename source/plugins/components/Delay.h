@@ -43,8 +43,8 @@ public:
 	Delay(Model* model, std::string name = "");
 	virtual ~Delay() = default;
 public:
-	void setDelayExpression(std::string _delayExpression);
-	void setDelayExpression(std::string _delayExpression, Util::TimeUnit _delayTimeUnit);
+	//void setDelayExpression(std::string _delayExpression);
+	void setDelayExpression(std::string _delayExpression, Util::TimeUnit _delayTimeUnit=Util::TimeUnit::unknown);
 	std::string delayExpression() const;
 	void setDelay(double delay);
 	double delay() const;
@@ -58,6 +58,10 @@ public:
 	static PluginInformation* GetPluginInformation();
 	static ModelComponent* LoadInstance(Model* model, PersistenceRecord *fields);
 	static ModelDataDefinition* NewInstance(Model* model, std::string name = "");
+//public: // properties
+	//using property_owner_t = Delay;
+	//decl_property(DelayExpression, decl_get(std::string){return delayExpression();} void decl_set(std::string val){setDelayExpression(val);});
+
 protected:
 	virtual void _onDispatchEvent(Entity* entity, unsigned int inputPortNumber);
 	virtual bool _loadInstance(PersistenceRecord *fields);
@@ -77,9 +81,10 @@ private:
 	std::string _delayExpression = DEFAULT.delayExpression;
 	Util::TimeUnit _delayTimeUnit = DEFAULT.delayTimeUnit;
 	Util::AllocationType _allocation = DEFAULT.allocation;
-private: // inner internel elements
+private: // inner internal elements
 	StatisticsCollector* _cstatWaitTime = nullptr;
 };
+//enable_this_owner(Delay, DelayExpression);
 
 #endif /* DELAY_H */
 

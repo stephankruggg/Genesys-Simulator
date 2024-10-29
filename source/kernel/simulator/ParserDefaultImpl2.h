@@ -27,11 +27,12 @@ public:
 	ParserDefaultImpl2(Model* model, Sampler_if* sampler, bool throws = false);
 	virtual ~ParserDefaultImpl2() = default;
 public:
-	virtual double parse(const std::string expression); // may throw exception
-	virtual double parse(const std::string expression, bool* success, std::string* errorMessage);
-	virtual std::string* getErrorMessage();
-	virtual void setSampler(Sampler_if* _sampler);
-	virtual Sampler_if* sampler() const;
+	virtual double parse(const std::string expression) override; // may throw exception
+	virtual double parse(const std::string expression, bool* success, std::string* errorMessage) override;
+	virtual std::string* getErrorMessage() override;
+	virtual void setSampler(Sampler_if* _sampler) override;
+	virtual Sampler_if* getSampler() const override;
+	virtual genesyspp_driver getParser() const override;
 private:
 	Model* _model;
 	genesyspp_driver _wrapper;

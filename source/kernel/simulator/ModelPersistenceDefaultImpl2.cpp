@@ -39,7 +39,7 @@ bool ModelPersistenceDefaultImpl2::save(std::string filename) {
 			_model->getTracer()->trace(TraceManager::Level::L7_internal, "Serializing as C++");
 			serializer = std::make_unique<CppSerializer>(_model);
 		} else { // default
-			_model->getTracer()->trace(TraceManager::Level::L7_internal, "Serializing in GenESyS lang");
+			_model->getTracer()->trace(TraceManager::Level::L7_internal, "Serializing as GenESyS simulation language");
 			serializer = std::make_unique<GenSerializer>(_model);
 		}
 	}
@@ -103,6 +103,7 @@ bool ModelPersistenceDefaultImpl2::save(std::string filename) {
 	Util::IncIndent();
 	std::ofstream file{filename};
 	bool ok = serializer->dump(file);
+	file.close();
 	Util::DecIndent();
 
 	// finish save
@@ -130,7 +131,7 @@ bool ModelPersistenceDefaultImpl2::load(std::string filename) {
 			Util::DecIndent();
 			return false;
 		} else { // default
-			_model->getTracer()->trace(TraceManager::Level::L7_internal, "Parsing as GenESyS lang");
+			_model->getTracer()->trace(TraceManager::Level::L7_internal, "Parsing as GenESyS simulation language");
 			parser = std::make_unique<GenSerializer>(_model);
 		}
 	}
@@ -142,7 +143,7 @@ bool ModelPersistenceDefaultImpl2::load(std::string filename) {
 		ok &= parser->load(file);
 		if (!ok) throw std::exception();
 	} catch (const std::exception& e) {
-		_model->getTracer()->traceError(TraceManager::Level::L1_errorFatal, "Error loading file \"" + filename + "\"");
+		_model->getTracer()->traceError("Error loading file \"" + filename + "\"");
 		Util::DecIndent();
 		return false;
 	}
@@ -178,7 +179,7 @@ bool ModelPersistenceDefaultImpl2::load(std::string filename) {
 							componentFields.push_back(std::move(fields));
 				}
 			} else {
-				_model->getTracer()->traceError(TraceManager::Level::L1_errorFatal, "Error loading file: Could not identity typename \"" + type + "\"");
+				_model->getTracer()->traceError("Error loading file: Could not identity typename \"" + type + "\"");
 						ok = false;
 			}
 		}
@@ -189,7 +190,7 @@ bool ModelPersistenceDefaultImpl2::load(std::string filename) {
 	// after all components have been loaded, connect them at the toplevel
 	if (ok) {
 		ComponentManager* cm = _model->getComponents();
-		_model->getTracer()->trace(TraceManager::Level::L8_detailed, "Connecting loaded components");
+		_model->getTracer()->trace("Connecting loaded components");
 		Util::IncIndent();
 		for (auto& fields : componentFields) {
 			// get a handle to the component
@@ -215,7 +216,7 @@ bool ModelPersistenceDefaultImpl2::load(std::string filename) {
 				unsigned short nextPort = fields->loadField("nextinputPortNumber" + Util::StrIndex(i), 0);
 				// connect
 				component->getConnections()->insert(nextComponent, nextPort);
-				_model->getTracer()->trace(TraceManager::Level::L8_detailed, component->getName() + "<" + std::to_string(i) + ">" + " --> " + nextComponent->getName() + "<" + std::to_string(nextPort) + ">");
+				_model->getTracer()->trace(component->getName() + "<" + std::to_string(i) + ">" + " --> " + nextComponent->getName() + "<" + std::to_string(nextPort) + ">");
 			}
 		}
 		Util::DecIndent();

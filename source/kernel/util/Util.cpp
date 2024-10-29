@@ -34,25 +34,25 @@ void Util::DecIndent() {
 	Util::_S_indentation--;
 }
 
-void Util::SepKeyVal(std::string str, std::string *key, std::string *value) {
-	// @TODO: Check pointers when spliting string. There is an error
-	//char *c;
+void Util::SepKeyVal(std::string str, std::string &key, std::string &value) {
 	bool settingKey = true;
-	//key = new std::string();
-	//value = new std::string();
-	key->clear();
-	value->clear();
+	key.clear();
+	value.clear();
+	key.reserve(256);
+	value.reserve(256);
 	for (std::string::iterator it = str.begin(); it != str.end(); it++) {
+		const char c = (*it);
 		if (settingKey) {
-			if ((*it) != '=') {
-				key->append(new char((*it)));
-			} else {
+			if (c != '=') 
+				key+=c;
+			else
 				settingKey = false;
-			}
 		} else {
-			value->append(new char((*it)));
+			value+=c;
 		}
 	}
+	key.shrink_to_fit();
+	value.shrink_to_fit();
 }
 
 std::string Util::Indent() {
@@ -97,7 +97,39 @@ std::string Util::StrTimeUnitLong(Util::TimeUnit timeUnit) {
 		case 8: return "day";
 		case 9: return "week";
 	}
-	return "";
+	return "unknown";
+}
+
+std::string Util::convertEnumToStr(Util::TimeUnit timeUnit) {
+	switch (static_cast<int> (timeUnit)) {
+		case 1: return "picosecond";
+		case 2: return "nanosecond";
+		case 3: return "microsecond";
+		case 4: return "milisecond";
+		case 5: return "second";
+		case 6: return "minute";
+		case 7: return "hour";
+		case 8: return "day";
+		case 9: return "week";
+	}
+	return "unknown";
+}
+
+std::string Util::convertEnumToStr(Util::AllocationType allocation) {
+	switch (allocation) {
+		case Util::AllocationType::NonValueAdded:
+			return "NonValueAdded";
+		case Util::AllocationType::Others:
+			return "Others";
+		case Util::AllocationType::Transfer:
+			return "Transfer";
+		case Util::AllocationType::ValueAdded:
+			return "ValueAdded";
+		case Util::AllocationType::Wait:
+			return "Wait";
+		default:
+			return "Unknown";
+	}
 }
 
 std::string Util::StrAllocation(Util::AllocationType allocation) {
@@ -214,8 +246,17 @@ std::string Util::StrReplace(std::string text, std::string searchFor, std::strin
 	}
 	return text;
 }
-/// returns a string in the form "[<index>] for array indexes"
 
+std::string Util::StrReplaceSpecialChars(std::string text) {
+	text = StrReplace(text, " ", "_");
+	text = StrReplace(text, "::", "_");
+	text = StrReplace(text, "*", "_");
+	text = StrReplace(text, "\"", "");
+	return text;
+}
+
+
+// returns a string in the form "[<index>] for array indexes"
 std::string Util::StrIndex(int index) {
 	return "[" + std::to_string(index) + "]";
 }
@@ -262,9 +303,9 @@ std::string Util::Map2str(std::map<std::string, double>* mapss) {
 }
 
 char Util::DirSeparator() {
-	//#if defined(__linux__)	
+	//#if defined(__linux__)
 	return '/';
-	//#endif	
+	//#endif
 	//	return '\';
 }
 

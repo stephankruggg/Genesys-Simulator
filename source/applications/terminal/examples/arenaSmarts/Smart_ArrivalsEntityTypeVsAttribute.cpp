@@ -16,56 +16,53 @@
 #include "../../../../plugins/components/SeizableItem.h"
 #include "../../../../plugins/components/Process.h"
 #include "../../../../plugins/components/Decide.h"
+#include "../../../TraitsApp.h"
 
 Smart_ArrivalsEntityTypeVsAttribute::Smart_ArrivalsEntityTypeVsAttribute() {
 }
 
 int Smart_ArrivalsEntityTypeVsAttribute::main(int argc, char** argv) {
-    Simulator* genesys = new Simulator();
-    genesys->getTracer()->setTraceLevel(TraceManager::Level::L2_results);
-    this->setDefaultTraceHandlers(genesys->getTracer());
-    this->insertFakePluginsByHand(genesys);
-
-    Model* m = new Model(genesys);
-    PluginManager* plugins = genesys->getPlugins();
-
-    Create* cr1 = plugins->newInstance<Create>(m, "Create1");
+	Simulator* genesys = new Simulator();
+	genesys->getTracer()->setTraceLevel(TraitsApp<GenesysApplication_if>::traceLevel);
+	setDefaultTraceHandlers(genesys->getTracer());
+	PluginManager* plugins = genesys->getPlugins();
+	plugins->autoInsertPlugins("autoloadplugins.txt");
+	Model* model = genesys->getModels()->newModel();
+	// create model
+	Create* cr1 = plugins->newInstance<Create>(model, "Create1");
     cr1->setTimeBetweenCreationsExpression("expo(1)", Util::TimeUnit::hour);
-    cr1->setEntitiesPerCreation(1);
     
     // Widget1
-    Assign *assignCR1 = plugins->newInstance<Assign>(m);
-    assignCR1->getAssignments()->insert(new Assignment(m, "Entity.Type", "1"));
+	Assign *assignCR1 = plugins->newInstance<Assign>(model);
+	assignCR1->getAssignments()->insert(new Assignment(model, "Entity.Type", "1"));
     
-    Create* cr2 = plugins->newInstance<Create>(m, "Create2");
+	Create* cr2 = plugins->newInstance<Create>(model, "Create2");
     cr2->setTimeBetweenCreationsExpression("expo(1)", Util::TimeUnit::hour);
-    cr2->setEntitiesPerCreation(1);
     
     // Widget2
-    Assign *assignCR2 = plugins->newInstance<Assign>(m);
-    assignCR2->getAssignments()->insert(new Assignment(m, "Entity.Type", "2"));
+	Assign *assignCR2 = plugins->newInstance<Assign>(model);
+	assignCR2->getAssignments()->insert(new Assignment(model, "Entity.Type", "2"));
     
-    Assign *assign = plugins->newInstance<Assign>(m);
-    assign->setName("Assign 1");
-    
+	Assign *assign = plugins->newInstance<Assign>(model);
+    assign->setName("Assign 1");   
     // Checking expression "cont(0.5,10,1,20)", syntax error, unexpected ILLEGAL -> valor alterado para uma uniforme
-    assign->getAssignments()->insert(new Assignment(m, "Weight", "unif(0.2,1)"));
+	assign->getAssignments()->insert(new Assignment(model, "Weight", "unif(0.2,1)"));
     
-    Process *process = plugins->newInstance<Process>(m);
+	Process *process = plugins->newInstance<Process>(model);
     process->setName("Process 1");
-    process->getSeizeRequests()->insert(new SeizableItem(plugins->newInstance<Resource>(m)));
-    process->setQueueableItem(new QueueableItem(plugins->newInstance<Queue>(m)));
+	process->getSeizeRequests()->insert(new SeizableItem(plugins->newInstance<Resource>(model)));
+	process->setQueueableItem(new QueueableItem(plugins->newInstance<Queue>(model)));
     process->setDelayExpression("Weight * 5");
     process->setDelayTimeUnit(Util::TimeUnit::hour);
     
-    Decide *decide = plugins->newInstance<Decide>(m);
+	Decide *decide = plugins->newInstance<Decide>(model);
     decide->setName("Decide 1");
     // Não entendemos como pegar o EntityType diretamente do Create, então criamos assigns de atributos pra ele
     decide->getConditions()->insert("Entity.Type == 2");
     
-    Dispose* di1 = plugins->newInstance<Dispose>(m);
+	Dispose* di1 = plugins->newInstance<Dispose>(model);
     
-    Dispose* di2 = plugins->newInstance<Dispose>(m);
+	Dispose* di2 = plugins->newInstance<Dispose>(model);
 
     cr1->getConnections()->insert(assignCR1);
     cr2->getConnections()->insert(assignCR2);
@@ -80,13 +77,13 @@ int Smart_ArrivalsEntityTypeVsAttribute::main(int argc, char** argv) {
     decide->getConnections()->insert(di1);
     decide->getConnections()->insert(di2);
     
-    ModelSimulation* s = m->getSimulation();
-    s->setNumberOfReplications(300);
-    double replicationLength = 7;
+	ModelSimulation* s = model->getSimulation();
+    s->setNumberOfReplications(3);
+    double replicationLength = 1;
     s->setReplicationLength(replicationLength, Util::TimeUnit::week);
     s->setWarmUpPeriod(replicationLength * 0.05);
     s->setWarmUpPeriodTimeUnit(Util::TimeUnit::week);
-    m->save("./models/Smart_ArrivalEntityTypeVsAttribute.gen");
+	model->save("./models/Smart_ArrivalEntityTypeVsAttribute.gen");
     s->start();
     
     delete genesys;

@@ -39,7 +39,11 @@ OBJECTFILES= \
 	${OBJECTDIR}/_ext/acd0b333/GenesysShell.o \
 	${OBJECTDIR}/_ext/bea3505/AirportSecurityExample.o \
 	${OBJECTDIR}/_ext/bea3505/AirportSecurityExampleExtended.o \
-	${OBJECTDIR}/_ext/bea3505/Example_Basic_Order_Shipping.o \
+	${OBJECTDIR}/_ext/bea3505/Airport_Extended1.o \
+	${OBJECTDIR}/_ext/bea3505/Assembly_Line.o \
+	${OBJECTDIR}/_ext/bea3505/Banking_Transactions.o \
+	${OBJECTDIR}/_ext/bea3505/Example_BasicOrderShipping.o \
+	${OBJECTDIR}/_ext/bea3505/Example_PortModel.o \
 	${OBJECTDIR}/_ext/bea3505/Example_PublicTransport.o \
 	${OBJECTDIR}/_ext/577f3b86/Smart_AddingResource.o \
 	${OBJECTDIR}/_ext/577f3b86/Smart_AlternatingEntityCreation.o \
@@ -63,11 +67,13 @@ OBJECTFILES= \
 	${OBJECTDIR}/_ext/577f3b86/Smart_MaxArrivalsField.o \
 	${OBJECTDIR}/_ext/577f3b86/Smart_ModelRunUntil1000Parts.o \
 	${OBJECTDIR}/_ext/577f3b86/Smart_ModuleDisplayVariables.o \
+	${OBJECTDIR}/_ext/577f3b86/Smart_OverlappingResources.o \
 	${OBJECTDIR}/_ext/577f3b86/Smart_ParallelProcessingOfEntities.o \
 	${OBJECTDIR}/_ext/577f3b86/Smart_PlacingEntitiesInQueueSets.o \
 	${OBJECTDIR}/_ext/577f3b86/Smart_PriorityExample.o \
 	${OBJECTDIR}/_ext/577f3b86/Smart_ProcessArena.o \
 	${OBJECTDIR}/_ext/577f3b86/Smart_Record.o \
+	${OBJECTDIR}/_ext/577f3b86/Smart_RemovingAndReorderingEntitiesInAQueue.o \
 	${OBJECTDIR}/_ext/577f3b86/Smart_ResourceCosting.o \
 	${OBJECTDIR}/_ext/577f3b86/Smart_ResourceScheduleCosting.o \
 	${OBJECTDIR}/_ext/577f3b86/Smart_ResourceSets.o \
@@ -108,6 +114,7 @@ OBJECTFILES= \
 	${OBJECTDIR}/_ext/18d98d98/FullSimulationOfComplexModel.o \
 	${OBJECTDIR}/_ext/18d98d98/OperatingSystem02.o \
 	${OBJECTDIR}/_ext/18d98d98/OperatingSystem03.o \
+	${OBJECTDIR}/_ext/cecf075e/TestingTerminalApp.o \
 	${OBJECTDIR}/_ext/113d9686/Attribute.o \
 	${OBJECTDIR}/_ext/113d9686/ComponentManager.o \
 	${OBJECTDIR}/_ext/113d9686/ConnectionManager.o \
@@ -141,8 +148,6 @@ OBJECTFILES= \
 	${OBJECTDIR}/_ext/113d9686/PluginConnectorDummyImpl1.o \
 	${OBJECTDIR}/_ext/113d9686/PluginInformation.o \
 	${OBJECTDIR}/_ext/113d9686/PluginManager.o \
-	${OBJECTDIR}/_ext/113d9686/Property.o \
-	${OBJECTDIR}/_ext/113d9686/PropertyManager.o \
 	${OBJECTDIR}/_ext/113d9686/SimulationExperiment.o \
 	${OBJECTDIR}/_ext/113d9686/SimulationReporterDefaultImpl1.o \
 	${OBJECTDIR}/_ext/113d9686/SimulationScenario.o \
@@ -167,6 +172,7 @@ OBJECTFILES= \
 	${OBJECTDIR}/_ext/f13e5db9/Access.o \
 	${OBJECTDIR}/_ext/f13e5db9/Assign.o \
 	${OBJECTDIR}/_ext/f13e5db9/Batch.o \
+	${OBJECTDIR}/_ext/f13e5db9/Buffer.o \
 	${OBJECTDIR}/_ext/f13e5db9/CellularAutomata.o \
 	${OBJECTDIR}/_ext/f13e5db9/Clone.o \
 	${OBJECTDIR}/_ext/f13e5db9/CppForG.o \
@@ -286,10 +292,30 @@ ${OBJECTDIR}/_ext/bea3505/AirportSecurityExampleExtended.o: ../../source/applica
 	${RM} "$@.d"
 	$(COMPILE.cc) -O2 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/_ext/bea3505/AirportSecurityExampleExtended.o ../../source/applications/terminal/examples/arenaExamples/AirportSecurityExampleExtended.cpp
 
-${OBJECTDIR}/_ext/bea3505/Example_Basic_Order_Shipping.o: ../../source/applications/terminal/examples/arenaExamples/Example_Basic_Order_Shipping.cpp nbproject/Makefile-${CND_CONF}.mk
+${OBJECTDIR}/_ext/bea3505/Airport_Extended1.o: ../../source/applications/terminal/examples/arenaExamples/Airport_Extended1.cpp nbproject/Makefile-${CND_CONF}.mk
 	${MKDIR} -p ${OBJECTDIR}/_ext/bea3505
 	${RM} "$@.d"
-	$(COMPILE.cc) -O2 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/_ext/bea3505/Example_Basic_Order_Shipping.o ../../source/applications/terminal/examples/arenaExamples/Example_Basic_Order_Shipping.cpp
+	$(COMPILE.cc) -O2 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/_ext/bea3505/Airport_Extended1.o ../../source/applications/terminal/examples/arenaExamples/Airport_Extended1.cpp
+
+${OBJECTDIR}/_ext/bea3505/Assembly_Line.o: ../../source/applications/terminal/examples/arenaExamples/Assembly_Line.cpp nbproject/Makefile-${CND_CONF}.mk
+	${MKDIR} -p ${OBJECTDIR}/_ext/bea3505
+	${RM} "$@.d"
+	$(COMPILE.cc) -O2 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/_ext/bea3505/Assembly_Line.o ../../source/applications/terminal/examples/arenaExamples/Assembly_Line.cpp
+
+${OBJECTDIR}/_ext/bea3505/Banking_Transactions.o: ../../source/applications/terminal/examples/arenaExamples/Banking_Transactions.cpp nbproject/Makefile-${CND_CONF}.mk
+	${MKDIR} -p ${OBJECTDIR}/_ext/bea3505
+	${RM} "$@.d"
+	$(COMPILE.cc) -O2 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/_ext/bea3505/Banking_Transactions.o ../../source/applications/terminal/examples/arenaExamples/Banking_Transactions.cpp
+
+${OBJECTDIR}/_ext/bea3505/Example_BasicOrderShipping.o: ../../source/applications/terminal/examples/arenaExamples/Example_BasicOrderShipping.cpp nbproject/Makefile-${CND_CONF}.mk
+	${MKDIR} -p ${OBJECTDIR}/_ext/bea3505
+	${RM} "$@.d"
+	$(COMPILE.cc) -O2 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/_ext/bea3505/Example_BasicOrderShipping.o ../../source/applications/terminal/examples/arenaExamples/Example_BasicOrderShipping.cpp
+
+${OBJECTDIR}/_ext/bea3505/Example_PortModel.o: ../../source/applications/terminal/examples/arenaExamples/Example_PortModel.cpp nbproject/Makefile-${CND_CONF}.mk
+	${MKDIR} -p ${OBJECTDIR}/_ext/bea3505
+	${RM} "$@.d"
+	$(COMPILE.cc) -O2 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/_ext/bea3505/Example_PortModel.o ../../source/applications/terminal/examples/arenaExamples/Example_PortModel.cpp
 
 ${OBJECTDIR}/_ext/bea3505/Example_PublicTransport.o: ../../source/applications/terminal/examples/arenaExamples/Example_PublicTransport.cpp nbproject/Makefile-${CND_CONF}.mk
 	${MKDIR} -p ${OBJECTDIR}/_ext/bea3505
@@ -406,6 +432,11 @@ ${OBJECTDIR}/_ext/577f3b86/Smart_ModuleDisplayVariables.o: ../../source/applicat
 	${RM} "$@.d"
 	$(COMPILE.cc) -O2 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/_ext/577f3b86/Smart_ModuleDisplayVariables.o ../../source/applications/terminal/examples/arenaSmarts/Smart_ModuleDisplayVariables.cpp
 
+${OBJECTDIR}/_ext/577f3b86/Smart_OverlappingResources.o: ../../source/applications/terminal/examples/arenaSmarts/Smart_OverlappingResources.cpp nbproject/Makefile-${CND_CONF}.mk
+	${MKDIR} -p ${OBJECTDIR}/_ext/577f3b86
+	${RM} "$@.d"
+	$(COMPILE.cc) -O2 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/_ext/577f3b86/Smart_OverlappingResources.o ../../source/applications/terminal/examples/arenaSmarts/Smart_OverlappingResources.cpp
+
 ${OBJECTDIR}/_ext/577f3b86/Smart_ParallelProcessingOfEntities.o: ../../source/applications/terminal/examples/arenaSmarts/Smart_ParallelProcessingOfEntities.cpp nbproject/Makefile-${CND_CONF}.mk
 	${MKDIR} -p ${OBJECTDIR}/_ext/577f3b86
 	${RM} "$@.d"
@@ -430,6 +461,11 @@ ${OBJECTDIR}/_ext/577f3b86/Smart_Record.o: ../../source/applications/terminal/ex
 	${MKDIR} -p ${OBJECTDIR}/_ext/577f3b86
 	${RM} "$@.d"
 	$(COMPILE.cc) -O2 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/_ext/577f3b86/Smart_Record.o ../../source/applications/terminal/examples/arenaSmarts/Smart_Record.cpp
+
+${OBJECTDIR}/_ext/577f3b86/Smart_RemovingAndReorderingEntitiesInAQueue.o: ../../source/applications/terminal/examples/arenaSmarts/Smart_RemovingAndReorderingEntitiesInAQueue.cpp nbproject/Makefile-${CND_CONF}.mk
+	${MKDIR} -p ${OBJECTDIR}/_ext/577f3b86
+	${RM} "$@.d"
+	$(COMPILE.cc) -O2 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/_ext/577f3b86/Smart_RemovingAndReorderingEntitiesInAQueue.o ../../source/applications/terminal/examples/arenaSmarts/Smart_RemovingAndReorderingEntitiesInAQueue.cpp
 
 ${OBJECTDIR}/_ext/577f3b86/Smart_ResourceCosting.o: ../../source/applications/terminal/examples/arenaSmarts/Smart_ResourceCosting.cpp nbproject/Makefile-${CND_CONF}.mk
 	${MKDIR} -p ${OBJECTDIR}/_ext/577f3b86
@@ -631,6 +667,11 @@ ${OBJECTDIR}/_ext/18d98d98/OperatingSystem03.o: ../../source/applications/termin
 	${RM} "$@.d"
 	$(COMPILE.cc) -O2 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/_ext/18d98d98/OperatingSystem03.o ../../source/applications/terminal/examples/teaching/OperatingSystem03.cpp
 
+${OBJECTDIR}/_ext/cecf075e/TestingTerminalApp.o: ../../source/applications/terminal/underDevelopment/TestingTerminalApp.cpp nbproject/Makefile-${CND_CONF}.mk
+	${MKDIR} -p ${OBJECTDIR}/_ext/cecf075e
+	${RM} "$@.d"
+	$(COMPILE.cc) -O2 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/_ext/cecf075e/TestingTerminalApp.o ../../source/applications/terminal/underDevelopment/TestingTerminalApp.cpp
+
 ${OBJECTDIR}/_ext/113d9686/Attribute.o: ../../source/kernel/simulator/Attribute.cpp nbproject/Makefile-${CND_CONF}.mk
 	${MKDIR} -p ${OBJECTDIR}/_ext/113d9686
 	${RM} "$@.d"
@@ -796,16 +837,6 @@ ${OBJECTDIR}/_ext/113d9686/PluginManager.o: ../../source/kernel/simulator/Plugin
 	${RM} "$@.d"
 	$(COMPILE.cc) -O2 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/_ext/113d9686/PluginManager.o ../../source/kernel/simulator/PluginManager.cpp
 
-${OBJECTDIR}/_ext/113d9686/Property.o: ../../source/kernel/simulator/Property.cpp nbproject/Makefile-${CND_CONF}.mk
-	${MKDIR} -p ${OBJECTDIR}/_ext/113d9686
-	${RM} "$@.d"
-	$(COMPILE.cc) -O2 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/_ext/113d9686/Property.o ../../source/kernel/simulator/Property.cpp
-
-${OBJECTDIR}/_ext/113d9686/PropertyManager.o: ../../source/kernel/simulator/PropertyManager.cpp nbproject/Makefile-${CND_CONF}.mk
-	${MKDIR} -p ${OBJECTDIR}/_ext/113d9686
-	${RM} "$@.d"
-	$(COMPILE.cc) -O2 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/_ext/113d9686/PropertyManager.o ../../source/kernel/simulator/PropertyManager.cpp
-
 ${OBJECTDIR}/_ext/113d9686/SimulationExperiment.o: ../../source/kernel/simulator/SimulationExperiment.cpp nbproject/Makefile-${CND_CONF}.mk
 	${MKDIR} -p ${OBJECTDIR}/_ext/113d9686
 	${RM} "$@.d"
@@ -925,6 +956,11 @@ ${OBJECTDIR}/_ext/f13e5db9/Batch.o: ../../source/plugins/components/Batch.cpp nb
 	${MKDIR} -p ${OBJECTDIR}/_ext/f13e5db9
 	${RM} "$@.d"
 	$(COMPILE.cc) -O2 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/_ext/f13e5db9/Batch.o ../../source/plugins/components/Batch.cpp
+
+${OBJECTDIR}/_ext/f13e5db9/Buffer.o: ../../source/plugins/components/Buffer.cpp nbproject/Makefile-${CND_CONF}.mk
+	${MKDIR} -p ${OBJECTDIR}/_ext/f13e5db9
+	${RM} "$@.d"
+	$(COMPILE.cc) -O2 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/_ext/f13e5db9/Buffer.o ../../source/plugins/components/Buffer.cpp
 
 ${OBJECTDIR}/_ext/f13e5db9/CellularAutomata.o: ../../source/plugins/components/CellularAutomata.cpp nbproject/Makefile-${CND_CONF}.mk
 	${MKDIR} -p ${OBJECTDIR}/_ext/f13e5db9
@@ -1312,17 +1348,69 @@ ${OBJECTDIR}/_ext/bea3505/AirportSecurityExampleExtended_nomain.o: ${OBJECTDIR}/
 	    ${CP} ${OBJECTDIR}/_ext/bea3505/AirportSecurityExampleExtended.o ${OBJECTDIR}/_ext/bea3505/AirportSecurityExampleExtended_nomain.o;\
 	fi
 
-${OBJECTDIR}/_ext/bea3505/Example_Basic_Order_Shipping_nomain.o: ${OBJECTDIR}/_ext/bea3505/Example_Basic_Order_Shipping.o ../../source/applications/terminal/examples/arenaExamples/Example_Basic_Order_Shipping.cpp 
+${OBJECTDIR}/_ext/bea3505/Airport_Extended1_nomain.o: ${OBJECTDIR}/_ext/bea3505/Airport_Extended1.o ../../source/applications/terminal/examples/arenaExamples/Airport_Extended1.cpp 
 	${MKDIR} -p ${OBJECTDIR}/_ext/bea3505
-	@NMOUTPUT=`${NM} ${OBJECTDIR}/_ext/bea3505/Example_Basic_Order_Shipping.o`; \
+	@NMOUTPUT=`${NM} ${OBJECTDIR}/_ext/bea3505/Airport_Extended1.o`; \
 	if (echo "$$NMOUTPUT" | ${GREP} '|main$$') || \
 	   (echo "$$NMOUTPUT" | ${GREP} 'T main$$') || \
 	   (echo "$$NMOUTPUT" | ${GREP} 'T _main$$'); \
 	then  \
 	    ${RM} "$@.d";\
-	    $(COMPILE.cc) -O2 -Dmain=__nomain -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/_ext/bea3505/Example_Basic_Order_Shipping_nomain.o ../../source/applications/terminal/examples/arenaExamples/Example_Basic_Order_Shipping.cpp;\
+	    $(COMPILE.cc) -O2 -Dmain=__nomain -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/_ext/bea3505/Airport_Extended1_nomain.o ../../source/applications/terminal/examples/arenaExamples/Airport_Extended1.cpp;\
 	else  \
-	    ${CP} ${OBJECTDIR}/_ext/bea3505/Example_Basic_Order_Shipping.o ${OBJECTDIR}/_ext/bea3505/Example_Basic_Order_Shipping_nomain.o;\
+	    ${CP} ${OBJECTDIR}/_ext/bea3505/Airport_Extended1.o ${OBJECTDIR}/_ext/bea3505/Airport_Extended1_nomain.o;\
+	fi
+
+${OBJECTDIR}/_ext/bea3505/Assembly_Line_nomain.o: ${OBJECTDIR}/_ext/bea3505/Assembly_Line.o ../../source/applications/terminal/examples/arenaExamples/Assembly_Line.cpp 
+	${MKDIR} -p ${OBJECTDIR}/_ext/bea3505
+	@NMOUTPUT=`${NM} ${OBJECTDIR}/_ext/bea3505/Assembly_Line.o`; \
+	if (echo "$$NMOUTPUT" | ${GREP} '|main$$') || \
+	   (echo "$$NMOUTPUT" | ${GREP} 'T main$$') || \
+	   (echo "$$NMOUTPUT" | ${GREP} 'T _main$$'); \
+	then  \
+	    ${RM} "$@.d";\
+	    $(COMPILE.cc) -O2 -Dmain=__nomain -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/_ext/bea3505/Assembly_Line_nomain.o ../../source/applications/terminal/examples/arenaExamples/Assembly_Line.cpp;\
+	else  \
+	    ${CP} ${OBJECTDIR}/_ext/bea3505/Assembly_Line.o ${OBJECTDIR}/_ext/bea3505/Assembly_Line_nomain.o;\
+	fi
+
+${OBJECTDIR}/_ext/bea3505/Banking_Transactions_nomain.o: ${OBJECTDIR}/_ext/bea3505/Banking_Transactions.o ../../source/applications/terminal/examples/arenaExamples/Banking_Transactions.cpp 
+	${MKDIR} -p ${OBJECTDIR}/_ext/bea3505
+	@NMOUTPUT=`${NM} ${OBJECTDIR}/_ext/bea3505/Banking_Transactions.o`; \
+	if (echo "$$NMOUTPUT" | ${GREP} '|main$$') || \
+	   (echo "$$NMOUTPUT" | ${GREP} 'T main$$') || \
+	   (echo "$$NMOUTPUT" | ${GREP} 'T _main$$'); \
+	then  \
+	    ${RM} "$@.d";\
+	    $(COMPILE.cc) -O2 -Dmain=__nomain -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/_ext/bea3505/Banking_Transactions_nomain.o ../../source/applications/terminal/examples/arenaExamples/Banking_Transactions.cpp;\
+	else  \
+	    ${CP} ${OBJECTDIR}/_ext/bea3505/Banking_Transactions.o ${OBJECTDIR}/_ext/bea3505/Banking_Transactions_nomain.o;\
+	fi
+
+${OBJECTDIR}/_ext/bea3505/Example_BasicOrderShipping_nomain.o: ${OBJECTDIR}/_ext/bea3505/Example_BasicOrderShipping.o ../../source/applications/terminal/examples/arenaExamples/Example_BasicOrderShipping.cpp 
+	${MKDIR} -p ${OBJECTDIR}/_ext/bea3505
+	@NMOUTPUT=`${NM} ${OBJECTDIR}/_ext/bea3505/Example_BasicOrderShipping.o`; \
+	if (echo "$$NMOUTPUT" | ${GREP} '|main$$') || \
+	   (echo "$$NMOUTPUT" | ${GREP} 'T main$$') || \
+	   (echo "$$NMOUTPUT" | ${GREP} 'T _main$$'); \
+	then  \
+	    ${RM} "$@.d";\
+	    $(COMPILE.cc) -O2 -Dmain=__nomain -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/_ext/bea3505/Example_BasicOrderShipping_nomain.o ../../source/applications/terminal/examples/arenaExamples/Example_BasicOrderShipping.cpp;\
+	else  \
+	    ${CP} ${OBJECTDIR}/_ext/bea3505/Example_BasicOrderShipping.o ${OBJECTDIR}/_ext/bea3505/Example_BasicOrderShipping_nomain.o;\
+	fi
+
+${OBJECTDIR}/_ext/bea3505/Example_PortModel_nomain.o: ${OBJECTDIR}/_ext/bea3505/Example_PortModel.o ../../source/applications/terminal/examples/arenaExamples/Example_PortModel.cpp 
+	${MKDIR} -p ${OBJECTDIR}/_ext/bea3505
+	@NMOUTPUT=`${NM} ${OBJECTDIR}/_ext/bea3505/Example_PortModel.o`; \
+	if (echo "$$NMOUTPUT" | ${GREP} '|main$$') || \
+	   (echo "$$NMOUTPUT" | ${GREP} 'T main$$') || \
+	   (echo "$$NMOUTPUT" | ${GREP} 'T _main$$'); \
+	then  \
+	    ${RM} "$@.d";\
+	    $(COMPILE.cc) -O2 -Dmain=__nomain -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/_ext/bea3505/Example_PortModel_nomain.o ../../source/applications/terminal/examples/arenaExamples/Example_PortModel.cpp;\
+	else  \
+	    ${CP} ${OBJECTDIR}/_ext/bea3505/Example_PortModel.o ${OBJECTDIR}/_ext/bea3505/Example_PortModel_nomain.o;\
 	fi
 
 ${OBJECTDIR}/_ext/bea3505/Example_PublicTransport_nomain.o: ${OBJECTDIR}/_ext/bea3505/Example_PublicTransport.o ../../source/applications/terminal/examples/arenaExamples/Example_PublicTransport.cpp 
@@ -1624,6 +1712,19 @@ ${OBJECTDIR}/_ext/577f3b86/Smart_ModuleDisplayVariables_nomain.o: ${OBJECTDIR}/_
 	    ${CP} ${OBJECTDIR}/_ext/577f3b86/Smart_ModuleDisplayVariables.o ${OBJECTDIR}/_ext/577f3b86/Smart_ModuleDisplayVariables_nomain.o;\
 	fi
 
+${OBJECTDIR}/_ext/577f3b86/Smart_OverlappingResources_nomain.o: ${OBJECTDIR}/_ext/577f3b86/Smart_OverlappingResources.o ../../source/applications/terminal/examples/arenaSmarts/Smart_OverlappingResources.cpp 
+	${MKDIR} -p ${OBJECTDIR}/_ext/577f3b86
+	@NMOUTPUT=`${NM} ${OBJECTDIR}/_ext/577f3b86/Smart_OverlappingResources.o`; \
+	if (echo "$$NMOUTPUT" | ${GREP} '|main$$') || \
+	   (echo "$$NMOUTPUT" | ${GREP} 'T main$$') || \
+	   (echo "$$NMOUTPUT" | ${GREP} 'T _main$$'); \
+	then  \
+	    ${RM} "$@.d";\
+	    $(COMPILE.cc) -O2 -Dmain=__nomain -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/_ext/577f3b86/Smart_OverlappingResources_nomain.o ../../source/applications/terminal/examples/arenaSmarts/Smart_OverlappingResources.cpp;\
+	else  \
+	    ${CP} ${OBJECTDIR}/_ext/577f3b86/Smart_OverlappingResources.o ${OBJECTDIR}/_ext/577f3b86/Smart_OverlappingResources_nomain.o;\
+	fi
+
 ${OBJECTDIR}/_ext/577f3b86/Smart_ParallelProcessingOfEntities_nomain.o: ${OBJECTDIR}/_ext/577f3b86/Smart_ParallelProcessingOfEntities.o ../../source/applications/terminal/examples/arenaSmarts/Smart_ParallelProcessingOfEntities.cpp 
 	${MKDIR} -p ${OBJECTDIR}/_ext/577f3b86
 	@NMOUTPUT=`${NM} ${OBJECTDIR}/_ext/577f3b86/Smart_ParallelProcessingOfEntities.o`; \
@@ -1687,6 +1788,19 @@ ${OBJECTDIR}/_ext/577f3b86/Smart_Record_nomain.o: ${OBJECTDIR}/_ext/577f3b86/Sma
 	    $(COMPILE.cc) -O2 -Dmain=__nomain -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/_ext/577f3b86/Smart_Record_nomain.o ../../source/applications/terminal/examples/arenaSmarts/Smart_Record.cpp;\
 	else  \
 	    ${CP} ${OBJECTDIR}/_ext/577f3b86/Smart_Record.o ${OBJECTDIR}/_ext/577f3b86/Smart_Record_nomain.o;\
+	fi
+
+${OBJECTDIR}/_ext/577f3b86/Smart_RemovingAndReorderingEntitiesInAQueue_nomain.o: ${OBJECTDIR}/_ext/577f3b86/Smart_RemovingAndReorderingEntitiesInAQueue.o ../../source/applications/terminal/examples/arenaSmarts/Smart_RemovingAndReorderingEntitiesInAQueue.cpp 
+	${MKDIR} -p ${OBJECTDIR}/_ext/577f3b86
+	@NMOUTPUT=`${NM} ${OBJECTDIR}/_ext/577f3b86/Smart_RemovingAndReorderingEntitiesInAQueue.o`; \
+	if (echo "$$NMOUTPUT" | ${GREP} '|main$$') || \
+	   (echo "$$NMOUTPUT" | ${GREP} 'T main$$') || \
+	   (echo "$$NMOUTPUT" | ${GREP} 'T _main$$'); \
+	then  \
+	    ${RM} "$@.d";\
+	    $(COMPILE.cc) -O2 -Dmain=__nomain -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/_ext/577f3b86/Smart_RemovingAndReorderingEntitiesInAQueue_nomain.o ../../source/applications/terminal/examples/arenaSmarts/Smart_RemovingAndReorderingEntitiesInAQueue.cpp;\
+	else  \
+	    ${CP} ${OBJECTDIR}/_ext/577f3b86/Smart_RemovingAndReorderingEntitiesInAQueue.o ${OBJECTDIR}/_ext/577f3b86/Smart_RemovingAndReorderingEntitiesInAQueue_nomain.o;\
 	fi
 
 ${OBJECTDIR}/_ext/577f3b86/Smart_ResourceCosting_nomain.o: ${OBJECTDIR}/_ext/577f3b86/Smart_ResourceCosting.o ../../source/applications/terminal/examples/arenaSmarts/Smart_ResourceCosting.cpp 
@@ -2209,6 +2323,19 @@ ${OBJECTDIR}/_ext/18d98d98/OperatingSystem03_nomain.o: ${OBJECTDIR}/_ext/18d98d9
 	    ${CP} ${OBJECTDIR}/_ext/18d98d98/OperatingSystem03.o ${OBJECTDIR}/_ext/18d98d98/OperatingSystem03_nomain.o;\
 	fi
 
+${OBJECTDIR}/_ext/cecf075e/TestingTerminalApp_nomain.o: ${OBJECTDIR}/_ext/cecf075e/TestingTerminalApp.o ../../source/applications/terminal/underDevelopment/TestingTerminalApp.cpp 
+	${MKDIR} -p ${OBJECTDIR}/_ext/cecf075e
+	@NMOUTPUT=`${NM} ${OBJECTDIR}/_ext/cecf075e/TestingTerminalApp.o`; \
+	if (echo "$$NMOUTPUT" | ${GREP} '|main$$') || \
+	   (echo "$$NMOUTPUT" | ${GREP} 'T main$$') || \
+	   (echo "$$NMOUTPUT" | ${GREP} 'T _main$$'); \
+	then  \
+	    ${RM} "$@.d";\
+	    $(COMPILE.cc) -O2 -Dmain=__nomain -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/_ext/cecf075e/TestingTerminalApp_nomain.o ../../source/applications/terminal/underDevelopment/TestingTerminalApp.cpp;\
+	else  \
+	    ${CP} ${OBJECTDIR}/_ext/cecf075e/TestingTerminalApp.o ${OBJECTDIR}/_ext/cecf075e/TestingTerminalApp_nomain.o;\
+	fi
+
 ${OBJECTDIR}/_ext/113d9686/Attribute_nomain.o: ${OBJECTDIR}/_ext/113d9686/Attribute.o ../../source/kernel/simulator/Attribute.cpp 
 	${MKDIR} -p ${OBJECTDIR}/_ext/113d9686
 	@NMOUTPUT=`${NM} ${OBJECTDIR}/_ext/113d9686/Attribute.o`; \
@@ -2638,32 +2765,6 @@ ${OBJECTDIR}/_ext/113d9686/PluginManager_nomain.o: ${OBJECTDIR}/_ext/113d9686/Pl
 	    ${CP} ${OBJECTDIR}/_ext/113d9686/PluginManager.o ${OBJECTDIR}/_ext/113d9686/PluginManager_nomain.o;\
 	fi
 
-${OBJECTDIR}/_ext/113d9686/Property_nomain.o: ${OBJECTDIR}/_ext/113d9686/Property.o ../../source/kernel/simulator/Property.cpp 
-	${MKDIR} -p ${OBJECTDIR}/_ext/113d9686
-	@NMOUTPUT=`${NM} ${OBJECTDIR}/_ext/113d9686/Property.o`; \
-	if (echo "$$NMOUTPUT" | ${GREP} '|main$$') || \
-	   (echo "$$NMOUTPUT" | ${GREP} 'T main$$') || \
-	   (echo "$$NMOUTPUT" | ${GREP} 'T _main$$'); \
-	then  \
-	    ${RM} "$@.d";\
-	    $(COMPILE.cc) -O2 -Dmain=__nomain -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/_ext/113d9686/Property_nomain.o ../../source/kernel/simulator/Property.cpp;\
-	else  \
-	    ${CP} ${OBJECTDIR}/_ext/113d9686/Property.o ${OBJECTDIR}/_ext/113d9686/Property_nomain.o;\
-	fi
-
-${OBJECTDIR}/_ext/113d9686/PropertyManager_nomain.o: ${OBJECTDIR}/_ext/113d9686/PropertyManager.o ../../source/kernel/simulator/PropertyManager.cpp 
-	${MKDIR} -p ${OBJECTDIR}/_ext/113d9686
-	@NMOUTPUT=`${NM} ${OBJECTDIR}/_ext/113d9686/PropertyManager.o`; \
-	if (echo "$$NMOUTPUT" | ${GREP} '|main$$') || \
-	   (echo "$$NMOUTPUT" | ${GREP} 'T main$$') || \
-	   (echo "$$NMOUTPUT" | ${GREP} 'T _main$$'); \
-	then  \
-	    ${RM} "$@.d";\
-	    $(COMPILE.cc) -O2 -Dmain=__nomain -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/_ext/113d9686/PropertyManager_nomain.o ../../source/kernel/simulator/PropertyManager.cpp;\
-	else  \
-	    ${CP} ${OBJECTDIR}/_ext/113d9686/PropertyManager.o ${OBJECTDIR}/_ext/113d9686/PropertyManager_nomain.o;\
-	fi
-
 ${OBJECTDIR}/_ext/113d9686/SimulationExperiment_nomain.o: ${OBJECTDIR}/_ext/113d9686/SimulationExperiment.o ../../source/kernel/simulator/SimulationExperiment.cpp 
 	${MKDIR} -p ${OBJECTDIR}/_ext/113d9686
 	@NMOUTPUT=`${NM} ${OBJECTDIR}/_ext/113d9686/SimulationExperiment.o`; \
@@ -2974,6 +3075,19 @@ ${OBJECTDIR}/_ext/f13e5db9/Batch_nomain.o: ${OBJECTDIR}/_ext/f13e5db9/Batch.o ..
 	    $(COMPILE.cc) -O2 -Dmain=__nomain -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/_ext/f13e5db9/Batch_nomain.o ../../source/plugins/components/Batch.cpp;\
 	else  \
 	    ${CP} ${OBJECTDIR}/_ext/f13e5db9/Batch.o ${OBJECTDIR}/_ext/f13e5db9/Batch_nomain.o;\
+	fi
+
+${OBJECTDIR}/_ext/f13e5db9/Buffer_nomain.o: ${OBJECTDIR}/_ext/f13e5db9/Buffer.o ../../source/plugins/components/Buffer.cpp 
+	${MKDIR} -p ${OBJECTDIR}/_ext/f13e5db9
+	@NMOUTPUT=`${NM} ${OBJECTDIR}/_ext/f13e5db9/Buffer.o`; \
+	if (echo "$$NMOUTPUT" | ${GREP} '|main$$') || \
+	   (echo "$$NMOUTPUT" | ${GREP} 'T main$$') || \
+	   (echo "$$NMOUTPUT" | ${GREP} 'T _main$$'); \
+	then  \
+	    ${RM} "$@.d";\
+	    $(COMPILE.cc) -O2 -Dmain=__nomain -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/_ext/f13e5db9/Buffer_nomain.o ../../source/plugins/components/Buffer.cpp;\
+	else  \
+	    ${CP} ${OBJECTDIR}/_ext/f13e5db9/Buffer.o ${OBJECTDIR}/_ext/f13e5db9/Buffer_nomain.o;\
 	fi
 
 ${OBJECTDIR}/_ext/f13e5db9/CellularAutomata_nomain.o: ${OBJECTDIR}/_ext/f13e5db9/CellularAutomata.o ../../source/plugins/components/CellularAutomata.cpp 

@@ -22,6 +22,7 @@
 #include "../../../../plugins/components/Create.h"
 #include "../../../../plugins/components/Process.h"
 #include "../../../../plugins/components/Dispose.h"
+#include "../../../TraitsApp.h"
 
 Smart_ProcessSet::Smart_ProcessSet() {
 }
@@ -32,12 +33,12 @@ Smart_ProcessSet::Smart_ProcessSet() {
  */
 int Smart_ProcessSet::main(int argc, char** argv) {
 	Simulator* genesys = new Simulator();
-	this->setDefaultTraceHandlers(genesys->getTracer());
-	this->insertFakePluginsByHand(genesys);
-	genesys->getTracer()->setTraceLevel(TraceManager::Level::L8_detailed);
-	// create model
-	Model* model = genesys->getModels()->newModel();
+	genesys->getTracer()->setTraceLevel(TraitsApp<GenesysApplication_if>::traceLevel);
+	setDefaultTraceHandlers(genesys->getTracer());
 	PluginManager* plugins = genesys->getPlugins();
+	plugins->autoInsertPlugins("autoloadplugins.txt");
+	Model* model = genesys->getModels()->newModel();
+	// create model
 	Create *create = plugins->newInstance<Create>(model);
 	create->setEntityTypeName("Client");
 	create->setTimeBetweenCreationsExpression("1");

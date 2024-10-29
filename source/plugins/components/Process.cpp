@@ -32,6 +32,47 @@ Process::Process(Model* model, std::string name) : ModelComponent(model, Util::T
 	_flagConstructing = true;
 	_createInternalAndAttachedData(); // its's called by the constructor because internal components can be accessed by process' public methods, so they must exist ever since
 	_flagConstructing = false;
+
+	SimulationControlGeneric<unsigned short>* propPriority = new SimulationControlGeneric<unsigned short>(
+									std::bind(&Process::getPriority, this), std::bind(&Process::setPriority, this, std::placeholders::_1),
+									Util::TypeOf<Process>(), getName(), "Priority", "");
+	SimulationControlGeneric<std::string>* propPriorityExpression = new SimulationControlGeneric<std::string>(
+									std::bind(&Process::getPriorityExpression, this), std::bind(&Process::setPriorityExpression, this, std::placeholders::_1),
+									Util::TypeOf<Process>(), getName(), "PriorityExpression", "");
+    SimulationControlGenericEnum<Util::AllocationType, Util>* propAlloc = new SimulationControlGenericEnum<Util::AllocationType, Util>(
+                                    std::bind(&Process::getAllocationType, this), std::bind(&Process::setAllocationType, this, std::placeholders::_1),
+                                    Util::TypeOf<Process>(), getName(), "AllocationType", "");
+	SimulationControlGenericClassNotDC<QueueableItem*, Model*, QueueableItem>* propQueueableItem = new SimulationControlGenericClassNotDC<QueueableItem*, Model*, QueueableItem>(
+									_parentModel,
+									std::bind(&Process::getQueueableItem, this), std::bind(&Process::setQueueableItem, this, std::placeholders::_1),
+									Util::TypeOf<Process>(), getName(), "QueueableItem", "");
+	// SimulationControlGeneric<std::string>* propdelayExpression = new SimulationControlGeneric<std::string>(
+	// 								std::bind(&Process::delayExpression, this), std::bind(&Process::setDelayExpression, this, std::placeholders::_1),
+	// 								Util::TypeOf<Process>(), getName(), "DelayExpression", "");
+    SimulationControlGenericEnum<Util::TimeUnit, Util>* propdelayTimeUnit = new SimulationControlGenericEnum<Util::TimeUnit, Util>(
+									std::bind(&Process::delayTimeUnit, this), std::bind(&Process::setDelayTimeUnit, this, std::placeholders::_1),
+									Util::TypeOf<Process>(), getName(), "DelayTimeUnit", "");	
+	SimulationControlGenericListPointer<SeizableItem*, Model*, SeizableItem>* propSeizeRequests = new SimulationControlGenericListPointer<SeizableItem*, Model*, SeizableItem> (
+									_parentModel,
+                                    std::bind(&Process::getSeizeRequests, this), std::bind(&Process::addSeizeRequest, this, std::placeholders::_1), std::bind(&Process::removeSeizeRequest, this, std::placeholders::_1),
+									Util::TypeOf<Process>(), getName(), "SeizeRequests", "");					
+
+	_parentModel->getControls()->insert(propPriority);
+	_parentModel->getControls()->insert(propPriorityExpression);
+    _parentModel->getControls()->insert(propAlloc);
+	_parentModel->getControls()->insert(propQueueableItem);
+	// _parentModel->getControls()->insert(propdelayExpression);
+	_parentModel->getControls()->insert(propdelayTimeUnit);
+	_parentModel->getControls()->insert(propSeizeRequests);
+	
+	// setting properties
+	_addProperty(propPriority);
+	_addProperty(propPriorityExpression);
+    _addProperty(propAlloc);
+	_addProperty(propQueueableItem);
+	// _addProperty(propdelayExpression);
+	_addProperty(propdelayTimeUnit);
+	_addProperty(propSeizeRequests);
 }
 
 std::string Process::show() {
@@ -66,6 +107,14 @@ List<SeizableItem*>* Process::getSeizeRequests() const {
 	return _seize->getSeizeRequests();
 }
 
+void Process::addSeizeRequest(SeizableItem* newRequest) {
+	_seize->getSeizeRequests()->insert(newRequest);
+}
+
+void Process::removeSeizeRequest(SeizableItem* request) {
+	_seize->getSeizeRequests()->remove(request);
+}
+
 void Process::setQueueableItem(QueueableItem* _queueableItem) {
 	_seize->setQueueableItem(_queueableItem);
 }
@@ -76,6 +125,11 @@ QueueableItem* Process::getQueueableItem() const {
 
 void Process::setDelayExpression(std::string _delayExpression) {
 	_delay->setDelayExpression(_delayExpression);
+}
+
+void Process::setDelayExpression(std::string _delayExpression, Util::TimeUnit _delayTimeUnit) {
+	_delay->setDelayExpression(_delayExpression);
+	_delay->setDelayTimeUnit(_delayTimeUnit);	
 }
 
 std::string Process::delayExpression() const {
@@ -145,7 +199,7 @@ bool Process::_loadInstance(PersistenceRecord *fields) {
 void Process::_saveInstance(PersistenceRecord *fields, bool saveDefaultValues) {
 	_adjustConnections();
 	ModelComponent::_saveInstance(fields, saveDefaultValues);
-	auto seizefields = std::unique_ptr<PersistenceRecord>(fields->newInstance()); //TODO: AUTO
+	auto seizefields = std::unique_ptr<PersistenceRecord>(fields->newInstance()); //@TODO: AUTO
 	ModelComponent::SaveInstance(seizefields.get(), _seize);
 	seizefields->erase("id");
 	seizefields->erase("typename");
@@ -200,7 +254,7 @@ void Process::_createInternalAndAttachedData() {
 		// garantee that release releases exactlly what seize seizes
 		_release->getReleaseRequests()->clear();
 		for (SeizableItem* item : *_seize->getSeizeRequests()->list()) {
-			_release->getReleaseRequests()->insert(new SeizableItem(item));
+			_release->getReleaseRequests()->insert(item);
 		}
 		SeizableItem* releaseItem;
 		unsigned int i = 0;
@@ -212,14 +266,13 @@ void Process::_createInternalAndAttachedData() {
 					saveAttr += seizeItem->getResourceName();
 				else
 					saveAttr += seizeItem->getSet()->getName();
-				saveAttr += ".SaveAttribute";
+				saveAttr += "SaveAttribute";
 				seizeItem->setSaveAttribute(saveAttr);
 			}
 			releaseItem = _release->getReleaseRequests()->getAtRank(i);
 			releaseItem->setSelectionRule(SeizableItem::SelectionRule::SPECIFICMEMBER);
 			releaseItem->setSaveAttribute(saveAttr);
-			if (_parentModel->isAutomaticallyCreatesModelDataDefinitions())
-				this->_attachedAttributesInsert({saveAttr});
+			this->_attachedAttributesInsert({saveAttr});
 			i++;
 		}
 	}

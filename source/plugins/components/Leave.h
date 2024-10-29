@@ -115,7 +115,7 @@ protected:
 	virtual void _createInternalAndAttachedData();
 private: // association
     Station* _station = nullptr;
-private: // internel elements
+private: // internal elements
 	Counter* _numberIn = nullptr;
 };
 

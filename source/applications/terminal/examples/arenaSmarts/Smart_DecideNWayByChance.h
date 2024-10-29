@@ -18,7 +18,7 @@
 
 class Smart_DecideNWayByChance : public BaseGenesysTerminalApplication {
 public:
-    Smart_DecideNWayByChance();
+	Smart_DecideNWayByChance();
 public:
     virtual int main(int argc, char** argv);
 };

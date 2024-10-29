@@ -63,13 +63,6 @@ std::string Plugin::show() {
 		message = message.substr(0, message.length() - 2);
 		message += "] ";
 	}
-	if (_pluginInfo->getDescriptionHelp() != "") {
-		message += "description help=\"" + _pluginInfo->getDescriptionHelp() + "\" ";
-	}
-	//if (_pluginInfo->getObservation() != "") {
-	//	message += "observation=\"" + _pluginInfo->getObservation() + "\" ";
-	//}
-
 	if (_pluginInfo->getFields()->size() > 0) {
 		message += "fields=[";
 		for (std::pair<std::string, std::string> field : *_pluginInfo->getFields()) {
@@ -82,6 +75,12 @@ std::string Plugin::show() {
 		message += "template=<" + _pluginInfo->getLanguageTemplate() + "nextId=0 > ";
 	}
 	message = message.substr(0, message.length() - 1);
+	if (_pluginInfo->getDescriptionHelp() != "") {
+		message += "description help=\"" + _pluginInfo->getDescriptionHelp() + "\" ";
+	}
+	//if (_pluginInfo->getObservation() != "") {
+	//	message += "observation=\"" + _pluginInfo->getObservation() + "\" ";
+	//}
 	return message;
 }
 

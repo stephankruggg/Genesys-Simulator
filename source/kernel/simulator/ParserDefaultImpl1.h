@@ -23,9 +23,9 @@ public:
 	ParserDefaultImpl1(Model* model);
 	virtual ~ParserDefaultImpl1() = default;
 public:
-	double parse(const std::string expression); // may throw exception
-	double parse(const std::string expression, bool* success, std::string* errorMessage);
-	std::string* getErrorMessage();
+	virtual double parse(const std::string expression) override; // may throw exception
+	virtual double parse(const std::string expression, bool* success, std::string* errorMessage) override;
+	virtual std::string* getErrorMessage() override;
 private:
 	Model* _model;
 };

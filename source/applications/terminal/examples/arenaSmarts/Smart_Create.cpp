@@ -22,6 +22,7 @@
 #include "../../../../plugins/components/Create.h"
 #include "../../../../plugins/components/Delay.h"
 #include "../../../../plugins/components/Dispose.h"
+#include "../../../TraitsApp.h"
 
 Smart_Create::Smart_Create() {
 }
@@ -31,13 +32,14 @@ Smart_Create::Smart_Create() {
  * It instanciates the simulator, builds a simulation model and then simulate that model.
  */
 int Smart_Create::main(int argc, char** argv) {
-    Simulator* genesys = new Simulator();
-    genesys -> getTracer() -> setTraceLevel(TraceManager::Level::L2_results);
-    this->setDefaultTraceHandlers(genesys->getTracer());
-    this->insertFakePluginsByHand(genesys);
-    Model* model = genesys->getModels()->newModel();
-    
-    EntityType* entityType = new EntityType(model, "Customers");
+	Simulator* genesys = new Simulator();
+	genesys->getTracer()->setTraceLevel(TraitsApp<GenesysApplication_if>::traceLevel);
+	setDefaultTraceHandlers(genesys->getTracer());
+	PluginManager* plugins = genesys->getPlugins();
+	plugins->autoInsertPlugins("autoloadplugins.txt");
+	Model* model = genesys->getModels()->newModel();
+	// create model
+	EntityType* entityType = new EntityType(model, "Customers");
     Create* create = new Create(model);
     create->setDescription("Create Module");
     create->setEntityType(entityType);
@@ -64,13 +66,13 @@ int Smart_Create::main(int argc, char** argv) {
     ModelSimulation* simulation = model->getSimulation();
     simulation->setReplicationLength(10);
     simulation->setReplicationLengthTimeUnit(Util::TimeUnit::minute);
-    simulation->setNumberOfReplications(300);
+    simulation->setNumberOfReplications(3);
     simulation->setWarmUpPeriod(0.05);
     simulation->setWarmUpPeriodTimeUnit(Util::TimeUnit::minute);
     model->save("./models/Smart_Create.gen");
     model->getSimulation()->start();
     while (model->getSimulation()-> isPaused());
-    for (int i=0;i < 1e9;i++);
+    
     delete genesys;
     return 0;
 };

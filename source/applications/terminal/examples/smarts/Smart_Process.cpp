@@ -22,6 +22,7 @@
 #include "../../../../plugins/components/Create.h"
 #include "../../../../plugins/components/Process.h"
 #include "../../../../plugins/components/Dispose.h"
+#include "../../../TraitsApp.h"
 
 Smart_Process::Smart_Process() {
 }
@@ -32,12 +33,12 @@ Smart_Process::Smart_Process() {
  */
 int Smart_Process::main(int argc, char** argv) {
 	Simulator* genesys = new Simulator();
-	this->setDefaultTraceHandlers(genesys->getTracer());
-	this->insertFakePluginsByHand(genesys);
-	genesys->getTracer()->setTraceLevel(TraceManager::Level::L9_mostDetailed);
-	// crete model
-	Model* model = genesys->getModels()->newModel();
+	genesys->getTracer()->setTraceLevel(TraitsApp<GenesysApplication_if>::traceLevel);
+	setDefaultTraceHandlers(genesys->getTracer());
 	PluginManager* plugins = genesys->getPlugins();
+	plugins->autoInsertPlugins("autoloadplugins.txt");
+	Model* model = genesys->getModels()->newModel();
+	// create model
 	Create *create = plugins->newInstance<Create>(model);
 	Process* process = plugins->newInstance<Process>(model);
 	process->getSeizeRequests()->insert(new SeizableItem(plugins->newInstance<Resource>(model)));
@@ -55,7 +56,6 @@ int Smart_Process::main(int argc, char** argv) {
 	do {
 		model->getSimulation()->step();
 	} while (model->getSimulation()->isPaused());
-	for (int i = 0; i < 1e9; i++); // give UI some time to finish std::cout
 	delete genesys;
 	return 0;
 };

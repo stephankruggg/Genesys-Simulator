@@ -9,7 +9,7 @@
  * File:   main.cpp
  * Author: rafael.luiz.cancian
  *
- * Created on 21 de Junho de 2018, 12:47
+ss * Created on 21 de Junho de 2018, 12:47
  */
 
 #include "../../source/applications/TraitsApp.h"

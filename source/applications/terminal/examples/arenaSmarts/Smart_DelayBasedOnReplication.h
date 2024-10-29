@@ -12,7 +12,7 @@
  */
 
 #ifndef Smart_DELAYBASEDONREPLICATION_H
-#define Smart_DelayBasedOnReplication_H
+#define Smart_DELAYBASEDONREPLICATION_H
 
 #include "../../../BaseGenesysTerminalApplication.h"
 #include "../../../../plugins/components/Delay.h"

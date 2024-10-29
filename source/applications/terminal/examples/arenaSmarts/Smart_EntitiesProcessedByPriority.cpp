@@ -27,6 +27,7 @@
 #include "../../../../plugins/components/Assign.h"
 #include "../../../../plugins/components/Process.h"
 #include "../../../../plugins/components/Dispose.h"
+#include "../../../TraitsApp.h"
 
 Smart_EntitiesProcessedByPriority::Smart_EntitiesProcessedByPriority() {
 }
@@ -37,13 +38,12 @@ Smart_EntitiesProcessedByPriority::Smart_EntitiesProcessedByPriority() {
  */
 int Smart_EntitiesProcessedByPriority::main(int argc, char** argv) {
 	Simulator* genesys = new Simulator();
-	this->setDefaultTraceHandlers(genesys->getTracer());
-	this->insertFakePluginsByHand(genesys);
-	genesys->getTracer()->setTraceLevel(TraceManager::Level::L9_mostDetailed);
-
-	// crete model
-	Model* model = genesys->getModels()->newModel();
+	genesys->getTracer()->setTraceLevel(TraitsApp<GenesysApplication_if>::traceLevel);
+	setDefaultTraceHandlers(genesys->getTracer());
 	PluginManager* plugins = genesys->getPlugins();
+	plugins->autoInsertPlugins("autoloadplugins.txt");
+	Model* model = genesys->getModels()->newModel();
+	// create model
 
 	// entities
 	// EntityType* regularJob = plugins->newInstance<EntityType>(model, "Regular Job");
@@ -66,11 +66,11 @@ int Smart_EntitiesProcessedByPriority::main(int argc, char** argv) {
 	// Assign 1
 	Assign* assign_1 = plugins->newInstance<Assign>(model, "Assign 1");
 	assign_1->getAssignments()->insert(new Assignment("priority", "2"));
-	
-	 // Process 1
+
+	// Process 1
 	Process* process_1 = plugins->newInstance<Process>(model, "Process 1");
 	process_1->getSeizeRequests()->insert(new SeizableItem(packer));
-	process_1->setPriority(2); // deveria ser o valor de 'priority' MAS NAO CONSEGUI COLOCAR UM ATRIBUTO AQUI, entao foi direto o valor (2)
+	process_1->setPriorityExpression("priority");
 	process_1->setDelayExpression("expo(5)");
 	process_1->setDelayTimeUnit(Util::TimeUnit::minute);
 	process_1->setQueueableItem(new QueueableItem(plugins->newInstance<Queue>(model, "Process1.Queue")));
@@ -84,11 +84,11 @@ int Smart_EntitiesProcessedByPriority::main(int argc, char** argv) {
 	// Assign 2
 	Assign* assign_2 = plugins->newInstance<Assign>(model, "Assign 2");
 	assign_2->getAssignments()->insert(new Assignment("priority", "1"));
-	
-	 // Process 2
+
+	// Process 2
 	Process* process_2 = plugins->newInstance<Process>(model, "Process 2");
 	process_2->getSeizeRequests()->insert(new SeizableItem(packer));
-	process_2->setPriority(1); // deveria ser o valor de 'priority' MAS NAO CONSEGUI COLOCAR UM ATRIBUTO AQUI, entao foi direto o valor (1)
+	process_2->setPriorityExpression("priority");
 	process_2->setDelayExpression("expo(5)");
 	process_2->setDelayTimeUnit(Util::TimeUnit::minute);
 	process_2->setQueueableItem(new QueueableItem(plugins->newInstance<Queue>(model, "Process2.Queue")));
@@ -106,20 +106,17 @@ int Smart_EntitiesProcessedByPriority::main(int argc, char** argv) {
 	process_2->getConnections()->insert(dispose_1);
 
 	// set options, save and simulate step-by-step (but no user interaction required)
-	double replicationLength = 2700; // duracao para alcancar ~1000 entidades saindo do sistema (obtido por tentativa e erro NO ARENA)
+	double replicationLength = 240;
 	model->getSimulation()->setReplicationLengthTimeUnit(Util::TimeUnit::minute);
 	model->getSimulation()->setReplicationLength(replicationLength);
 	model->getSimulation()->setWarmUpPeriodTimeUnit(Util::TimeUnit::minute);
-	model->getSimulation()->setWarmUpPeriod(replicationLength * 0.05); // = 2700*0.05 = 125
-	// model->getSimulation()->setReplicationLength(240); // durecao original
-	model->getSimulation()->setNumberOfReplications(300);
+	model->getSimulation()->setWarmUpPeriod(replicationLength * 0.05); 
+	model->getSimulation()->setNumberOfReplications(3);
 	model->save("./models/Smart_EntitiesProcessedByPriority.gen");
 
 	// execute the simulation
-	do {
-		model->getSimulation()->step();
-	} while (model->getSimulation()->isPaused());
-	for (int i = 0; i < 1e9; i++); // give UI some time to finish std::cout
+	model->getSimulation()->start();
+	
 	delete genesys;
 	return 0;
 };

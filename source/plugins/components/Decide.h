@@ -77,7 +77,8 @@ public:
 	virtual ~Decide() = default;
 public:
 	List<std::string>* getConditions() const;
-
+	void addConditions(std::string newCondition);
+    void removeConditions(std::string condition);
 public:
 	virtual std::string show();
 public:

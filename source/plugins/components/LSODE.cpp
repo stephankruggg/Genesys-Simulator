@@ -27,6 +27,37 @@ ModelDataDefinition* LSODE::NewInstance(Model* model, std::string name) {
 }
 
 LSODE::LSODE(Model* model, std::string name) : ModelComponent(model, Util::TypeOf<LSODE>(), name) {
+	SimulationControlGenericClass<Variable*, Model*, Variable>* propTimeVariable = new SimulationControlGenericClass<Variable*, Model*, Variable>(
+									_parentModel,
+									std::bind(&LSODE::getTimeVariable, this), std::bind(&LSODE::setTimeVariable, this, std::placeholders::_1),
+									Util::TypeOf<LSODE>(), getName(), "TimeVariable", "");
+	SimulationControlGeneric<double>* propStep = new SimulationControlGeneric<double>(
+									std::bind(&LSODE::getStep, this), std::bind(&LSODE::setStep, this, std::placeholders::_1),
+									Util::TypeOf<LSODE>(), getName(), "Step", "");
+	SimulationControlGenericClass<Variable*, Model*, Variable>* propVariable = new SimulationControlGenericClass<Variable*, Model*, Variable>(
+									_parentModel,
+									std::bind(&LSODE::getVariable, this), std::bind(&LSODE::setVariable, this, std::placeholders::_1),
+									Util::TypeOf<LSODE>(), getName(), "Variable", "");
+	SimulationControlGeneric<std::string>* propFileName = new SimulationControlGeneric<std::string>(
+									std::bind(&LSODE::getFileName, this), std::bind(&LSODE::setFilename, this, std::placeholders::_1),
+									Util::TypeOf<LSODE>(), getName(), "FileName", "");
+	SimulationControlGenericList<std::string, Model*, std::string>* propDiffEquations = new SimulationControlGenericList<std::string, Model*, std::string> (
+									_parentModel,
+                                    std::bind(&LSODE::getDiffEquations, this), std::bind(&LSODE::addDiffEquation, this, std::placeholders::_1), std::bind(&LSODE::removeDiffEquation, this, std::placeholders::_1),
+									Util::TypeOf<LSODE>(), getName(), "DiffEquations", "");								
+
+	_parentModel->getControls()->insert(propTimeVariable);
+	_parentModel->getControls()->insert(propStep);
+	_parentModel->getControls()->insert(propVariable);
+	_parentModel->getControls()->insert(propFileName);
+	_parentModel->getControls()->insert(propDiffEquations);
+
+	// setting properties
+	_addProperty(propTimeVariable);
+	_addProperty(propStep);
+	_addProperty(propVariable);
+	_addProperty(propFileName);
+	_addProperty(propDiffEquations);
 }
 
 std::string LSODE::show() {
@@ -71,6 +102,14 @@ List<std::string>* LSODE::getDiffEquations() const {
 	return _diffEquations;
 }
 
+void LSODE::addDiffEquation(std::string newDiffEquation) {
+	_diffEquations->insert(newDiffEquation);
+}
+
+void LSODE::removeDiffEquation(std::string diffEquation) {
+	_diffEquations->remove(diffEquation);
+}
+
 void LSODE::setFilename(std::string filename) {
 	this->_filename = filename;
 }
@@ -90,7 +129,7 @@ bool LSODE::_doStep() {
 	tnow = _parentModel->getSimulation()->getSimulatedTime();
 	// @TODO: numerical error treatment by just adding 1e-15
 	bool res = time + _step <= tnow + 1e-15;
-	if (res) {
+	if (res) { // if simulatedTime has not reached a single step, do not solve
 		halfStep = _step * 0.5;
 		for (i = 0; i < numEqs; i++) {//(std::list<std::string>::iterator it = eqs->begin(); it != eqs->end(); it++) {
 			expression = _diffEquations->getAtRank(i);
@@ -101,7 +140,7 @@ bool LSODE::_doStep() {
 		time += halfStep;
 		_timeVariable->setValue(time);
 		for (i = 0; i < numEqs; i++) {
-			_variable->setValue(std::to_string(i), valVar[i] + k1[i] * halfStep);
+			_variable->setValue(valVar[i] + k1[i] * halfStep, std::to_string(i));
 		}
 		for (i = 0; i < numEqs; i++) {
 			expression = _diffEquations->getAtRank(i);
@@ -109,7 +148,7 @@ bool LSODE::_doStep() {
 			k2[i] = eqResult;
 		}
 		for (i = 0; i < numEqs; i++) {
-			_variable->setValue(std::to_string(i), valVar[i] + k2[i] * halfStep);
+			_variable->setValue(valVar[i] + k2[i] * halfStep, std::to_string(i));
 		}
 		for (i = 0; i < numEqs; i++) {
 			expression = _diffEquations->getAtRank(i);
@@ -117,7 +156,7 @@ bool LSODE::_doStep() {
 			k3[i] = eqResult;
 		}
 		for (i = 0; i < numEqs; i++) {
-			_variable->setValue(std::to_string(i), valVar[i] + k3[i] * halfStep);
+			_variable->setValue(valVar[i] + k3[i] * halfStep, std::to_string(i));
 		}
 		for (i = 0; i < numEqs; i++) {
 			expression = _diffEquations->getAtRank(i);
@@ -127,7 +166,7 @@ bool LSODE::_doStep() {
 		for (i = 0; i < numEqs; i++) {
 
 			eqResult = _variable->getValue(std::to_string(i)) +(_step / 6) * (k1[i] + 2 * (k2[i] + k3[i]) + k4[i]);
-			_variable->setValue(std::to_string(i), eqResult);
+			_variable->setValue(eqResult, std::to_string(i));
 		}
 		time = initTime + _step;
 		_timeVariable->setValue(time);
@@ -146,7 +185,7 @@ void LSODE::_onDispatchEvent(Entity* entity, unsigned int inputPortNumber) {
 		for (unsigned int i = 0; i < _variable->getDimensionSizes()->front(); i++) {
 			message += " ," + _variable->getName() + "[" + std::to_string(i) + "]=" + std::to_string(_variable->getValue(std::to_string(i)));
 		}
-		_parentModel->getTracer()->traceSimulation(this, message, TraceManager::Level::L8_detailed);
+		traceSimulation(this, message, TraceManager::Level::L8_detailed);
 		if (_filename != "") {
 			message = std::to_string(_timeVariable->getValue());
 			for (unsigned int i = 0; i < _variable->getDimensionSizes()->front(); i++) {
@@ -189,7 +228,7 @@ bool LSODE::_check(std::string* errorMessage) {
 					message += "\t" + _variable->getName() + "[" + std::to_string(i) + "]";
 				}
 				savefile << message << std::endl;
-				// TODO: It should save the initial values only AFTER variables are initialized. For now, initial values may be wrong
+				//@TODO: It should save the initial values only AFTER variables are initialized. For now, initial values may be wrong
 				message = std::to_string(_timeVariable->getValue());
 				for (unsigned int i = 0; i < _variable->getDimensionSizes()->front(); i++) {
 					message += "\t" + std::to_string(_variable->getValue(std::to_string(i)));
@@ -210,7 +249,7 @@ bool LSODE::_check(std::string* errorMessage) {
 
 PluginInformation* LSODE::GetPluginInformation() {
 	PluginInformation* info = new PluginInformation(Util::TypeOf<LSODE>(), &LSODE::LoadInstance, &LSODE::NewInstance);
-	info->setCategory("Physical");
+	info->setCategory("Continuous");
 	// ...
 	return info;
 }

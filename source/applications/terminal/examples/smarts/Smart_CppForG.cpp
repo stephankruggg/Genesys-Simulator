@@ -17,41 +17,52 @@
 #include "../../../../plugins/components/CppForG.h"
 #include "../../../../plugins/components/Dispose.h"
 #include "../../../../kernel/simulator/ModelSimulation.h"
+#include "../../../TraitsApp.h"
 
 Smart_CppForG::Smart_CppForG() {
 }
 
 int Smart_CppForG::main(int argc, char** argv) {
 	Simulator* genesys = new Simulator();
-	this->setDefaultTraceHandlers(genesys->getTracer());
-	this->insertFakePluginsByHand(genesys);
-	genesys->getTracer()->setTraceLevel(TraceManager::Level::L9_mostDetailed);
-	// crete model
-	Model* model = genesys->getModels()->newModel();
+	genesys->getTracer()->setTraceLevel(TraitsApp<GenesysApplication_if>::traceLevel);
+	setDefaultTraceHandlers(genesys->getTracer());
 	PluginManager* plugins = genesys->getPlugins();
+	plugins->autoInsertPlugins("autoloadplugins.txt");
+	Model* model = genesys->getModels()->newModel();
+	// create model
 	Create* create = plugins->newInstance<Create>(model);
-	CppForG* cpp = plugins->newInstance<CppForG>(model);
+	CppForG* cpp1 = plugins->newInstance<CppForG>(model);
+	CppForG* cpp2 = plugins->newInstance<CppForG>(model);
 	Dispose* dispose = plugins->newInstance<Dispose>(model);
+	// connect model components to create a "workflow"
+	create->getConnections()->insert(cpp1);
+	cpp1->getConnections()->insert(cpp2);
+	cpp2->getConnections()->insert(dispose);
+	// set parameters for cpp1 and cpp2 components
 	std::string includeCode = "\
-#include \"../../source/kernel/simulator/ModelSimulation.h\"\n\
+		#include \"../../../../kernel/simulator/ModelSimulation.h\"\n\
+		#include \"../../../../kernel/simulator/ModelDataDefinition.h\"\n\
 ";
-	cpp->setIncludesCode(includeCode);
+	cpp1->setIncludesCode(includeCode);
+	cpp2->setIncludesCode(includeCode);
 	std::string cppDispachEventCode = "\
 	std::cout << \"Executando código do usuário\" << std::endl;\n\
+	std::cout << \"Os ponteiros são \" << simulator << \" , \" << model << \" , \" << entity << std::endl;\n\
+	std::cout << \"O nome desta entidade é \" << entity->getName() << std::endl;\n\
 	unsigned int numComponentes = model->getComponents()->getAllComponents()->size();\n\
 	std::cout << \"Este modelo tem \" << numComponentes << \" componentes\" << std::endl;\n\
 	double tnow = model->getSimulation()->getSimulatedTime();\n\
 	std::cout << \"O tempo simulado atual é \" << tnow << std::endl;\n\
 	";
-	cpp->setOnDispatchEventCode(cppDispachEventCode);
+	cpp1->setOnDispatchEventCode(cppDispachEventCode);
+	cpp2->setOnDispatchEventCode(cppDispachEventCode);
 	std::string initCode = "\
-	std::cout << \"Inicializando meu código\" << std::endl;\n\
+	std::cout << \"Inicializando meu código 1\" << std::endl;\n\
 	// mais nada\
 	";
-	cpp->setInitBetweenReplicationCode(initCode);
-	// connect model components to create a "workflow"
-	create->getConnections()->insert(cpp);
-	cpp->getConnections()->insert(dispose);
+	cpp1->setInitBetweenReplicationCode(initCode);
+	initCode = "std::cout << \"Inicializando meu código 2\" << std::endl;\n";
+	cpp2->setInitBetweenReplicationCode(initCode);
 	// set options, save and simulate
 	ModelSimulation* s = model->getSimulation();
 	s->setReplicationLength(10);

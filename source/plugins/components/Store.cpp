@@ -43,7 +43,7 @@ ModelComponent* Store::LoadInstance(Model* model, PersistenceRecord *fields) {
 }
 
 void Store::_onDispatchEvent(Entity* entity, unsigned int inputPortNumber) {
-	_parentModel->getTracer()->trace("I'm just a dummy model and I'll just send the entity forward");
+	traceSimulation(this, "I'm just a dummy model and I'll just send the entity forward");
 	this->_parentModel->sendEntityToComponent(entity, this->getConnections()->getFrontConnection());
 }
 

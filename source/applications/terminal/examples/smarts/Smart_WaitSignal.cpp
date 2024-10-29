@@ -24,6 +24,7 @@
 #include "../../../../plugins/components/Signal.h"
 #include "../../../../plugins/data/SignalData.h"
 #include "../../../../plugins/components/Dispose.h"
+#include "../../../TraitsApp.h"
 
 // Model data definitions
 
@@ -36,12 +37,12 @@ Smart_WaitSignal::Smart_WaitSignal() {
  */
 int Smart_WaitSignal::main(int argc, char** argv) {
 	Simulator* genesys = new Simulator();
-	this->setDefaultTraceHandlers(genesys->getTracer());
-	this->insertFakePluginsByHand(genesys);
-	genesys->getTracer()->setTraceLevel(TraceManager::Level::L7_internal);
-	Model* model = genesys->getModels()->newModel();
+	genesys->getTracer()->setTraceLevel(TraitsApp<GenesysApplication_if>::traceLevel);
+	setDefaultTraceHandlers(genesys->getTracer());
 	PluginManager* plugins = genesys->getPlugins();
-	//
+	plugins->autoInsertPlugins("autoloadplugins.txt");
+	Model* model = genesys->getModels()->newModel();
+	// create model
 	Create* create1 = plugins->newInstance<Create>(model);
 	create1->setTimeBetweenCreationsExpression("1");
 	Create* create2 = plugins->newInstance<Create>(model);

@@ -11,21 +11,20 @@ AirportSecurityExample::AirportSecurityExample() {
 int AirportSecurityExample::main(int argc, char** argv) {
 	Simulator* genesys = new Simulator();
 	this->setDefaultTraceHandlers(genesys->getTracer());
-	this->insertFakePluginsByHand(genesys);
+	genesys->getPlugins()->autoInsertPlugins("autoloadplugins.txt");
 	Model* model = genesys->getModels()->newModel();
 	PluginManager* plugins = genesys->getPlugins();
-	
+
+	model->getInfos()->setName("Airport Security Example");
+
 	Create* create = plugins->newInstance<Create>(model);
 	create->setDescription("Passengers arrive to security");
 	create->setEntityTypeName("Passenger");
 	create->setTimeBetweenCreationsExpression("expo(2)");
 	create->setTimeUnit(Util::TimeUnit::minute);
-	create->setEntitiesPerCreation(1);
-	create->setFirstCreation(0.0);
 
 	Resource* officer = plugins->newInstance<Resource>(model, "Transportation Security Officer");
-	officer->setCapacity(1);
-        
+
 	Process* process = plugins->newInstance<Process>(model);
 	process->setDescription("Check for proper identification");
 	process->getSeizeRequests()->insert(new SeizableItem(officer));
@@ -41,20 +40,18 @@ int AirportSecurityExample::main(int argc, char** argv) {
 	disposeCleared->setDescription("Cleared");
 	Dispose* disposeDenied = plugins->newInstance<Dispose>(model);
 	disposeDenied->setDescription("Denied");
-	
+
 	create->getConnections()->insert(process);
 	process->getConnections()->insert(decide);
 	decide->getConnections()->insert(disposeCleared);
 	decide->getConnections()->insert(disposeDenied);
-	
-        genesys->getTracer()->setTraceLevel(TraceManager::Level::L2_results);
-        // genesys->getTracer()->setTraceLevel(TraceManager::Level::L9_mostDetailed);
-	model->getSimulation()->setReplicationLength(2, Util::TimeUnit::day);
-	model->getSimulation()->setNumberOfReplications(300);
-        model->getSimulation()->setWarmUpPeriod(0.1);
-        model->getSimulation()->setWarmUpPeriodTimeUnit(Util::TimeUnit::day);
+
+	genesys->getTracer()->setTraceLevel(TraceManager::Level::L5_event);
+	model->getSimulation()->setReplicationLength(12, Util::TimeUnit::hour);
+	model->getSimulation()->setNumberOfReplications(2);
+	model->getSimulation()->setWarmUpPeriod(0.5, Util::TimeUnit::hour);
+
 	model->getSimulation()->start();
-        
 	delete genesys;
 	return 0;
 }

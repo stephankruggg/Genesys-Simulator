@@ -16,6 +16,7 @@
 #include "../../kernel/simulator/Attribute.h"
 #include "../../kernel/simulator/Model.h"
 #include "../../kernel/simulator/Simulator.h"
+#include "../../kernel/simulator/SimulationControlAndResponse.h"
 #include "../../kernel/simulator/PluginManager.h"
 
 #ifdef PLUGINCONNECT_DYNAMIC
@@ -30,6 +31,14 @@ ModelDataDefinition* Clone::NewInstance(Model* model, std::string name) {
 }
 
 Clone::Clone(Model* model, std::string name) : ModelComponent(model, Util::TypeOf<Clone>(), name) {
+	SimulationControlGeneric<std::string>* propNumClone = new SimulationControlGeneric<std::string>(
+									std::bind(&Clone::getNumClonesExpression, this), std::bind(&Clone::setNumClonesExpression, this, std::placeholders::_1),
+									Util::TypeOf<Clone>(), getName(), "NumClonesExpression", "");
+
+	_parentModel->getControls()->insert(propNumClone);
+
+	// setting properties
+	_addProperty(propNumClone);
 }
 
 std::string Clone::show() {
@@ -70,7 +79,7 @@ PluginInformation* Clone::GetPluginInformation() {
 
 void Clone::_onDispatchEvent(Entity* entity, unsigned int inputPortNumber) {
 	unsigned int numClones = _parentModel->parseExpression(_numClonesExpression);
-	_parentModel->getTracer()->traceSimulation(this, TraceManager::Level::L7_internal, "Clonig " + std::to_string(numClones) + " entities.  // " + _numClonesExpression);
+	traceSimulation(this, TraceManager::Level::L7_internal, "Clonig " + std::to_string(numClones) + " entities.  // " + _numClonesExpression);
 	std::string attribName;
 	double value;
 	for (unsigned int i = 0; i < numClones; i++) {
@@ -81,7 +90,7 @@ void Clone::_onDispatchEvent(Entity* entity, unsigned int inputPortNumber) {
 			value = entity->getAttributeValue(attribName);
 			newEntity->setAttributeValue(attribName, value);
 		}
-		_parentModel->getTracer()->traceSimulation(this, TraceManager::Level::L8_detailed, "Entity \"" + entity->getName() + "\" was cloned to " + newEntity->getName());
+		traceSimulation(this, TraceManager::Level::L8_detailed, "Entity \"" + entity->getName() + "\" was cloned to " + newEntity->getName());
 		_parentModel->sendEntityToComponent(newEntity, this->getConnections()->getConnectionAtPort(1)); // port 1 is the clone output port
 	}
 	if (_reportStatistics) {
@@ -93,14 +102,14 @@ void Clone::_onDispatchEvent(Entity* entity, unsigned int inputPortNumber) {
 bool Clone::_loadInstance(PersistenceRecord *fields) {
 	bool res = ModelComponent::_loadInstance(fields);
 	if (res) {
-		// @TODO: not implemented yet
+		_numClonesExpression = fields->loadField("numClonesExpression", DEFAULT.numClonesExpression);
 	}
 	return res;
 }
 
 void Clone::_saveInstance(PersistenceRecord *fields, bool saveDefaultValues) {
 	ModelComponent::_saveInstance(fields, saveDefaultValues);
-	// @TODO: not implemented yet
+	fields->saveField("numClonesExpression", _numClonesExpression, DEFAULT.numClonesExpression, saveDefaultValues);
 }
 
 
@@ -118,8 +127,8 @@ void Clone::_initBetweenReplications() {
 void Clone::_createInternalAndAttachedData() {
 	if (_reportStatistics) {
 		if (_counter == nullptr) {
-			PluginManager* pm = _parentModel->getParentSimulator()->getPlugins();
-			_counter = pm->newInstance<Counter>(_parentModel, getName() + "." + "CountClones");
+			//PluginManager* pm = _parentModel->getParentSimulator()->getPlugins();
+			_counter = new Counter(_parentModel, getName() + "." + "CountClones", this);//pm->newInstance<Counter>(_parentModel, getName() + "." + "CountClones", this);
 			_internalDataInsert("CountClones", _counter);
 		}
 	} else {

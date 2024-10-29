@@ -5,7 +5,7 @@
 ### Configurações de Ambiente
 
 # Se a execução é local ou remota (1 - código remoto, 0 - código local)
-REMOTE=1
+REMOTE=0
 
 # Driver gráfico
 MESA_LOADER_DRIVER_OVERRIDE=zink
@@ -37,7 +37,7 @@ GENESYS_DOCKERFILE="Dockerfile"
 GENESYS_REPO=https://github.com/rlcancian/Genesys-Simulator
 
 # Branch do repositório a ser utilizada
-GENESYS_BRANCH=main
+GENESYS_BRANCH=master
 
 
 ### Configurações de Estrutura Interna

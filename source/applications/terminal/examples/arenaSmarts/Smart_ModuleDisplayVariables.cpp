@@ -22,6 +22,7 @@
 #include "../../../../plugins/components/Create.h"
 #include "../../../../plugins/components/Process.h"
 #include "../../../../plugins/components/Dispose.h"
+#include "../../../TraitsApp.h"
 
 Smart_ModuleDisplayVariables::Smart_ModuleDisplayVariables() {
 }
@@ -32,13 +33,12 @@ Smart_ModuleDisplayVariables::Smart_ModuleDisplayVariables() {
  */
 int Smart_ModuleDisplayVariables::main(int argc, char** argv) {
 	Simulator* genesys = new Simulator();
-	this->setDefaultTraceHandlers(genesys->getTracer());
-	this->insertFakePluginsByHand(genesys);
-	genesys->getTracer()->setTraceLevel(TraceManager::Level::L9_mostDetailed);
-
-	// crete model
-	Model* model = genesys->getModels()->newModel();
+	genesys->getTracer()->setTraceLevel(TraitsApp<GenesysApplication_if>::traceLevel);
+	setDefaultTraceHandlers(genesys->getTracer());
 	PluginManager* plugins = genesys->getPlugins();
+	plugins->autoInsertPlugins("autoloadplugins.txt");
+	Model* model = genesys->getModels()->newModel();
+	// create model
 
 	// Create 1
 	Create *create_1 = plugins->newInstance<Create>(model, "Create 1");
@@ -73,7 +73,7 @@ int Smart_ModuleDisplayVariables::main(int argc, char** argv) {
 	do {
 		model->getSimulation()->step();
 	} while (model->getSimulation()->isPaused());
-	for (int i = 0; i < 1e9; i++); // give UI some time to finish std::cout
+	
 	delete genesys;
 	return 0;
 };

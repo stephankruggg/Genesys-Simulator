@@ -18,7 +18,7 @@
 
 ModelDataManager::ModelDataManager(Model* model) {
 	_parentModel = model;
-	/// Elements are organized as a map from a string (key), the type of an modeldatum, and a list of elements of that type
+	// Elements are organized as a map from a string (key), the type of an modeldatum, and a list of elements of that type
 	_datadefinitions = new std::map<std::string, List<ModelDataDefinition*>*>();
 }
 
@@ -43,7 +43,7 @@ bool ModelDataManager::insert(std::string datadefinitionTypename, ModelDataDefin
 		if (_parentModel->getSimulation()->isRunning()) {
 			_parentModel->getTracer()->traceSimulation(this, TraceManager::Level::L8_detailed, text);
 		} else {
-			_parentModel->getTracer()->trace(TraceManager::Level::L8_detailed, text);
+			_parentModel->getTracer()->trace(text);
 		}
 	}
 	return result;
@@ -54,7 +54,7 @@ void ModelDataManager::remove(ModelDataDefinition * anElement) {
 	List<ModelDataDefinition*>* listElements = getDataDefinitionList(datadefinitionTypename);
 	listElements->remove(anElement);
 	_hasChanged = true;
-	////_parentModel->getTracer()->trace(TraceManager::Level::L8_detailed, "Element successfully removed.");
+	////trace("Element successfully removed.");
 
 }
 
@@ -106,7 +106,7 @@ unsigned int ModelDataManager::getNumberOfDataDefinitions() {
 }
 
 void ModelDataManager::show() {
-	_parentModel->getTracer()->trace(TraceManager::Level::L8_detailed, "Model Data Definitions:");
+	_parentModel->getTracer()->trace("Model Data Definitions:");
 	//std::map<std::string, List<ModelDataDefinition*>*>* _datadefinitions;
 	std::string key;
 	List<ModelDataDefinition*>* list;
@@ -115,11 +115,11 @@ void ModelDataManager::show() {
 		for (std::map<std::string, List<ModelDataDefinition*>*>::iterator infraIt = _datadefinitions->begin(); infraIt != _datadefinitions->end(); infraIt++) {
 			key = (*infraIt).first;
 			list = (*infraIt).second;
-			_parentModel->getTracer()->trace(TraceManager::Level::L8_detailed, key + ": (" + std::to_string(list->size()) + ")");
+			_parentModel->getTracer()->trace(key + ": (" + std::to_string(list->size()) + ")");
 			Util::IncIndent();
 			{
 				for (std::list<ModelDataDefinition*>::iterator it = list->list()->begin(); it != list->list()->end(); it++) {
-					_parentModel->getTracer()->trace(TraceManager::Level::L8_detailed, (*it)->show());
+					_parentModel->getTracer()->trace((*it)->show());
 				}
 			}
 			Util::DecIndent();
@@ -152,8 +152,9 @@ void ModelDataManager::setHasChanged(bool _hasChanged) {
 }
 
 List<ModelDataDefinition*>* ModelDataManager::getDataDefinitionList(std::string datadefinitionTypename) const {
-	std::map<std::string, List<ModelDataDefinition*>*>::iterator it = this->_datadefinitions->find(datadefinitionTypename);
-	if (it == this->_datadefinitions->end()) {
+	bool found = (_datadefinitions->find(datadefinitionTypename) != _datadefinitions->end());
+	auto it = _datadefinitions->find(datadefinitionTypename);
+	if (not found) {
 		// list does not exists yet. Create it and set a valid iterator
 		List<ModelDataDefinition*>* newList = new List<ModelDataDefinition*>();
 		newList->setSortFunc([](const ModelDataDefinition* a, const ModelDataDefinition * b) {
@@ -199,9 +200,9 @@ std::list<std::string>* ModelDataManager::getDataDefinitionClassnames() const {
 
 ModelDataDefinition * ModelDataManager::getDataDefinition(std::string datadefinitionTypename, std::string name) {
 	List<ModelDataDefinition*>* list = getDataDefinitionList(datadefinitionTypename);
-	for (std::list<ModelDataDefinition*>::iterator it = list->list()->begin(); it != list->list()->end(); it++) {
-		if ((*it)->getName() == name) { // found
-			return (*it);
+	for (ModelDataDefinition* dd: *list->list()) {
+		if (dd->getName() == name) {
+			return dd;
 		}
 	}
 	return nullptr;

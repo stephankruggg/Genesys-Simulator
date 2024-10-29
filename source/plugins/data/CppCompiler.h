@@ -3,7 +3,7 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/cppFiles/class.h to edit this template
  */
 
-/* 
+/*
  * File:   DynamicLinkedCode.h
  * Author: rlcancian
  *
@@ -28,7 +28,8 @@
 #include <paths.h>
 
 #include "../../kernel/simulator/ModelDataDefinition.h"
-//#include "../../kernel/simulator/ModelDataDefinition.h"
+#include "../../kernel/simulator/PluginInformation.h"
+
 
 class CompilerThread {
 public:
@@ -40,13 +41,11 @@ public:
 
 	class CompilationResult {
 	public:
-
-		CompilationResult() {
-		}
+		CompilationResult() { }
 		bool success = false;
-		std::string compilationOutput = "";
-		std::string resultFilename = "";
-		std::string generalMessage = "";
+		std::string compilationStdOutput = "";
+		std::string compilationErrOutput = "";
+		std::string destinationPath = "";
 		unsigned int lineNumber = 0;
 	};
 
@@ -86,41 +85,21 @@ public: // new methods
 	CompilationResult compileToExecutable();
 	CompilationResult compileToDynamicLibrary();
 	CompilationResult compileToStaticLibrary();
-	bool loadLibrary();
+	bool loadLibrary(std::string* errorMessage);
 	bool unloadLibrary();
-	void* getDynamicLibraryHandle() const;
+	void* getDynamicLibraryHandler() const;
 
-protected: // must be overriden 
+protected: // must be overriden
 	virtual bool _loadInstance(PersistenceRecord *fields);
 	virtual void _saveInstance(PersistenceRecord *fields, bool saveDefaultValues);
-protected: // could be overriden 
+protected: // could be overriden
 	virtual bool _check(std::string* errorMessage);
 	// virtual ParserChangesInformation* _getParserChangesInformation();
 	virtual void _initBetweenReplications();
 	virtual void _createInternalAndAttachedData();
 protected:
-	CompilationResult _invokeCompiler(std::string command);
-	CompilationResult _invokeCompiler2(std::string command);
-protected: // to securelly invoke another program (the cpp compiler in linux)
-	static int _orig_ngroups;
-	static gid_t _orig_gid;
-	static uid_t _orig_uid;
-	static gid_t _orig_groups[NGROUPS_MAX];
-	void _spc_drop_privileges(int permanent);
-	void _spc_restore_privileges(void);
-	//---
-
-	typedef struct {
-		FILE *read_fd;
-		FILE *write_fd;
-		pid_t child_pid;
-	} _SPC_PIPE;
-	pid_t _spc_fork(void);
-	_SPC_PIPE * _spc_popen(const char *path, char *const argv[], char *const envp[]);
-	int _spc_pclose(_SPC_PIPE * p);
-	//---
-	void _spc_sanitize_files(void);
-	static int _open_devnull(int fd);
+	CompilationResult _invokeCompiler(std::string command);  //system(command.c_str());
+	std::string _read(std::string filename);
 private:
 
 	const struct DEFAULT_VALUES {

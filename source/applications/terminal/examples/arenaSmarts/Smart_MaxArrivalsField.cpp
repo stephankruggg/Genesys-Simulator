@@ -16,6 +16,7 @@
 #include "../../../../plugins/components/Create.h"
 #include "../../../../plugins/components/Dispose.h"
 #include "../../../../plugins/components/Record.h"
+#include "../../../TraitsApp.h"
 
 Smart_MaxArrivalsField::Smart_MaxArrivalsField() {
 }
@@ -26,13 +27,13 @@ Smart_MaxArrivalsField::Smart_MaxArrivalsField() {
  */
 int Smart_MaxArrivalsField::main(int argc, char** argv) {
 	Simulator* genesys = new Simulator();
-	this->setDefaultTraceHandlers(genesys->getTracer());
-	this->insertFakePluginsByHand(genesys);
-        genesys->getTracer()->setTraceLevel(TraceManager::Level::L9_mostDetailed);
-	// create model
-	Model* model = genesys->getModels()->newModel();
+	genesys->getTracer()->setTraceLevel(TraitsApp<GenesysApplication_if>::traceLevel);
+	setDefaultTraceHandlers(genesys->getTracer());
 	PluginManager* plugins = genesys->getPlugins();
-        
+	plugins->autoInsertPlugins("autoloadplugins.txt");
+	Model* model = genesys->getModels()->newModel();
+	// create model
+
         // create1
 	Create* create1 = plugins->newInstance<Create>(model);
         create1->setMaxCreations("MAX ( (TNOW < 120) * 10000 , (TNOW >= 120) * 1 )");

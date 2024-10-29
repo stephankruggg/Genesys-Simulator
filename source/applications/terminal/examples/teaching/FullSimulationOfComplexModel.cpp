@@ -35,7 +35,7 @@ FullSimulationOfComplexModel::FullSimulationOfComplexModel() {
 int FullSimulationOfComplexModel::main(int argc, char** argv) {
 	Simulator* genesys = new Simulator();
 	// insert "fake plugins" since plugins based on dynamic loaded library are not implemented yet
-	this->insertFakePluginsByHand(genesys);
+	genesys->getPlugins()->autoInsertPlugins("autoloadplugins.txt");
 	// creates an empty model
 	Model* model = genesys->getModels()->newModel();
 	// Handle traces and simulation events to output them

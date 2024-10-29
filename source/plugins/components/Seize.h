@@ -143,9 +143,11 @@ public: // get & set
 	//std::string getResourceName() const;
 	//void setQueueName(std::string queueName) throw ();
 	//std::string getQueueName() const;
-	void setQueue(Queue* queue); ///< Deprected
+	void setQueue(Queue* queue); //!< Deprected
 	//Queue* getQueue() const;
 	List<SeizableItem*>* getSeizeRequests() const;
+    void addRequest(SeizableItem* newRequest);
+    void removeRequest(SeizableItem* request);
 	void setQueueableItem(QueueableItem* _queueableItem);
 	QueueableItem* getQueueableItem() const;
 	void setPriorityExpression(std::string _priorityExpression);
@@ -158,7 +160,7 @@ protected:
 	virtual bool _check(std::string* errorMessage);
 	virtual void _createInternalAndAttachedData();
 private:
-	void _handlerForResourceEvent(Resource* resource); ///< This method is indirectally invocked (notified) by resource when it's released, since it was added as ResourceEventHandler
+	void _handlerForResourceEvent(Resource* resource); //!< This method is indirectally invocked (notified) by resource when it's released, since it was added as ResourceEventHandler
 	Resource* _getResourceFromSeizableItem(SeizableItem* seizable, Entity* entity, unsigned int*indexPtr);
 	Queue* _getQueue() const;
 public:

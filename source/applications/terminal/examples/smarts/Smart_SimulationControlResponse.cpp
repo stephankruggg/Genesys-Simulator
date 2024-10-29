@@ -21,28 +21,36 @@
 #include "../../../../plugins/components/Create.h"
 #include "../../../../plugins/components/Process.h"
 #include "../../../../plugins/components/Dispose.h"
+#include "../../../TraitsApp.h"
 
 Smart_SimulationControlResponse::Smart_SimulationControlResponse() {
 }
 
 int Smart_SimulationControlResponse::main(int argc, char** argv) {
 	Simulator* genesys = new Simulator();
-	this->setDefaultTraceHandlers(genesys->getTracer());
-	this->insertFakePluginsByHand(genesys);
-	// crete model
-	Model* model = genesys->getModels()->newModel();
+	genesys->getTracer()->setTraceLevel(TraitsApp<GenesysApplication_if>::traceLevel);
+	setDefaultTraceHandlers(genesys->getTracer());
 	PluginManager* plugins = genesys->getPlugins();
+	plugins->autoInsertPlugins("autoloadplugins.txt");
+	Model* model = genesys->getModels()->newModel();
+	// create model
 	Create* create1 = plugins->newInstance<Create>(model);
 	Process* process1 = plugins->newInstance<Process>(model);
 	process1->setQueueableItem(new QueueableItem(model, "Queue_1"));
 	process1->getSeizeRequests()->insert(new SeizableItem(model, "Resource_1"));
+	//Delay* process1 = plugins->newInstance<Delay>(model);
 	Dispose* dispose1 = plugins->newInstance<Dispose>(model);
 	// connect model components to create a "workflow"
 	create1->getConnections()->insert(process1);
 	process1->getConnections()->insert(dispose1);
 	// set options, save and simulate
 	model->getSimulation()->setReplicationLength(60, Util::TimeUnit::second);
-	model->save("./models/Smart_SimulationControlResponse.gen");
+	//model->save("./models/Smart_SimulationControlResponse.gen");
+	model->check();
+	model->show();
+	genesys->getTracer()->setTraceLevel(TraceManager::Level::L9_mostDetailed);
+	model->getSimulation()->setShowSimulationControlsInReport(true);
+	model->getSimulation()->setShowSimulationResposesInReport(true);
 	model->getSimulation()->start();
 	delete genesys;
 	return 0;

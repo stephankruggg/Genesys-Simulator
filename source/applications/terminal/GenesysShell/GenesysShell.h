@@ -56,26 +56,41 @@ public: // commands
 	void cmdScript();
 	void cmdHelp();
 	void cmdQuit();
-	void cmdModelLoad();
-	void cmdModelCheck();
-	void cmdStart();
-	void cmdStep();
-	void cmdStop();
-	void cmdShowReport();
-	void cmdModelSave();
-	void cmdModelShow();
-	void cmdVersion();
+	void cmdBash();
+	void cmdParser();
 	void cmdTraceLevel();
+	void cmdPlugin();
+	//void cmdPluginInfo();
+	//void cmdPluginAdd();
+	//void cmdPluginRemove();
+	void cmdSimulation();
+	//void cmdSimulationStep();
+	//void cmdSimulationStop();
+	//void cmdSimulationInfo();
+	void cmdReplication();
+	//void cmdShowReport();
+	void cmdModel();
+	//void cmdModelClose();
+	void cmdModelLoad();
+	//void cmdModelCheck();
+	void cmdModelSave();
+	//void cmdModelShow();
+	//void cmdModelSetInfos();
 private:
+	void defineCommands();
 	void run(List<std::string>* arguments);
 	void Trace(std::string message);
 	//void tryExecuteCommand(std::string inputText, const char* shortPrefix, const char* longPrefix, std::string separator);
-	void tryExecuteCommand(std::string inputText, std::string shortPrefix, std::string longPrefix, std::string separator);
+	void tryExecuteCommand(std::string inputText);
+	std::vector<std::string> split(std::string text, std::string separatorRegex);
 private:
-	Simulator* _simulator = new Simulator();
-	std::string _parameter;
+	Simulator* simulator = new Simulator();
+	Model* model = nullptr;
+	std::vector<std::string> *_typedWords = new std::vector<std::string>();
+	std::vector<std::string> *_history = new std::vector<std::string>();
 	List<ShellCommand*>* _commands = new List<ShellCommand*>();
-	std::string _prompt = "$ReGenesys> ";
+	std::string _prompt = "$genesys> ";
+	bool _exitRequested = false;
 };
 #endif /* GENESYSSHELL_H */
 

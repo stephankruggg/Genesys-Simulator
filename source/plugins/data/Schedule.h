@@ -14,6 +14,7 @@
 #define SCHEDULE_H
 
 #include "../../kernel/simulator/ModelDataDefinition.h"
+#include "../../kernel/simulator/PluginInformation.h"
 #include "../../kernel/util/List.h"
 
 class SchedulableItem {

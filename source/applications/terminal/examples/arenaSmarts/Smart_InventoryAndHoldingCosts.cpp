@@ -18,22 +18,20 @@
 #include "../../../../plugins/data/Queue.h"
 #include "../../../../plugins/data/Resource.h"
 #include "../../../../plugins/data/Variable.h"
+#include "../../../TraitsApp.h"
 
 Smart_InventoryAndHoldingCosts::Smart_InventoryAndHoldingCosts() {
 }
 
 int Smart_InventoryAndHoldingCosts::main(int argc, char** argv) {
-	// instantiate simulator
 	Simulator* genesys = new Simulator();
-        this->setDefaultTraceHandlers(genesys->getTracer());
-	this->insertFakePluginsByHand(genesys);
-//	genesys->getTracer()->setTraceLevel(TraceManager::Level::L9_mostDetailed);
+	genesys->getTracer()->setTraceLevel(TraitsApp<GenesysApplication_if>::traceLevel);
+	setDefaultTraceHandlers(genesys->getTracer());
 	PluginManager* plugins = genesys->getPlugins();
-	
-	// create model
+	plugins->autoInsertPlugins("autoloadplugins.txt");
 	Model* model = genesys->getModels()->newModel();
-	// model->load("model.gen")
-	
+	// create model
+
         // Initialize resources
         Resource* Resource_1 = plugins->newInstance<Resource>(model, "Resource 1");
         Resource_1->setCapacity(1);
@@ -82,7 +80,7 @@ int Smart_InventoryAndHoldingCosts::main(int argc, char** argv) {
         model->check();
         model->getDataManager()->show();
 	sim->start();
-	for (int i = 0; i < 1e9; i++); // give UI some time to finish std::cout
+	
 	// free memory
 	delete genesys;
 	

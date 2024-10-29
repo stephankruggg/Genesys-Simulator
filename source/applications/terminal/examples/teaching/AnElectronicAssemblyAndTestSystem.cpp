@@ -34,7 +34,7 @@ AnElectronicAssemblyAndTestSystem::AnElectronicAssemblyAndTestSystem() {
 int AnElectronicAssemblyAndTestSystem::main(int argc, char** argv) {
 	Simulator* genesys = new Simulator();
 	this->setDefaultTraceHandlers(genesys->getTracer());
-	this->insertFakePluginsByHand(genesys);
+	genesys->getPlugins()->autoInsertPlugins("autoloadplugins.txt");
 	// creating the model
 	Model* model = genesys->getModels()->newModel();
 	PluginManager* plugins = genesys->getPlugins();
@@ -143,7 +143,7 @@ int AnElectronicAssemblyAndTestSystem::main(int argc, char** argv) {
 	sim->setWarmUpPeriodTimeUnit(Util::TimeUnit::hour);
 	sim->setReplicationReportBaseTimeUnit(Util::TimeUnit::minute);
 	//save the model
-	model->save("./models/Smart_AnElectronicAssemblyAndTestSystem.gen");
+	model->save("./models/AnElectronicAssemblyAndTestSystem.gen");
 	//simulating the model
 	sim->start();
 	delete genesys;

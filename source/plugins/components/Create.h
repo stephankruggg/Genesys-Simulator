@@ -83,6 +83,9 @@ public: // static
 	static ModelComponent* LoadInstance(Model* model, PersistenceRecord *fields);
 	static ModelDataDefinition* NewInstance(Model* model, std::string name = "");
 
+	double testePropertyCreateDouble() const;
+	void setTestePropertyCreateDouble(double newTestePropertyCreateDouble);
+
 protected:
 	virtual void _onDispatchEvent(Entity* entity, unsigned int inputPortNumber);
 	virtual bool _loadInstance(PersistenceRecord *fields);
@@ -93,7 +96,7 @@ protected:
 private:
 	double _lastArrival = -1.0;
 private: // internal elements
-	Counter* _numberOut = nullptr; // internel modeldatum
+	Counter* _numberOut = nullptr; // internal modeldatum
 private: // attached elements
 	Schedule* _timeBetweenCreationsSchedule = nullptr;
 	Formula* _timeBetweenCreationsFormula = nullptr;

@@ -6,6 +6,7 @@
  */
 
 #include "Smart_CellularAutomata1.h"
+#include "../../../TraitsApp.h"
 
 Smart_CellularAutomata1::Smart_CellularAutomata1() {
 }

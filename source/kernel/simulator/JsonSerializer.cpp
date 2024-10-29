@@ -1,5 +1,7 @@
 #include "JsonSerializer.h"
 
+#pragma GCC diagnostic ignored "-Wmissing-field-initializers"
+
 #include <cassert>
 #include <regex>
 #include <map>

@@ -15,8 +15,6 @@
 #include "../../kernel/simulator/Model.h"
 #include "../../kernel/simulator/EntityType.h"
 #include "../../kernel/simulator/ModelDataManager.h"
-#include "../../kernel/simulator/Attribute.h"
-#include "Assign.h"
 #include <cassert>
 
 #ifdef PLUGINCONNECT_DYNAMIC
@@ -47,21 +45,21 @@ Schedule* Create::getTimeBetweenCreationsSchedule() const {
 }
 
 Create::Create(Model* model, std::string name) : SourceModelComponent(model, Util::TypeOf<Create>(), name) {
-	PropertyT<unsigned int>* prop1 = new PropertyT<unsigned int>(Util::TypeOf<Create>(), "Entities Per Creation",
-			DefineGetter<Create, unsigned int>(this, &Create::getEntitiesPerCreation),
-			DefineSetter<Create, unsigned int>(this, &Create::setEntitiesPerCreation));
-	model->getControls()->insert(prop1);
-	_addProperty(prop1);
-	PropertyT<std::string>* prop2 = new PropertyT<std::string>(Util::TypeOf<Create>(), "Time Between Creations",
-			DefineGetter<Create, std::string>(this, &Create::getTimeBetweenCreationsExpression),
-			DefineSetter<Create, std::string>(this, &Create::setTimeBetweenCreationsExpression));
-	model->getControls()->insert(prop2);
-	_addProperty(prop2);
-	PropertyT<Util::TimeUnit>* prop3 = new PropertyT<Util::TimeUnit>(Util::TypeOf<Create>(), "Time Unit",
-			DefineGetter<Create, Util::TimeUnit>(this, &Create::getTimeUnit),
-			DefineSetter<Create, Util::TimeUnit>(this, &Create::setTimeUnit));
-	model->getControls()->insert(prop3);
-	_addProperty(prop3);
+	SimulationControlGenericClass<Formula*, Model*, Formula>* propTimeBetweenCreationsFormula = new SimulationControlGenericClass<Formula*, Model*, Formula>(
+									_parentModel,
+									std::bind(&Create::getTimeBetweenCreationsFormula, this), std::bind(&Create::setTimeBetweenCreationsFormula, this, std::placeholders::_1),
+									Util::TypeOf<Create>(), getName(), "TimeBetweenCreationsFormula", "");
+	SimulationControlGenericClass<Schedule*, Model*, Schedule>* propTimeBetweenCreationsSchedule = new SimulationControlGenericClass<Schedule*, Model*, Schedule>(
+									_parentModel,
+									std::bind(&Create::getTimeBetweenCreationsSchedule, this), std::bind(&Create::setTimeBetweenCreationsSchedule, this, std::placeholders::_1),
+									Util::TypeOf<Create>(), getName(), "TimeBetweenCreationsSchedule", "");
+
+	_parentModel->getControls()->insert(propTimeBetweenCreationsFormula);
+	_parentModel->getControls()->insert(propTimeBetweenCreationsSchedule);
+
+	// setting properties
+	_addProperty(propTimeBetweenCreationsFormula);
+	_addProperty(propTimeBetweenCreationsSchedule);
 }
 
 std::string Create::show() {
@@ -73,7 +71,7 @@ void Create::_onDispatchEvent(Entity* entity, unsigned int inputPortNumber) {
 	double tnow = _parentModel->getSimulation()->getSimulatedTime();
 	entity->setAttributeValue("Entity.ArrivalTime", tnow);
 	entity->setAttributeValue("Entity.Type", (double) entity->getEntityType()->getId());
-	//entity->setAttributeValue("Entity.Picture", 1); 
+	//entity->setAttributeValue("Entity.Picture", 1);
 	double timeBetweenCreations, timeScale, newArrivalTime;
 	unsigned int _maxCreations = _parentModel->parseExpression(this->_maxCreationsExpression);
 	if (tnow != _lastArrival) {
@@ -89,7 +87,7 @@ void Create::_onDispatchEvent(Entity* entity, unsigned int inputPortNumber) {
 			assert(false);
 		}
 		timeScale = Util::TimeUnitConvert(this->_timeBetweenCreationsTimeUnit, _parentModel->getSimulation()->getReplicationBaseTimeUnit());
-		newArrivalTime = tnow + timeBetweenCreations*timeScale;
+		newArrivalTime = std::max<double>(tnow + timeBetweenCreations*timeScale, tnow); // force no time travel to past. Not sure if it should really be avoided
 		for (unsigned int i = 0; i<this->_entitiesPerCreation; i++) {
 			if (_entitiesCreatedSoFar < _maxCreations) {
 				_entitiesCreatedSoFar++;
@@ -97,7 +95,7 @@ void Create::_onDispatchEvent(Entity* entity, unsigned int inputPortNumber) {
 				newEntity->setEntityType(entity->getEntityType());
 				Event* newEvent = new Event(newArrivalTime, newEntity, this);
 				_parentModel->getFutureEvents()->insert(newEvent);
-				_parentModel->getTracer()->traceSimulation(this, "Arrival of "/*entity " + std::to_string(newEntity->entityNumber())*/ + newEntity->getName() + " scheduled for time " + std::to_string(newArrivalTime) + Util::StrTimeUnitShort(_parentModel->getSimulation()->getReplicationBaseTimeUnit()));
+				traceSimulation(this, "Arrival of "/*entity " + std::to_string(newEntity->entityNumber())*/ + newEntity->getName() + " scheduled for time " + std::to_string(newArrivalTime) + Util::StrTimeUnitShort(_parentModel->getSimulation()->getReplicationBaseTimeUnit()));
 			}
 		}
 	}

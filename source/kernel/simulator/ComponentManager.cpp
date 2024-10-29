@@ -22,18 +22,18 @@ ComponentManager::ComponentManager(Model* model) {
 	_parentModel = model;
 	_components = new List<ModelComponent*>();
 	_components->setSortFunc([](const ModelComponent* a, const ModelComponent * b) {
-		return a->getId() < b->getId(); /// Components are sorted by ID
+		return a->getId() < b->getId(); // Components are sorted by ID
 	});
 }
 
 bool ComponentManager::insert(ModelComponent* comp) {
 	if (_components->find(comp) == _components->list()->end()) {
 		_components->insert(comp);
-		_parentModel->getTracer()->trace(TraceManager::Level::L2_results, "Component \"" + comp->getName() + "\" successfully inserted");
+		_parentModel->getTracer()->trace("Component \"" + comp->getName() + "\" successfully inserted", TraceManager::Level::L2_results);
 		_hasChanged = true;
 		return true;
 	}
-	_parentModel->getTracer()->trace(TraceManager::Level::L2_results, "Component \"" + comp->getName() + "\" could not be inserted");
+	_parentModel->getTracer()->trace("Component \"" + comp->getName() + "\" could not be inserted", TraceManager::Level::L2_results);
 	return false;
 }
 
@@ -55,10 +55,10 @@ ModelComponent* ComponentManager::find(Util::identification id) {
 	return nullptr;
 }
 
-void ComponentManager::remove(ModelComponent * comp) {
+void ComponentManager::remove(ModelComponent* comp) {
 	std::string name = comp->getName();
 	_components->remove(comp);
-	_parentModel->getTracer()->trace(TraceManager::Level::L2_results, "Component \"" + name + "\" successfully removed");
+	_parentModel->getTracer()->trace("Component \"" + name + "\" successfully removed", TraceManager::Level::L2_results);
 	_hasChanged = true;
 }
 

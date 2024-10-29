@@ -20,32 +20,34 @@
 #include "../../../../plugins/components/Batch.h"
 #include "../../../../plugins/components/Delay.h"
 #include "../../../../plugins/components/Separate.h"
+#include "../../../TraitsApp.h"
 
 Smart_BatchSeparate::Smart_BatchSeparate() {
 }
 
 int Smart_BatchSeparate::main(int argc, char** argv) {
 	Simulator* genesys = new Simulator();
-	this->setDefaultTraceHandlers(genesys->getTracer());
-	this->insertFakePluginsByHand(genesys);
-	// create model
-	Model* m = new Model(genesys);
+	genesys->getTracer()->setTraceLevel(TraitsApp<GenesysApplication_if>::traceLevel);
+	setDefaultTraceHandlers(genesys->getTracer());
 	PluginManager* plugins = genesys->getPlugins();
-	Create* cr = plugins->newInstance<Create>(m);
+	plugins->autoInsertPlugins("autoloadplugins.txt");
+	Model* model = genesys->getModels()->newModel();
+	// create model
+	Create* cr = plugins->newInstance<Create>(model);
 	cr->setEntityTypeName("normal");
 	cr->setMaxCreations(50);
-	Assign* as = plugins->newInstance<Assign>(m);
-	as->getAssignments()->insert(new Assignment(m, "batchNum", "trunc(unif(0,5))"));
-	Batch* ba = plugins->newInstance<Batch>(m);
+	Assign* as = plugins->newInstance<Assign>(model);
+	as->getAssignments()->insert(new Assignment(model, "batchNum", "trunc(unif(0,5))"));
+	Batch* ba = plugins->newInstance<Batch>(model);
 	ba->setBatchSize("4");
 	ba->setRule(Batch::Rule::ByAttribute);
 	ba->setAttributeName("batchNum");
 	ba->setGroupedAttributes(Batch::GroupedAttribs::SumAttributes);
 	ba->setGroupedEntityTypeName("grouped");
-	Delay* de = plugins->newInstance<Delay>(m);
+	Delay* de = plugins->newInstance<Delay>(model);
 	de->setDelay(25);
-	Separate* se = plugins->newInstance<Separate>(m);
-	Dispose* di = plugins->newInstance<Dispose>(m);
+	Separate* se = plugins->newInstance<Separate>(model);
+	Dispose* di = plugins->newInstance<Dispose>(model);
 	// connect model components to create a "workflow"
 	cr->getConnections()->insert(as);
 	as->getConnections()->insert(ba);
@@ -53,16 +55,16 @@ int Smart_BatchSeparate::main(int argc, char** argv) {
 	de->getConnections()->insert(se);
 	se->getConnections()->insert(di);
 	// save, trace specific modules and aimulate
-	ModelSimulation* sim = m->getSimulation();
+	ModelSimulation* sim = model->getSimulation();
 	sim->setReplicationLength(100);
 	sim->setShowReportsAfterReplication(false);
 	sim->setShowReportsAfterSimulation(false);
-	m->getTracer()->setTraceLevel(TraceManager::Level::L7_internal);
-	m->getTracer()->setTraceSimulationRuleAllAllowed(false);
-	m->getTracer()->addTraceSimulationExceptionRuleModelData(ba);
-	m->getTracer()->addTraceSimulationExceptionRuleModelData(se);
-	m->getTracer()->addTraceSimulationExceptionRuleModelData(sim);
-	m->save("./models/Smart_BatchSeparate.gen");
+	model->getTracer()->setTraceLevel(TraceManager::Level::L7_internal);
+	model->getTracer()->setTraceSimulationRuleAllAllowed(false);
+	model->getTracer()->addTraceSimulationExceptionRuleModelData(ba);
+	model->getTracer()->addTraceSimulationExceptionRuleModelData(se);
+	model->getTracer()->addTraceSimulationExceptionRuleModelData(sim);
+	model->save("./models/Smart_BatchSeparate.gen");
 	sim->start();
 	delete genesys;
 	return 0;

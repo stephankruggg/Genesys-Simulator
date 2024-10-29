@@ -5,6 +5,7 @@
 # include <string>
 # include <locale>
 # include <list>
+#include <iostream>
 # include "Genesys++-driver.h"
 # include "GenesysParser.h"
 # include "obj_t.h"
@@ -48,6 +49,7 @@ static yy::location loc;
 %{
   // Code run each time a pattern is matched.
   # define YY_USER_ACTION  loc.columns (yyleng);
+	//std::cout << yyleng << std::endl;
 %}
 
 I     ~[A-Za-z]+
@@ -140,8 +142,8 @@ L      [A-Za-z0-9_.]+
 [sS][qQ][rR][tT]      {return yy::genesyspp_parser::make_fSQRT(obj_t(0, std::string(yytext)), loc);}
 [lL][oO][gG]          {return yy::genesyspp_parser::make_fLOG(obj_t(0, std::string(yytext)), loc);}
 [lL][nN]              {return yy::genesyspp_parser::make_fLN(obj_t(0, std::string(yytext)), loc);}
-[min]				  {return yy::genesyspp_parser::make_mathMAX(obj_t(0, std::string(yytext)), loc);}
-[max]                 {return yy::genesyspp_parser::make_mathMIN(obj_t(0, std::string(yytext)), loc);}
+[mM][iI][nN]		  {return yy::genesyspp_parser::make_mathMAX(obj_t(0, std::string(yytext)), loc);}
+[mM][aA][xX]          {return yy::genesyspp_parser::make_mathMIN(obj_t(0, std::string(yytext)), loc);}
 
 %{// string functions %}
 [vV][aA][lL]          {return yy::genesyspp_parser::make_fVAL(obj_t(0, std::string(yytext)), loc);}
@@ -223,6 +225,7 @@ T
 		datadef = driver.getModel()->getDataManager()->getDataDefinition(Util::TypeOf<Attribute>(), std::string(yytext));
         if (datadef != nullptr) {
 			//std::cout << "Found ATTRIBUTE " << std::string(yytext) << std::endl;
+			driver.addRefered({Util::TypeOf<Attribute>(),std::string(yytext)});
             return yy::genesyspp_parser::make_ATRIB(obj_t(0, Util::TypeOf<Attribute>(), datadef->getId()),loc);
         }
 
@@ -231,6 +234,7 @@ T
         datadef = driver.getModel()->getDataManager()->getDataDefinition(Util::TypeOf<StatisticsCollector>(), std::string(yytext));
         if (datadef != nullptr) { 
 			//std::cout << "Found CSTAT" << std::string(yytext) << std::endl;
+			driver.addRefered({Util::TypeOf<StatisticsCollector>(),std::string(yytext)});
             return yy::genesyspp_parser::make_CSTAT(obj_t(0, Util::TypeOf<StatisticsCollector>(), datadef->getId()),loc);
         }
 
@@ -238,7 +242,8 @@ T
         datadef = driver.getModel()->getDataManager()->getDataDefinition(Util::TypeOf<Counter>(), std::string(yytext));
         if (datadef != nullptr) { 
 			//std::cout << "Found COUNTER" << std::string(yytext) << std::endl;
-            return yy::genesyspp_parser::make_COUNTER(obj_t(0, Util::TypeOf<Counter>(), datadef->getId()),loc);
+			driver.addRefered({Util::TypeOf<Counter>(),std::string(yytext)});
+			return yy::genesyspp_parser::make_COUNTER(obj_t(0, Util::TypeOf<Counter>(), datadef->getId()),loc);
         }
 
 /****begin_LexicalLiterals_plugins****/
@@ -250,7 +255,8 @@ T
             Variable* var = static_cast<Variable*>(datadef);
             //double variableID = var->getId();// ->getValue(); // var->getId()
 			//std::cout << "Found VARIABLE " << var->getName() <<" ID " << var->getId() << std::endl;
-            return yy::genesyspp_parser::make_VARI(obj_t(0, Util::TypeOf<Variable>(), var->getId()),loc);
+			driver.addRefered({Util::TypeOf<Variable>(),std::string(yytext)});
+			return yy::genesyspp_parser::make_VARI(obj_t(0, Util::TypeOf<Variable>(), var->getId()),loc);
         }
 /**end_LexicalLiterals:Variable**/
 
@@ -261,7 +267,8 @@ T
             Formula* form = static_cast<Formula*>(datadef);
             // return only formula ID. NEVER should call getValue in LL
 			//std::cout << "Found FORMULA " << form->getName() <<" ID " << form->getId() << std::endl;
-            return yy::genesyspp_parser::make_FORM(obj_t(0, Util::TypeOf<Formula>(), form->getId()),loc);
+			driver.addRefered({Util::TypeOf<Formula>(),std::string(yytext)});
+			return yy::genesyspp_parser::make_FORM(obj_t(0, Util::TypeOf<Formula>(), form->getId()),loc);
         }
 /**end_LexicalLiterals:Formula**/
 
@@ -275,7 +282,8 @@ T
         datadef = driver.getModel()->getDataManager()->getDataDefinition(Util::TypeOf<Queue>(), std::string(yytext));
         if (datadef != nullptr) { 
 			//std::cout << "Found QUEUE " << datadef->getName() <<" ID " << datadef->getId() << std::endl;
-            return yy::genesyspp_parser::make_QUEUE(obj_t(0, Util::TypeOf<Queue>(), datadef->getId()),loc);
+			driver.addRefered({Util::TypeOf<Queue>(),std::string(yytext)});
+			return yy::genesyspp_parser::make_QUEUE(obj_t(0, Util::TypeOf<Queue>(), datadef->getId()),loc);
         }
 /**end_LexicalLiterals:Queue**/
 
@@ -284,7 +292,8 @@ T
         datadef = driver.getModel()->getDataManager()->getDataDefinition(Util::TypeOf<Resource>(), std::string(yytext));
         if (datadef != nullptr) { 
 			//std::cout << "Found RESOURCE " << datadef->getName() <<" ID " << datadef->getId() << std::endl;
-            return yy::genesyspp_parser::make_RESOURCE(obj_t(0, Util::TypeOf<Resource>(), datadef->getId()),loc);
+			driver.addRefered({Util::TypeOf<Resource>(),std::string(yytext)});
+			return yy::genesyspp_parser::make_RESOURCE(obj_t(0, Util::TypeOf<Resource>(), datadef->getId()),loc);
         }
 /**end_LexicalLiterals:Resource**/
 
@@ -293,7 +302,8 @@ T
         datadef = driver.getModel()->getDataManager()->getDataDefinition(Util::TypeOf<Set>(), std::string(yytext));
         if (datadef != nullptr) { 
 			//std::cout << "Found SET " << datadef->getName() <<" ID " << datadef->getId() << std::endl;
-            return yy::genesyspp_parser::make_SET(obj_t(0, Util::TypeOf<Set>(), datadef->getId()),loc);
+			driver.addRefered({Util::TypeOf<Set>(),std::string(yytext)});
+			return yy::genesyspp_parser::make_SET(obj_t(0, Util::TypeOf<Set>(), datadef->getId()),loc);
         }
 /**end_LexicalLiterals:Set**/
 

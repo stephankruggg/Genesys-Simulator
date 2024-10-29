@@ -26,12 +26,39 @@ ModelDataDefinition* Queue::NewInstance(Model* model, std::string name) {
 	return new Queue(model, name);
 }
 
+std::string Queue::convertEnumToStr(OrderRule rule) {
+	switch (static_cast<int> (rule)) {
+		case 0: return "FIFO";
+		case 1: return "LIFO";
+		case 2: return "HIGHESTVALUE";
+		case 3: return "SMALLESTVALUE";
+	}
+	return "Unknown";
+}
+
 Queue::Queue(Model* model, std::string name) : ModelDataDefinition(model, Util::TypeOf<Queue>(), name) {
-	PropertyT<std::string>* prop1 = new PropertyT<std::string>(Util::TypeOf<Queue>(), "Attribute Name",
-			DefineGetter<Queue, std::string>(this, &Queue::getAttributeName),
-			DefineSetter<Queue, std::string>(this, &Queue::setAttributeName));
-	_addProperty(prop1);
-	//@TODO: OrderRule!!
+	//controls
+	SimulationControlGeneric<std::string>* propAttributeName = new SimulationControlGeneric<std::string>(
+				std::bind(&Queue::getAttributeName, this),
+				std::bind(&Queue::setAttributeName, this, std::placeholders::_1),
+				Util::TypeOf<Queue>(), getName(), "AttributeName", "");
+	SimulationControlGenericEnum<Queue::OrderRule, Queue>* propOrderRule = new SimulationControlGenericEnum<Queue::OrderRule, Queue>(
+                std::bind(&Queue::getOrderRule, this),
+                std::bind(&Queue::setOrderRule, this, std::placeholders::_1),
+                Util::TypeOf<Queue>(), getName(), "OrderRule", "");
+	SimulationControlGeneric<int>* propOrderRuleInt = new SimulationControlGeneric<int>(
+				std::bind(&Queue::getOrderRuleInt, this),
+				std::bind(&Queue::setOrderRuleInt, this, std::placeholders::_1),
+				Util::TypeOf<Queue>(), getName(), "OrderRuleInt", "");
+
+	_parentModel->getControls()->insert(propAttributeName);
+	_parentModel->getControls()->insert(propOrderRule);
+	_parentModel->getControls()->insert(propOrderRuleInt);
+
+	// setting properties
+    _addProperty(propAttributeName);
+    _addProperty(propOrderRule);
+	_addProperty(propOrderRuleInt);
 }
 
 Queue::~Queue() {
@@ -45,23 +72,30 @@ std::string Queue::show() {
 }
 
 void Queue::insertElement(Waiting* modeldatum) {
+	if (_reportStatistics) {
+		double tnow = _parentModel->getSimulation()->getSimulatedTime();
+		double duration = tnow - _lastTimeNumberInQueueChanged;
+		this->_cstatNumberInQueue->getStatistics()->getCollector()->addValue(_list->size(), duration); // save the OLD quantity and for how long it was there
+		_lastTimeNumberInQueueChanged = tnow;
+	}
 	_list->insert(modeldatum);
-	if (_reportStatistics)
-		this->_cstatNumberInQueue->getStatistics()->getCollector()->addValue(_list->size());
 }
 
 void Queue::removeElement(Waiting* modeldatum) {
-	double tnow = _parentModel->getSimulation()->getSimulatedTime();
-	_list->remove(modeldatum);
 	if (_reportStatistics) {
-		this->_cstatNumberInQueue->getStatistics()->getCollector()->addValue(_list->size());
+		double tnow = _parentModel->getSimulation()->getSimulatedTime();
+		double duration = tnow - _lastTimeNumberInQueueChanged;
+		this->_cstatNumberInQueue->getStatistics()->getCollector()->addValue(_list->size(), duration); // save the OLD quantity and for how long it was there
+		_lastTimeNumberInQueueChanged = tnow;
 		double timeInQueue = tnow - modeldatum->getTimeStartedWaiting();
 		this->_cstatTimeInQueue->getStatistics()->getCollector()->addValue(timeInQueue);
 	}
+	_list->remove(modeldatum);
 }
 
 void Queue::_initBetweenReplications() {
 	this->_list->clear();
+	_lastTimeNumberInQueueChanged = 0.0;
 }
 
 unsigned int Queue::size() {
@@ -86,11 +120,20 @@ std::string Queue::getAttributeName() const {
 
 void Queue::setOrderRule(OrderRule _orderRule) {
 	this->_orderRule = _orderRule;
+	//@TODO: SORT THE QUEUE BASED ON QUE RULE. Create comparators
 }
 
 Queue::OrderRule Queue::getOrderRule() const {
 	return _orderRule;
 }
+
+void Queue::setOrderRuleInt(int orderRule){
+	setOrderRule(static_cast<Queue::OrderRule>(orderRule));
+}
+int Queue::getOrderRuleInt() const{
+	return static_cast<int>(_orderRule);
+}
+
 
 double Queue::sumAttributesFromWaiting(Util::identification attributeID) {
 	double sum = 0.0;
@@ -148,7 +191,7 @@ bool Queue::_check(std::string* errorMessage) {
 void Queue::_createInternalAndAttachedData() {
 	if (_reportStatistics) {
 		if (_cstatNumberInQueue == nullptr) {
-			_cstatNumberInQueue = new StatisticsCollector(_parentModel, getName() + "." + "NumberInQueue", this); 
+			_cstatNumberInQueue = new StatisticsCollector(_parentModel, getName() + "." + "NumberInQueue", this);
 			_cstatTimeInQueue = new StatisticsCollector(_parentModel, getName() + "." + "TimeInQueue", this);
 			_internalDataInsert("NumberInQueue", _cstatNumberInQueue);
 			_internalDataInsert("TimeInQueue", _cstatTimeInQueue);

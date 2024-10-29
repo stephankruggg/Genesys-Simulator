@@ -14,43 +14,43 @@
 #include "../../../../plugins/components/Batch.h"
 #include "../../../../plugins/components/Delay.h"
 #include "../../../../plugins/components/Separate.h"
+#include "../../../TraitsApp.h"
 
 Smart_BatchAndSeparate::Smart_BatchAndSeparate() {
 }
 
 int Smart_BatchAndSeparate::main(int argc, char** argv) {
-    Simulator* genesys = new Simulator();
-    genesys->getTracer()->setTraceLevel(TraceManager::Level::L2_results);
-    this->setDefaultTraceHandlers(genesys->getTracer());
-    this->insertFakePluginsByHand(genesys);
-
-    Model* m = new Model(genesys);
-    PluginManager* plugins = genesys->getPlugins();
-
-    Create* cr1 = plugins->newInstance<Create>(m);
+	Simulator* genesys = new Simulator();
+	genesys->getTracer()->setTraceLevel(TraitsApp<GenesysApplication_if>::traceLevel);
+	setDefaultTraceHandlers(genesys->getTracer());
+	PluginManager* plugins = genesys->getPlugins();
+	plugins->autoInsertPlugins("autoloadplugins.txt");
+	Model* model = genesys->getModels()->newModel();
+	// create model
+	Create* cr1 = plugins->newInstance<Create>(model);
     cr1->setEntityTypeName("Entity 1");
     cr1->setTimeBetweenCreationsExpression("expo(8)", Util::TimeUnit::minute);
     cr1->setEntitiesPerCreation(1);
     
-    Create* cr2 = plugins->newInstance<Create>(m);
+	Create* cr2 = plugins->newInstance<Create>(model);
     cr2->setEntityTypeName("Entity 1");
     cr2->setTimeBetweenCreationsExpression("expo(8)", Util::TimeUnit::minute);
     cr2->setEntitiesPerCreation(1);
     
-    Batch* ba1 = plugins->newInstance<Batch>(m);
+	Batch* ba1 = plugins->newInstance<Batch>(model);
     // permanente pelo modelo do arena, mas aqui é temporário;
     ba1->setBatchSize("5");
     ba1->setGroupedAttributes(Batch::GroupedAttribs::LastEntity);
     
-    Batch* ba2 = plugins->newInstance<Batch>(m);
+	Batch* ba2 = plugins->newInstance<Batch>(model);
     ba2->setBatchSize("10");
     ba1->setGroupedAttributes(Batch::GroupedAttribs::LastEntity);
     
-    Separate* se2 = plugins->newInstance<Separate>(m);
+	Separate* se2 = plugins->newInstance<Separate>(model);
     
-    Dispose* di1 = plugins->newInstance<Dispose>(m);
+	Dispose* di1 = plugins->newInstance<Dispose>(model);
     
-    Dispose* di2 = plugins->newInstance<Dispose>(m);
+	Dispose* di2 = plugins->newInstance<Dispose>(model);
 
     cr1->getConnections()->insert(ba1);
     ba1->getConnections()->insert(di1);
@@ -59,14 +59,14 @@ int Smart_BatchAndSeparate::main(int argc, char** argv) {
     ba2->getConnections()->insert(se2);
     se2->getConnections()->insert(di2);
     
-    ModelSimulation* s = m->getSimulation();
+	ModelSimulation* s = model->getSimulation();
     s->setNumberOfReplications(300);
     double replicationLength = 2700;
     s->setReplicationLength(1000);
     s->setReplicationLength(replicationLength, Util::TimeUnit::minute);
     s->setWarmUpPeriod(replicationLength * 0.05);
     s->setWarmUpPeriodTimeUnit(Util::TimeUnit::minute);
-    m->save("./models/Smart_BatchAndSeparate.gen");
+	model->save("./models/Smart_BatchAndSeparate.gen");
     s->start();
     
     delete genesys;

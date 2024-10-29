@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1231</width>
-    <height>640</height>
+    <width>1081</width>
+    <height>777</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -30,9 +30,15 @@
       <widget class="ModelGraphicsView" name="graphicsView">
        <property name="sizePolicy">
         <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
-         <horstretch>0</horstretch>
+         <horstretch>4</horstretch>
          <verstretch>4</verstretch>
         </sizepolicy>
+       </property>
+       <property name="minimumSize">
+        <size>
+         <width>0</width>
+         <height>250</height>
+        </size>
        </property>
        <property name="frameShape">
         <enum>QFrame::Box</enum>
@@ -41,7 +47,7 @@
         <enum>QFrame::Sunken</enum>
        </property>
        <property name="lineWidth">
-        <number>2</number>
+        <number>3</number>
        </property>
        <property name="verticalScrollBarPolicy">
         <enum>Qt::ScrollBarAlwaysOn</enum>
@@ -82,7 +88,7 @@
             <enum>QTabWidget::Triangular</enum>
            </property>
            <property name="currentIndex">
-            <number>4</number>
+            <number>2</number>
            </property>
            <property name="tabBarAutoHide">
             <bool>true</bool>
@@ -131,7 +137,7 @@
                 <item>
                  <widget class="QScrollArea" name="scrollArea_Graphic">
                   <property name="autoFillBackground">
-                   <bool>true</bool>
+                   <bool>false</bool>
                   </property>
                   <property name="verticalScrollBarPolicy">
                    <enum>Qt::ScrollBarAlwaysOn</enum>
@@ -144,9 +150,12 @@
                     <rect>
                      <x>0</x>
                      <y>0</y>
-                     <width>831</width>
-                     <height>139</height>
+                     <width>680</width>
+                     <height>70</height>
                     </rect>
+                   </property>
+                   <property name="autoFillBackground">
+                    <bool>true</bool>
                    </property>
                    <layout class="QVBoxLayout" name="verticalLayout_5">
                     <item>
@@ -157,8 +166,45 @@
                         <verstretch>3</verstretch>
                        </sizepolicy>
                       </property>
+                      <property name="palette">
+                       <palette>
+                        <active>
+                         <colorrole role="Window">
+                          <brush brushstyle="SolidPattern">
+                           <color alpha="255">
+                            <red>255</red>
+                            <green>255</green>
+                            <blue>255</blue>
+                           </color>
+                          </brush>
+                         </colorrole>
+                        </active>
+                        <inactive>
+                         <colorrole role="Window">
+                          <brush brushstyle="SolidPattern">
+                           <color alpha="255">
+                            <red>239</red>
+                            <green>239</green>
+                            <blue>239</blue>
+                           </color>
+                          </brush>
+                         </colorrole>
+                        </inactive>
+                        <disabled>
+                         <colorrole role="Window">
+                          <brush brushstyle="SolidPattern">
+                           <color alpha="255">
+                            <red>255</red>
+                            <green>255</green>
+                            <blue>255</blue>
+                           </color>
+                          </brush>
+                         </colorrole>
+                        </disabled>
+                       </palette>
+                      </property>
                       <property name="autoFillBackground">
-                       <bool>true</bool>
+                       <bool>false</bool>
                       </property>
                       <property name="frameShadow">
                        <enum>QFrame::Plain</enum>
@@ -534,6 +580,9 @@
     </item>
     <item>
      <layout class="QHBoxLayout" name="horizontalLayoutZoomReplication">
+      <property name="spacing">
+       <number>12</number>
+      </property>
       <item>
        <widget class="QLabel" name="labelMousePos">
         <property name="font">
@@ -562,6 +611,13 @@
         </property>
         <property name="text">
          <string>Zoom:</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QLabel" name="label_ZoomValue">
+        <property name="text">
+         <string>0.0</string>
         </property>
        </widget>
       </item>
@@ -611,7 +667,7 @@
          </font>
         </property>
         <property name="text">
-         <string>1/1</string>
+         <string>0/-</string>
         </property>
        </widget>
       </item>
@@ -632,6 +688,45 @@
         <property name="value">
          <number>0</number>
         </property>
+        <property name="invertedAppearance">
+         <bool>false</bool>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="Line" name="line_3">
+        <property name="orientation">
+         <enum>Qt::Vertical</enum>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QLabel" name="labelAnimationSpeed">
+        <property name="text">
+         <string>Animation speed</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QSlider" name="horizontalSliderAnimationSpeed">
+        <property name="minimum">
+         <number>1</number>
+        </property>
+        <property name="maximum">
+         <number>10</number>
+        </property>
+        <property name="pageStep">
+         <number>1</number>
+        </property>
+        <property name="value">
+         <number>5</number>
+        </property>
+        <property name="sliderPosition">
+         <number>5</number>
+        </property>
+        <property name="orientation">
+         <enum>Qt::Horizontal</enum>
+        </property>
        </widget>
       </item>
      </layout>
@@ -643,45 +738,46 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>1231</width>
-     <height>24</height>
+     <width>1081</width>
+     <height>22</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuModel">
     <property name="title">
      <string>Model</string>
     </property>
-    <addaction name="actionNew"/>
+    <addaction name="actionModelNew"/>
     <addaction name="separator"/>
-    <addaction name="actionOpen"/>
-    <addaction name="actionSave"/>
-    <addaction name="actionClose"/>
+    <addaction name="actionModelOpen"/>
+    <addaction name="actionModelSave"/>
+    <addaction name="actionModelClose"/>
     <addaction name="separator"/>
-    <addaction name="actionCheck"/>
-    <addaction name="separator"/>
-    <addaction name="actionExit"/>
+    <addaction name="actionModelInformation"/>
+    <addaction name="actionModelCheck"/>
    </widget>
    <widget class="QMenu" name="menuSimulation">
     <property name="enabled">
-     <bool>false</bool>
+     <bool>true</bool>
     </property>
     <property name="title">
      <string>Simulation</string>
     </property>
-    <addaction name="actionStart"/>
-    <addaction name="actionStep"/>
-    <addaction name="actionStop"/>
+    <addaction name="actionSimulationConfigure"/>
     <addaction name="separator"/>
-    <addaction name="actionPause"/>
-    <addaction name="actionResume"/>
+    <addaction name="actionSimulationStart"/>
+    <addaction name="actionSimulationStep"/>
+    <addaction name="actionSimulationStop"/>
+    <addaction name="separator"/>
+    <addaction name="actionSimulationPause"/>
+    <addaction name="actionSimulationResume"/>
    </widget>
    <widget class="QMenu" name="menuAbout">
     <property name="title">
      <string>About</string>
     </property>
-    <addaction name="actionAbout"/>
-    <addaction name="actionLicence"/>
-    <addaction name="actionGet_Involved"/>
+    <addaction name="actionAboutAbout"/>
+    <addaction name="actionAboutLicence"/>
+    <addaction name="actionAboutGetInvolved"/>
    </widget>
    <widget class="QMenu" name="menuView">
     <property name="title">
@@ -695,54 +791,112 @@
      <addaction name="actionZoom_Out"/>
      <addaction name="actionZoom_All"/>
     </widget>
-    <widget class="QMenu" name="menuDraw">
+    <widget class="QMenu" name="menuViewDraw">
      <property name="title">
       <string>Draw</string>
      </property>
-     <addaction name="actionLine"/>
-     <addaction name="actionRectangle"/>
-     <addaction name="actionEllipse"/>
+     <addaction name="actionDrawLine"/>
+     <addaction name="actionDrawRectangle"/>
+     <addaction name="actionDrawEllipse"/>
+     <addaction name="actionDrawPoligon"/>
+     <addaction name="actionDrawText"/>
     </widget>
-    <widget class="QMenu" name="menuAnime">
+    <widget class="QMenu" name="menuViewAnimate">
      <property name="title">
-      <string>Anime</string>
+      <string>Animate</string>
      </property>
-     <addaction name="actionClock"/>
-     <addaction name="actionVariable"/>
-     <addaction name="actionExpression"/>
-     <addaction name="actionResource"/>
-     <addaction name="actionQueue"/>
-     <addaction name="actionStation"/>
+     <addaction name="actionAnimateSimulatedTime"/>
+     <addaction name="actionAnimateAttribute"/>
+     <addaction name="actionAnimateEntity"/>
+     <addaction name="actionAnimateEvent"/>
+     <addaction name="actionAnimateCounter"/>
+     <addaction name="actionAnimateStatistics"/>
+     <addaction name="actionAnimatePlot"/>
+     <addaction name="separator"/>
+     <addaction name="actionAnimateVariable"/>
+     <addaction name="actionAnimateResource"/>
+     <addaction name="actionAnimateQueue"/>
+     <addaction name="actionAnimateExpression"/>
     </widget>
-    <addaction name="actionGrid"/>
-    <addaction name="actionRule"/>
-    <addaction name="actionSnap"/>
-    <addaction name="actionGuides"/>
-    <addaction name="separator"/>
-    <addaction name="actionConnect"/>
-    <addaction name="separator"/>
-    <addaction name="menuDraw"/>
-    <addaction name="menuAnime"/>
-    <addaction name="separator"/>
+    <widget class="QMenu" name="menuViewArranje">
+     <property name="title">
+      <string>Align</string>
+     </property>
+     <addaction name="actionArranjeLeft"/>
+     <addaction name="actionArranjeCenter"/>
+     <addaction name="actionArranjeRight"/>
+     <addaction name="separator"/>
+     <addaction name="actionArranjeTop"/>
+     <addaction name="actionArranjeMiddle"/>
+     <addaction name="actionArranjeBototm"/>
+    </widget>
+    <widget class="QMenu" name="menuViewShow">
+     <property name="title">
+      <string>Show</string>
+     </property>
+     <addaction name="actionShowGrid"/>
+     <addaction name="actionShowRule"/>
+     <addaction name="actionShowSnap"/>
+     <addaction name="actionShowGuides"/>
+     <addaction name="actionDiagrams"/>
+     <addaction name="separator"/>
+     <addaction name="actionShowInternalElements"/>
+     <addaction name="actionShowAttachedElements"/>
+    </widget>
+    <addaction name="menuViewShow"/>
     <addaction name="menuZoom"/>
+    <addaction name="menuViewArranje"/>
+    <addaction name="separator"/>
+    <addaction name="actionGModelShowConnect"/>
+    <addaction name="separator"/>
+    <addaction name="menuViewDraw"/>
+    <addaction name="menuViewAnimate"/>
+    <addaction name="separator"/>
+    <addaction name="actionViewGroup"/>
+    <addaction name="actionViewUngroup"/>
+    <addaction name="separator"/>
+    <addaction name="actionViewConfigure"/>
    </widget>
    <widget class="QMenu" name="menuEdit">
     <property name="title">
      <string>Edit</string>
     </property>
-    <addaction name="actionUndo"/>
-    <addaction name="actionRedo"/>
+    <addaction name="actionEditUndo"/>
+    <addaction name="actionEditRedo"/>
     <addaction name="separator"/>
-    <addaction name="actionCut"/>
-    <addaction name="actionCopy"/>
-    <addaction name="actionPaste"/>
+    <addaction name="actionEditCut"/>
+    <addaction name="actionEditCopy"/>
+    <addaction name="actionEditPaste"/>
+    <addaction name="actionEditDelete"/>
     <addaction name="separator"/>
-    <addaction name="actionFind"/>
+    <addaction name="actionEditFind"/>
+    <addaction name="separator"/>
    </widget>
+   <widget class="QMenu" name="menuTools">
+    <property name="title">
+     <string>Tools</string>
+    </property>
+    <addaction name="actionToolsDataAnalyzer"/>
+    <addaction name="actionToolsOptimizator"/>
+    <addaction name="actionToolsParserGrammarChecker"/>
+    <addaction name="actionParallelization"/>
+   </widget>
+   <widget class="QMenu" name="menuSimulator">
+    <property name="title">
+     <string>Simulator</string>
+    </property>
+    <addaction name="actionSimulatorsPluginManager"/>
+    <addaction name="separator"/>
+    <addaction name="actionSimulatorPreferences"/>
+    <addaction name="separator"/>
+    <addaction name="actionSimulatorExit"/>
+   </widget>
+   <addaction name="menuSimulator"/>
    <addaction name="menuModel"/>
    <addaction name="menuEdit"/>
    <addaction name="menuView"/>
    <addaction name="menuSimulation"/>
+   <addaction name="menuTools"/>
    <addaction name="menuAbout"/>
   </widget>
   <widget class="QStatusBar" name="statusbar"/>
@@ -756,16 +910,29 @@
    <attribute name="toolBarBreak">
     <bool>false</bool>
    </attribute>
-   <addaction name="actionNew"/>
-   <addaction name="actionOpen"/>
-   <addaction name="actionSave"/>
-   <addaction name="actionClose"/>
+   <addaction name="actionModelNew"/>
+   <addaction name="actionModelOpen"/>
+   <addaction name="actionModelSave"/>
+   <addaction name="actionModelClose"/>
    <addaction name="separator"/>
-   <addaction name="actionCheck"/>
+   <addaction name="actionModelInformation"/>
+   <addaction name="actionModelCheck"/>
    <addaction name="separator"/>
-   <addaction name="actionExit"/>
+   <addaction name="actionSimulatorExit"/>
   </widget>
   <widget class="QDockWidget" name="dockWidgetConsole">
+   <property name="sizePolicy">
+    <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
+     <horstretch>0</horstretch>
+     <verstretch>0</verstretch>
+    </sizepolicy>
+   </property>
+   <property name="minimumSize">
+    <size>
+     <width>118</width>
+     <height>138</height>
+    </size>
+   </property>
    <property name="windowIcon">
     <iconset resource="GenesysQtGUI_resources.qrc">
      <normaloff>:/icons4/resources/icons/pack4/console.png</normaloff>:/icons4/resources/icons/pack4/console.png</iconset>
@@ -780,12 +947,24 @@
     <string>Console</string>
    </property>
    <attribute name="dockWidgetArea">
-    <number>1</number>
+    <number>8</number>
    </attribute>
    <widget class="QWidget" name="dockWidgetContentsConsole">
     <layout class="QVBoxLayout" name="verticalLayout">
      <item>
       <widget class="QTextEdit" name="textEdit_Console">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Preferred" vsizetype="Minimum">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+       <property name="minimumSize">
+        <size>
+         <width>100</width>
+         <height>100</height>
+        </size>
+       </property>
        <property name="font">
         <font>
          <pointsize>8</pointsize>
@@ -793,10 +972,13 @@
        </property>
        <property name="html">
         <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
-&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;meta charset=&quot;utf-8&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
-&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'DejaVu LGC Sans'; font-size:8pt; font-weight:400; font-style:normal;&quot;&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Console&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+hr { height: 1px; border-width: 0; }
+li.unchecked::marker { content: &quot;\2610&quot;; }
+li.checked::marker { content: &quot;\2612&quot;; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'Sans Serif'; font-size:8pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:'DejaVu LGC Sans';&quot;&gt;Console&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
        </property>
        <property name="textInteractionFlags">
         <set>Qt::TextSelectableByKeyboard|Qt::TextSelectableByMouse</set>
@@ -835,6 +1017,9 @@ p, li { white-space: pre-wrap; }
        </property>
        <property name="toolTipDuration">
         <number>-1</number>
+       </property>
+       <property name="frameShape">
+        <enum>QFrame::StyledPanel</enum>
        </property>
        <property name="dragEnabled">
         <bool>true</bool>
@@ -888,7 +1073,7 @@ p, li { white-space: pre-wrap; }
     <set>QDockWidget::DockWidgetFloatable|QDockWidget::DockWidgetMovable</set>
    </property>
    <property name="allowedAreas">
-    <set>Qt::BottomDockWidgetArea|Qt::LeftDockWidgetArea|Qt::RightDockWidgetArea</set>
+    <set>Qt::LeftDockWidgetArea|Qt::RightDockWidgetArea</set>
    </property>
    <property name="windowTitle">
     <string>Property Editor</string>
@@ -899,7 +1084,7 @@ p, li { white-space: pre-wrap; }
    <widget class="QWidget" name="dockWidgetContents">
     <layout class="QHBoxLayout" name="horizontalLayout_4">
      <item>
-      <widget class="PropertyEditor" name="treeViewPropertyEditor">
+      <widget class="ObjectPropertyBrowser" name="treeViewPropertyEditor">
        <property name="sizePolicy">
         <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
          <horstretch>0</horstretch>
@@ -925,13 +1110,11 @@ p, li { white-space: pre-wrap; }
     <enum>TopToolBarArea</enum>
    </attribute>
    <attribute name="toolBarBreak">
-    <bool>false</bool>
+    <bool>true</bool>
    </attribute>
-   <addaction name="actionConnect"/>
-   <addaction name="actionComponent_Breakpoint"/>
+   <addaction name="actionGModelShowConnect"/>
+   <addaction name="actionGModelComponentBreakpoint"/>
    <addaction name="separator"/>
-   <addaction name="actionGrid"/>
-   <addaction name="actionRule"/>
   </widget>
   <widget class="QToolBar" name="toolBarEdit">
    <property name="windowTitle">
@@ -943,12 +1126,13 @@ p, li { white-space: pre-wrap; }
    <attribute name="toolBarBreak">
     <bool>false</bool>
    </attribute>
-   <addaction name="actionUndo"/>
-   <addaction name="actionRedo"/>
+   <addaction name="actionEditUndo"/>
+   <addaction name="actionEditRedo"/>
    <addaction name="separator"/>
-   <addaction name="actionCut"/>
-   <addaction name="actionCopy"/>
-   <addaction name="actionPaste"/>
+   <addaction name="actionEditCut"/>
+   <addaction name="actionEditCopy"/>
+   <addaction name="actionEditPaste"/>
+   <addaction name="actionEditDelete"/>
   </widget>
   <widget class="QToolBar" name="toolBarView">
    <property name="windowTitle">
@@ -960,9 +1144,19 @@ p, li { white-space: pre-wrap; }
    <attribute name="toolBarBreak">
     <bool>false</bool>
    </attribute>
+   <addaction name="actionShowGrid"/>
+   <addaction name="actionShowRule"/>
+   <addaction name="actionShowSnap"/>
+   <addaction name="actionShowGuides"/>
+   <addaction name="actionSelectAll"/>
+   <addaction name="separator"/>
    <addaction name="actionZoom_In"/>
    <addaction name="actionZoom_Out"/>
    <addaction name="actionZoom_All"/>
+   <addaction name="separator"/>
+   <addaction name="actionViewGroup"/>
+   <addaction name="actionViewUngroup"/>
+   <addaction name="separator"/>
   </widget>
   <widget class="QToolBar" name="toolBarSimulation">
    <property name="windowTitle">
@@ -974,11 +1168,13 @@ p, li { white-space: pre-wrap; }
    <attribute name="toolBarBreak">
     <bool>false</bool>
    </attribute>
-   <addaction name="actionStart"/>
-   <addaction name="actionStep"/>
-   <addaction name="actionStop"/>
-   <addaction name="actionPause"/>
-   <addaction name="actionResume"/>
+   <addaction name="actionSimulationConfigure"/>
+   <addaction name="actionSimulationStart"/>
+   <addaction name="actionSimulationStep"/>
+   <addaction name="actionSimulationStop"/>
+   <addaction name="actionSimulationPause"/>
+   <addaction name="actionSimulationResume"/>
+   <addaction name="actionActivateGraphicalSimulation"/>
   </widget>
   <widget class="QToolBar" name="toolBarAbout">
    <property name="windowTitle">
@@ -990,11 +1186,11 @@ p, li { white-space: pre-wrap; }
    <attribute name="toolBarBreak">
     <bool>false</bool>
    </attribute>
-   <addaction name="actionAbout"/>
-   <addaction name="actionLicence"/>
-   <addaction name="actionGet_Involved"/>
+   <addaction name="actionAboutAbout"/>
+   <addaction name="actionAboutLicence"/>
+   <addaction name="actionAboutGetInvolved"/>
   </widget>
-  <widget class="QToolBar" name="toolBarAnimation">
+  <widget class="QToolBar" name="toolBarDraw">
    <property name="windowTitle">
     <string>toolBar</string>
    </property>
@@ -1004,15 +1200,56 @@ p, li { white-space: pre-wrap; }
    <attribute name="toolBarBreak">
     <bool>false</bool>
    </attribute>
-   <addaction name="actionLine"/>
-   <addaction name="actionEllipse"/>
-   <addaction name="actionRectangle"/>
+   <addaction name="actionDrawLine"/>
+   <addaction name="actionDrawRectangle"/>
+   <addaction name="actionDrawEllipse"/>
+   <addaction name="actionDrawPoligon"/>
+   <addaction name="actionDrawText"/>
    <addaction name="separator"/>
-   <addaction name="actionClock"/>
-   <addaction name="actionVariable"/>
-   <addaction name="actionExpression"/>
   </widget>
-  <action name="actionNew">
+  <widget class="QToolBar" name="toolBarAnimate">
+   <property name="windowTitle">
+    <string>toolBar</string>
+   </property>
+   <attribute name="toolBarArea">
+    <enum>TopToolBarArea</enum>
+   </attribute>
+   <attribute name="toolBarBreak">
+    <bool>false</bool>
+   </attribute>
+   <addaction name="actionAnimateSimulatedTime"/>
+   <addaction name="actionAnimateEntity"/>
+   <addaction name="actionAnimateEvent"/>
+   <addaction name="actionAnimateAttribute"/>
+   <addaction name="actionAnimateStatistics"/>
+   <addaction name="actionAnimateCounter"/>
+   <addaction name="separator"/>
+   <addaction name="actionAnimateExpression"/>
+   <addaction name="actionAnimateVariable"/>
+   <addaction name="actionAnimatePlot"/>
+   <addaction name="actionAnimateResource"/>
+   <addaction name="actionAnimateQueue"/>
+   <addaction name="actionAnimateStation"/>
+  </widget>
+  <widget class="QToolBar" name="toolBarArranje">
+   <property name="windowTitle">
+    <string>toolBar</string>
+   </property>
+   <attribute name="toolBarArea">
+    <enum>TopToolBarArea</enum>
+   </attribute>
+   <attribute name="toolBarBreak">
+    <bool>false</bool>
+   </attribute>
+   <addaction name="actionArranjeLeft"/>
+   <addaction name="actionArranjeCenter"/>
+   <addaction name="actionArranjeRight"/>
+   <addaction name="separator"/>
+   <addaction name="actionArranjeTop"/>
+   <addaction name="actionArranjeMiddle"/>
+   <addaction name="actionArranjeBototm"/>
+  </widget>
+  <action name="actionModelNew">
    <property name="icon">
     <iconset resource="GenesysQtGUI_resources.qrc">
      <normaloff>:/icons3/resources/icons/pack3/ico/new document.ico</normaloff>:/icons3/resources/icons/pack3/ico/new document.ico</iconset>
@@ -1024,7 +1261,7 @@ p, li { white-space: pre-wrap; }
     <string>New Model</string>
    </property>
   </action>
-  <action name="actionOpen">
+  <action name="actionModelOpen">
    <property name="icon">
     <iconset resource="GenesysQtGUI_resources.qrc">
      <normaloff>:/icons3/resources/icons/pack3/ico/upload.ico</normaloff>:/icons3/resources/icons/pack3/ico/upload.ico</iconset>
@@ -1039,7 +1276,7 @@ p, li { white-space: pre-wrap; }
     <string>Ctrl+O</string>
    </property>
   </action>
-  <action name="actionSave">
+  <action name="actionModelSave">
    <property name="enabled">
     <bool>false</bool>
    </property>
@@ -1057,7 +1294,7 @@ p, li { white-space: pre-wrap; }
     <string>Ctrl+S</string>
    </property>
   </action>
-  <action name="actionExit">
+  <action name="actionSimulatorExit">
    <property name="icon">
     <iconset resource="GenesysQtGUI_resources.qrc">
      <normaloff>:/icons3/resources/icons/pack3/ico/exit.ico</normaloff>:/icons3/resources/icons/pack3/ico/exit.ico</iconset>
@@ -1069,10 +1306,10 @@ p, li { white-space: pre-wrap; }
     <string>Exit Genesys</string>
    </property>
    <property name="shortcut">
-    <string>Ctrl+X</string>
+    <string>Ctrl+Shift+X</string>
    </property>
   </action>
-  <action name="actionStart">
+  <action name="actionSimulationStart">
    <property name="enabled">
     <bool>true</bool>
    </property>
@@ -1090,7 +1327,7 @@ p, li { white-space: pre-wrap; }
     <string>F5</string>
    </property>
   </action>
-  <action name="actionStep">
+  <action name="actionSimulationStep">
    <property name="enabled">
     <bool>false</bool>
    </property>
@@ -1108,7 +1345,7 @@ p, li { white-space: pre-wrap; }
     <string>F6</string>
    </property>
   </action>
-  <action name="actionStop">
+  <action name="actionSimulationStop">
    <property name="enabled">
     <bool>false</bool>
    </property>
@@ -1126,7 +1363,7 @@ p, li { white-space: pre-wrap; }
     <string>F7</string>
    </property>
   </action>
-  <action name="actionPause">
+  <action name="actionSimulationPause">
    <property name="enabled">
     <bool>false</bool>
    </property>
@@ -1144,7 +1381,7 @@ p, li { white-space: pre-wrap; }
     <string>F8</string>
    </property>
   </action>
-  <action name="actionResume">
+  <action name="actionSimulationResume">
    <property name="enabled">
     <bool>false</bool>
    </property>
@@ -1162,7 +1399,7 @@ p, li { white-space: pre-wrap; }
     <string>F9</string>
    </property>
   </action>
-  <action name="actionClose">
+  <action name="actionModelClose">
    <property name="enabled">
     <bool>false</bool>
    </property>
@@ -1180,7 +1417,7 @@ p, li { white-space: pre-wrap; }
     <string>Ctrl+W</string>
    </property>
   </action>
-  <action name="actionCheck">
+  <action name="actionModelCheck">
    <property name="enabled">
     <bool>false</bool>
    </property>
@@ -1198,7 +1435,7 @@ p, li { white-space: pre-wrap; }
     <string>F4</string>
    </property>
   </action>
-  <action name="actionAbout">
+  <action name="actionAboutAbout">
    <property name="icon">
     <iconset resource="GenesysQtGUI_resources.qrc">
      <normaloff>:/icons1/resources/icons/pack1/ico/106.ico</normaloff>:/icons1/resources/icons/pack1/ico/106.ico</iconset>
@@ -1210,7 +1447,7 @@ p, li { white-space: pre-wrap; }
     <string>About Genesys</string>
    </property>
   </action>
-  <action name="actionLicence">
+  <action name="actionAboutLicence">
    <property name="icon">
     <iconset resource="GenesysQtGUI_resources.qrc">
      <normaloff>:/icons2/resources/icons/pack2/ico/28.ico</normaloff>:/icons2/resources/icons/pack2/ico/28.ico</iconset>
@@ -1222,7 +1459,7 @@ p, li { white-space: pre-wrap; }
     <string>About Licence</string>
    </property>
   </action>
-  <action name="actionGet_Involved">
+  <action name="actionAboutGetInvolved">
    <property name="icon">
     <iconset resource="GenesysQtGUI_resources.qrc">
      <normaloff>:/icons3/resources/icons/pack3/ico/user group.ico</normaloff>:/icons3/resources/icons/pack3/ico/user group.ico</iconset>
@@ -1234,8 +1471,11 @@ p, li { white-space: pre-wrap; }
     <string>Get Involved in Genesys</string>
    </property>
   </action>
-  <action name="actionGrid">
+  <action name="actionShowGrid">
    <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="enabled">
     <bool>true</bool>
    </property>
    <property name="icon">
@@ -1246,7 +1486,7 @@ p, li { white-space: pre-wrap; }
     <string>Grid</string>
    </property>
   </action>
-  <action name="actionSnap">
+  <action name="actionShowSnap">
    <property name="checkable">
     <bool>true</bool>
    </property>
@@ -1258,7 +1498,13 @@ p, li { white-space: pre-wrap; }
     <string>Snap</string>
    </property>
   </action>
-  <action name="actionUndo">
+  <action name="actionEditUndo">
+   <property name="checkable">
+    <bool>false</bool>
+   </property>
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
    <property name="icon">
     <iconset resource="GenesysQtGUI_resources.qrc">
      <normaloff>:/icons3/resources/icons/pack3/ico/undo.ico</normaloff>:/icons3/resources/icons/pack3/ico/undo.ico</iconset>
@@ -1269,8 +1515,14 @@ p, li { white-space: pre-wrap; }
    <property name="shortcut">
     <string>Ctrl+Z</string>
    </property>
+   <property name="visible">
+    <bool>true</bool>
+   </property>
   </action>
-  <action name="actionRedo">
+  <action name="actionEditRedo">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
    <property name="icon">
     <iconset resource="GenesysQtGUI_resources.qrc">
      <normaloff>:/icons3/resources/icons/pack3/ico/redo.ico</normaloff>:/icons3/resources/icons/pack3/ico/redo.ico</iconset>
@@ -1282,7 +1534,7 @@ p, li { white-space: pre-wrap; }
     <string>Ctrl+Y</string>
    </property>
   </action>
-  <action name="actionFind">
+  <action name="actionEditFind">
    <property name="icon">
     <iconset resource="GenesysQtGUI_resources.qrc">
      <normaloff>:/icons3/resources/icons/pack3/ico/find.ico</normaloff>:/icons3/resources/icons/pack3/ico/find.ico</iconset>
@@ -1306,7 +1558,10 @@ p, li { white-space: pre-wrap; }
     <string>Ctrl+R</string>
    </property>
   </action>
-  <action name="actionCut">
+  <action name="actionEditCut">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
    <property name="icon">
     <iconset resource="GenesysQtGUI_resources.qrc">
      <normaloff>:/icons3/resources/icons/pack3/ico/cut.ico</normaloff>:/icons3/resources/icons/pack3/ico/cut.ico</iconset>
@@ -1318,7 +1573,10 @@ p, li { white-space: pre-wrap; }
     <string>Ctrl+X</string>
    </property>
   </action>
-  <action name="actionCopy">
+  <action name="actionEditCopy">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
    <property name="icon">
     <iconset resource="GenesysQtGUI_resources.qrc">
      <normaloff>:/icons3/resources/icons/pack3/ico/copy.ico</normaloff>:/icons3/resources/icons/pack3/ico/copy.ico</iconset>
@@ -1330,7 +1588,10 @@ p, li { white-space: pre-wrap; }
     <string>Ctrl+C</string>
    </property>
   </action>
-  <action name="actionPaste">
+  <action name="actionEditPaste">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
    <property name="icon">
     <iconset resource="GenesysQtGUI_resources.qrc">
      <normaloff>:/icons3/resources/icons/pack3/ico/paste.ico</normaloff>:/icons3/resources/icons/pack3/ico/paste.ico</iconset>
@@ -1342,19 +1603,20 @@ p, li { white-space: pre-wrap; }
     <string>Ctrl+V</string>
    </property>
   </action>
-  <action name="actionRule">
+  <action name="actionShowRule">
    <property name="checkable">
     <bool>true</bool>
    </property>
    <property name="icon">
     <iconset resource="GenesysQtGUI_resources.qrc">
-     <normaloff>:/icons3/resources/icons/pack3/ico/question.ico</normaloff>:/icons3/resources/icons/pack3/ico/question.ico</iconset>
+     <normaloff>:/mxgraph/resources/icons/pack4/iconsMxGraph/rule.png</normaloff>
+     <normalon>:/mxgraph/resources/icons/pack4/iconsMxGraph/rule.png</normalon>:/mxgraph/resources/icons/pack4/iconsMxGraph/rule.png</iconset>
    </property>
    <property name="text">
     <string>Rule</string>
    </property>
   </action>
-  <action name="actionGuides">
+  <action name="actionShowGuides">
    <property name="checkable">
     <bool>true</bool>
    </property>
@@ -1402,25 +1664,34 @@ p, li { white-space: pre-wrap; }
     <string>Ctrl+0</string>
    </property>
   </action>
-  <action name="actionLine">
+  <action name="actionDrawLine">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
    <property name="icon">
     <iconset resource="GenesysQtGUI_resources.qrc">
-     <normaloff>:/resources/ToolBar/_linha.bmp</normaloff>:/resources/ToolBar/_linha.bmp</iconset>
+     <normaloff>:/mxgraph/resources/icons/pack4/iconsMxGraph/hline.png</normaloff>:/mxgraph/resources/icons/pack4/iconsMxGraph/hline.png</iconset>
    </property>
    <property name="text">
     <string>Line</string>
    </property>
   </action>
-  <action name="actionRectangle">
+  <action name="actionDrawRectangle">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
    <property name="icon">
     <iconset resource="GenesysQtGUI_resources.qrc">
-     <normaloff>:/resources/ToolBar/_retang.bmp</normaloff>:/resources/ToolBar/_retang.bmp</iconset>
+     <normaloff>:/mxgraph/resources/icons/pack4/iconsMxGraph/rectangle.png</normaloff>:/mxgraph/resources/icons/pack4/iconsMxGraph/rectangle.png</iconset>
    </property>
    <property name="text">
     <string>Rectangle</string>
    </property>
   </action>
-  <action name="actionEllipse">
+  <action name="actionDrawEllipse">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
    <property name="icon">
     <iconset resource="GenesysQtGUI_resources.qrc">
      <normaloff>:/resources/ToolBar/_elipse.bmp</normaloff>:/resources/ToolBar/_elipse.bmp</iconset>
@@ -1429,16 +1700,25 @@ p, li { white-space: pre-wrap; }
     <string>Ellipse</string>
    </property>
   </action>
-  <action name="actionClock">
+  <action name="actionAnimateSimulatedTime">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
    <property name="icon">
     <iconset resource="GenesysQtGUI_resources.qrc">
-     <normaloff>:/resources/ToolBar/_relogio.bmp</normaloff>:/resources/ToolBar/_relogio.bmp</iconset>
+     <normaloff>:/icons3/resources/icons/pack3/ico/alarm clock.ico</normaloff>:/icons3/resources/icons/pack3/ico/alarm clock.ico</iconset>
    </property>
    <property name="text">
-    <string>Clock</string>
+    <string>Simulated Time</string>
+   </property>
+   <property name="toolTip">
+    <string>Simulated Time</string>
    </property>
   </action>
-  <action name="actionVariable">
+  <action name="actionAnimateVariable">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
    <property name="icon">
     <iconset resource="GenesysQtGUI_resources.qrc">
      <normaloff>:/resources/ToolBar/_animvalor.bmp</normaloff>:/resources/ToolBar/_animvalor.bmp</iconset>
@@ -1447,7 +1727,7 @@ p, li { white-space: pre-wrap; }
     <string>Variable</string>
    </property>
   </action>
-  <action name="actionExpression">
+  <action name="actionAnimateExpression">
    <property name="icon">
     <iconset resource="GenesysQtGUI_resources.qrc">
      <normaloff>:/resources/ToolBar/_animvalor.bmp</normaloff>:/resources/ToolBar/_animvalor.bmp</iconset>
@@ -1456,7 +1736,7 @@ p, li { white-space: pre-wrap; }
     <string>Expression</string>
    </property>
   </action>
-  <action name="actionResource">
+  <action name="actionAnimateResource">
    <property name="icon">
     <iconset resource="GenesysQtGUI_resources.qrc">
      <normaloff>:/icons3/resources/icons/pack3/ico/question.ico</normaloff>:/icons3/resources/icons/pack3/ico/question.ico</iconset>
@@ -1465,7 +1745,7 @@ p, li { white-space: pre-wrap; }
     <string>Resource</string>
    </property>
   </action>
-  <action name="actionQueue">
+  <action name="actionAnimateQueue">
    <property name="icon">
     <iconset resource="GenesysQtGUI_resources.qrc">
      <normaloff>:/resources/ToolBar/_animfila.bmp</normaloff>:/resources/ToolBar/_animfila.bmp</iconset>
@@ -1474,7 +1754,7 @@ p, li { white-space: pre-wrap; }
     <string>Queue</string>
    </property>
   </action>
-  <action name="actionStation">
+  <action name="actionAnimateStation">
    <property name="icon">
     <iconset resource="GenesysQtGUI_resources.qrc">
      <normaloff>:/icons3/resources/icons/pack3/ico/question.ico</normaloff>:/icons3/resources/icons/pack3/ico/question.ico</iconset>
@@ -1483,7 +1763,10 @@ p, li { white-space: pre-wrap; }
     <string>Station</string>
    </property>
   </action>
-  <action name="actionConnect">
+  <action name="actionGModelShowConnect">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
    <property name="icon">
     <iconset resource="GenesysQtGUI_resources.qrc">
      <normaloff>:/mxgraph/resources/icons/pack4/iconsMxGraph/vertical.png</normaloff>:/mxgraph/resources/icons/pack4/iconsMxGraph/vertical.png</iconset>
@@ -1492,7 +1775,7 @@ p, li { white-space: pre-wrap; }
     <string>Connect</string>
    </property>
   </action>
-  <action name="actionComponent_Breakpoint">
+  <action name="actionGModelComponentBreakpoint">
    <property name="icon">
     <iconset resource="GenesysQtGUI_resources.qrc">
      <normaloff>:/icons3/resources/icons/pack3/ico/abort.ico</normaloff>:/icons3/resources/icons/pack3/ico/abort.ico</iconset>
@@ -1502,6 +1785,357 @@ p, li { white-space: pre-wrap; }
    </property>
    <property name="toolTip">
     <string>Component Breakpoint</string>
+   </property>
+  </action>
+  <action name="actionArranje">
+   <property name="text">
+    <string>Arranje</string>
+   </property>
+  </action>
+  <action name="actionSimulatorPreferences">
+   <property name="icon">
+    <iconset>
+     <normalon>:/mxgraph/resources/icons/pack4/iconsMxGraph/preferences.gif</normalon>
+    </iconset>
+   </property>
+   <property name="text">
+    <string>Preferences</string>
+   </property>
+   <property name="toolTip">
+    <string>Application Preferences</string>
+   </property>
+  </action>
+  <action name="actionEditDelete">
+   <property name="icon">
+    <iconset theme="edit-delete">
+     <normaloff>.</normaloff>.</iconset>
+   </property>
+   <property name="text">
+    <string>Delete</string>
+   </property>
+  </action>
+  <action name="actionArranjeLeft">
+   <property name="icon">
+    <iconset resource="GenesysQtGUI_resources.qrc">
+     <normaloff>:/mxgraph/resources/icons/pack4/iconsMxGraph/alignleft.gif</normaloff>:/mxgraph/resources/icons/pack4/iconsMxGraph/alignleft.gif</iconset>
+   </property>
+   <property name="text">
+    <string>Left</string>
+   </property>
+  </action>
+  <action name="actionArranjeCenter">
+   <property name="icon">
+    <iconset resource="GenesysQtGUI_resources.qrc">
+     <normaloff>:/mxgraph/resources/icons/pack4/iconsMxGraph/aligncenter.gif</normaloff>:/mxgraph/resources/icons/pack4/iconsMxGraph/aligncenter.gif</iconset>
+   </property>
+   <property name="text">
+    <string>Center</string>
+   </property>
+  </action>
+  <action name="actionArranjeRight">
+   <property name="icon">
+    <iconset resource="GenesysQtGUI_resources.qrc">
+     <normaloff>:/mxgraph/resources/icons/pack4/iconsMxGraph/alignright.gif</normaloff>:/mxgraph/resources/icons/pack4/iconsMxGraph/alignright.gif</iconset>
+   </property>
+   <property name="text">
+    <string>Right</string>
+   </property>
+  </action>
+  <action name="actionArranjeTop">
+   <property name="icon">
+    <iconset resource="GenesysQtGUI_resources.qrc">
+     <normaloff>:/mxgraph/resources/icons/pack4/iconsMxGraph/aligntop.gif</normaloff>:/mxgraph/resources/icons/pack4/iconsMxGraph/aligntop.gif</iconset>
+   </property>
+   <property name="text">
+    <string>Top</string>
+   </property>
+  </action>
+  <action name="actionArranjeMiddle">
+   <property name="icon">
+    <iconset resource="GenesysQtGUI_resources.qrc">
+     <normaloff>:/mxgraph/resources/icons/pack4/iconsMxGraph/alignmiddle.gif</normaloff>:/mxgraph/resources/icons/pack4/iconsMxGraph/alignmiddle.gif</iconset>
+   </property>
+   <property name="text">
+    <string>Middle</string>
+   </property>
+  </action>
+  <action name="actionArranjeBototm">
+   <property name="icon">
+    <iconset resource="GenesysQtGUI_resources.qrc">
+     <normaloff>:/mxgraph/resources/icons/pack4/iconsMxGraph/alignbottom.gif</normaloff>:/mxgraph/resources/icons/pack4/iconsMxGraph/alignbottom.gif</iconset>
+   </property>
+   <property name="text">
+    <string>Bototm</string>
+   </property>
+  </action>
+  <action name="actionShowInternalElements">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="icon">
+    <iconset resource="GenesysQtGUI_resources.qrc">
+     <normaloff>:/icons3/resources/icons/pack3/ico/red pin.ico</normaloff>:/icons3/resources/icons/pack3/ico/red pin.ico</iconset>
+   </property>
+   <property name="text">
+    <string>Internal Elements</string>
+   </property>
+  </action>
+  <action name="actionShowAttachedElements">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="icon">
+    <iconset resource="GenesysQtGUI_resources.qrc">
+     <normaloff>:/icons3/resources/icons/pack3/ico/yellow pin.ico</normaloff>:/icons3/resources/icons/pack3/ico/yellow pin.ico</iconset>
+   </property>
+   <property name="text">
+    <string>Attached Elements</string>
+   </property>
+  </action>
+  <action name="actionSimulationConfigure">
+   <property name="enabled">
+    <bool>true</bool>
+   </property>
+   <property name="icon">
+    <iconset resource="GenesysQtGUI_resources.qrc">
+     <normaloff>:/icons3/resources/icons/pack3/ico/pinion.ico</normaloff>:/icons3/resources/icons/pack3/ico/pinion.ico</iconset>
+   </property>
+   <property name="text">
+    <string>Configure</string>
+   </property>
+   <property name="visible">
+    <bool>true</bool>
+   </property>
+  </action>
+  <action name="actionDrawText">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="icon">
+    <iconset resource="GenesysQtGUI_resources.qrc">
+     <normaloff>:/icons1/resources/icons/pack1/ico/190.ico</normaloff>:/icons1/resources/icons/pack1/ico/190.ico</iconset>
+   </property>
+   <property name="text">
+    <string>Text</string>
+   </property>
+   <property name="toolTip">
+    <string>Draw Text</string>
+   </property>
+  </action>
+  <action name="actionDrawPoligon">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="icon">
+    <iconset resource="GenesysQtGUI_resources.qrc">
+     <normaloff>:/resources/ToolBar/_retang.bmp</normaloff>:/resources/ToolBar/_retang.bmp</iconset>
+   </property>
+   <property name="text">
+    <string>Poligon</string>
+   </property>
+   <property name="toolTip">
+    <string>Draw Poligon</string>
+   </property>
+  </action>
+  <action name="actionAnimateCounter">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="icon">
+    <iconset resource="GenesysQtGUI_resources.qrc">
+     <normaloff>:/icons3/resources/icons/pack3/ico/coin.ico</normaloff>:/icons3/resources/icons/pack3/ico/coin.ico</iconset>
+   </property>
+   <property name="text">
+    <string>Counter</string>
+   </property>
+  </action>
+  <action name="actionAnimateEntity">
+   <property name="icon">
+    <iconset resource="GenesysQtGUI_resources.qrc">
+     <normaloff>:/icons3/resources/icons/pack3/ico/person.ico</normaloff>:/icons3/resources/icons/pack3/ico/person.ico</iconset>
+   </property>
+   <property name="text">
+    <string>Entity</string>
+   </property>
+   <property name="toolTip">
+    <string>Anime Entity</string>
+   </property>
+  </action>
+  <action name="actionAnimateEvent">
+   <property name="icon">
+    <iconset resource="GenesysQtGUI_resources.qrc">
+     <normaloff>:/icons3/resources/icons/pack3/ico/calendar.ico</normaloff>:/icons3/resources/icons/pack3/ico/calendar.ico</iconset>
+   </property>
+   <property name="text">
+    <string>Event</string>
+   </property>
+   <property name="toolTip">
+    <string>Anime Event</string>
+   </property>
+  </action>
+  <action name="actionAnimateAttribute">
+   <property name="icon">
+    <iconset resource="GenesysQtGUI_resources.qrc">
+     <normaloff>:/icons3/resources/icons/pack3/ico/sum.ico</normaloff>:/icons3/resources/icons/pack3/ico/sum.ico</iconset>
+   </property>
+   <property name="text">
+    <string>Attribute</string>
+   </property>
+   <property name="toolTip">
+    <string>Anime Attribute</string>
+   </property>
+  </action>
+  <action name="actionAnimateStatistics">
+   <property name="icon">
+    <iconset resource="GenesysQtGUI_resources.qrc">
+     <normaloff>:/icons3/resources/icons/pack3/ico/pie chart.ico</normaloff>:/icons3/resources/icons/pack3/ico/pie chart.ico</iconset>
+   </property>
+   <property name="text">
+    <string>Statistics</string>
+   </property>
+   <property name="toolTip">
+    <string>Anime Statistics</string>
+   </property>
+  </action>
+  <action name="actionViewConfigure">
+   <property name="icon">
+    <iconset resource="GenesysQtGUI_resources.qrc">
+     <normaloff>:/icons3/resources/icons/pack3/ico/picture.ico</normaloff>:/icons3/resources/icons/pack3/ico/picture.ico</iconset>
+   </property>
+   <property name="text">
+    <string>Configure</string>
+   </property>
+   <property name="toolTip">
+    <string>Configure View</string>
+   </property>
+  </action>
+  <action name="actionSimulatorsPluginManager">
+   <property name="icon">
+    <iconset resource="GenesysQtGUI_resources.qrc">
+     <normaloff>:/icons3/resources/icons/pack3/ico/componentblue.ico</normaloff>:/icons3/resources/icons/pack3/ico/componentblue.ico</iconset>
+   </property>
+   <property name="text">
+    <string>Plugin Manager</string>
+   </property>
+  </action>
+  <action name="actionModelInformation">
+   <property name="icon">
+    <iconset theme="user-available">
+     <normaloff>.</normaloff>.</iconset>
+   </property>
+   <property name="text">
+    <string>Information</string>
+   </property>
+   <property name="toolTip">
+    <string>Model Information</string>
+   </property>
+  </action>
+  <action name="actionToolsDataAnalyzer">
+   <property name="icon">
+    <iconset resource="GenesysQtGUI_resources.qrc">
+     <normaloff>:/icons3/resources/icons/pack3/ico/diagram.ico</normaloff>:/icons3/resources/icons/pack3/ico/diagram.ico</iconset>
+   </property>
+   <property name="text">
+    <string>Data Analyzer</string>
+   </property>
+  </action>
+  <action name="actionToolsOptimizator">
+   <property name="icon">
+    <iconset resource="GenesysQtGUI_resources.qrc">
+     <normaloff>:/icons3/resources/icons/pack3/ico/lightning.ico</normaloff>:/icons3/resources/icons/pack3/ico/lightning.ico</iconset>
+   </property>
+   <property name="text">
+    <string>Optimizator</string>
+   </property>
+  </action>
+  <action name="actionToolsParserGrammarChecker">
+   <property name="icon">
+    <iconset resource="GenesysQtGUI_resources.qrc">
+     <normaloff>:/icons3/resources/icons/pack3/ico/percent.ico</normaloff>:/icons3/resources/icons/pack3/ico/percent.ico</iconset>
+   </property>
+   <property name="text">
+    <string>Parser Grammar</string>
+   </property>
+  </action>
+  <action name="actionViewGroup">
+   <property name="icon">
+    <iconset resource="GenesysQtGUI_resources.qrc">
+     <normaloff>:/mxgraph/resources/icons/pack4/iconsMxGraph/group.gif</normaloff>:/mxgraph/resources/icons/pack4/iconsMxGraph/group.gif</iconset>
+   </property>
+   <property name="text">
+    <string>Group</string>
+   </property>
+  </action>
+  <action name="actionViewUngroup">
+   <property name="icon">
+    <iconset resource="GenesysQtGUI_resources.qrc">
+     <normaloff>:/mxgraph/resources/icons/pack4/iconsMxGraph/ungroup.gif</normaloff>:/mxgraph/resources/icons/pack4/iconsMxGraph/ungroup.gif</iconset>
+   </property>
+   <property name="text">
+    <string>Ungroup</string>
+   </property>
+  </action>
+  <action name="actionAnimatePlot">
+   <property name="icon">
+    <iconset resource="GenesysQtGUI_resources.qrc">
+     <normaloff>:/icons3/resources/icons/pack3/ico/3d bar chart.ico</normaloff>:/icons3/resources/icons/pack3/ico/3d bar chart.ico</iconset>
+   </property>
+   <property name="text">
+    <string>Plot</string>
+   </property>
+  </action>
+  <action name="actionDiagrams">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="icon">
+    <iconset theme="window-new">
+     <normaloff>.</normaloff>.</iconset>
+   </property>
+   <property name="text">
+    <string>Diagrams</string>
+   </property>
+  </action>
+  <action name="actionActivateGraphicalSimulation">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="icon">
+    <iconset resource="GenesysQtGUI_resources.qrc">
+     <normaloff>:/icons3/resources/icons/pack3/ico/eye.ico</normaloff>:/icons3/resources/icons/pack3/ico/eye.ico</iconset>
+   </property>
+   <property name="text">
+    <string>ActivateGraphicalSimulation</string>
+   </property>
+   <property name="toolTip">
+    <string>Activate graphical simulation</string>
+   </property>
+  </action>
+  <action name="actionSelectAll">
+   <property name="checkable">
+    <bool>false</bool>
+   </property>
+   <property name="icon">
+    <iconset resource="GenesysQtGUI_resources.qrc">
+     <normaloff>:/mxgraph/resources/icons/pack4/iconsMxGraph/select.gif</normaloff>:/mxgraph/resources/icons/pack4/iconsMxGraph/select.gif</iconset>
+   </property>
+   <property name="text">
+    <string>actionSelectAll</string>
+   </property>
+   <property name="toolTip">
+    <string>select all elements in scene</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+A</string>
+   </property>
+  </action>
+  <action name="actionParallelization">
+   <property name="icon">
+    <iconset resource="GenesysQtGUI_resources.qrc">
+     <normaloff>:/icons1/resources/icons/pack1/ico/200.ico</normaloff>:/icons1/resources/icons/pack1/ico/200.ico</iconset>
+   </property>
+   <property name="text">
+    <string>Parallelization</string>
    </property>
   </action>
  </widget>
@@ -1517,13 +2151,30 @@ p, li { white-space: pre-wrap; }
    <header location="global">CodeEditor.h</header>
   </customwidget>
   <customwidget>
-   <class>PropertyEditor</class>
+   <class>ObjectPropertyBrowser</class>
    <extends>QTreeView</extends>
-   <header location="global">PropertyEditor.h</header>
+   <header location="global">ObjectPropertyBrowser.h</header>
   </customwidget>
  </customwidgets>
  <resources>
   <include location="GenesysQtGUI_resources.qrc"/>
  </resources>
- <connections/>
+ <connections>
+  <connection>
+   <sender>horizontalSlider_ZoomGraphical</sender>
+   <signal>valueChanged(int)</signal>
+   <receiver>label_ZoomValue</receiver>
+   <slot>setNum(int)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>745</x>
+     <y>464</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>383</x>
+     <y>469</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
 </ui>

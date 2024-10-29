@@ -63,11 +63,20 @@ public:
 
 public: // Sampler   
 	void setSampler(Sampler_if* _sampler);
-	Sampler_if* sampler() const;
+	Sampler_if* getSampler() const;
+
+public: // trying to get infos about ModelDataElements refered in expressions (so they are not considered orphans
+	void setRegisterReferedDataElements(bool value);
+	bool getRegisterReferedDataElements();
+	std::map<std::string, std::list<std::string>*>* getReferedDataElements();
+	void clearReferedDataElements();
+	void addRefered(std::pair<std::string,std::string> referedElement);
 
 private:
 	/*GenesysKernel::*/Model* _model;
 	Sampler_if* _sampler;
+	std::map<std::string, std::list<std::string>*>* _referedDataElements = new std::map<std::string, std::list<std::string>*>(); // maps each dataelement class referenced to a list of referenced names
+	bool _isRegisterReferedDataElements;
 private:
 	double result = 0;
 	std::string file;

@@ -1,3 +1,5 @@
+#ifndef GENLIST_H
+#define GENLIST_H
 /*
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
@@ -11,7 +13,7 @@
  * Created on 21 de Junho de 2018, 12:55
  */
 
-#pragma once
+
 
 #include <string>
 #include <list>
@@ -20,7 +22,7 @@
 #include <functional>
 #include <algorithm>
 #include "Util.h"
-#include "../simulator/ModelDataDefinition.h"
+//#include "../simulator/ModelDataDefinition.h"
 
 //class Simulator;
 
@@ -48,12 +50,12 @@ public: // new methods
 	template<typename U>
 	T create(U arg);
 	std::string show();
-	typename std::list<T>::iterator find(T modeldatum);
-	//int rankOf(T modeldatum); ///< returns the position (1st position=0) of the modeldatum if found, or negative value if not found
+	typename std::list<T>::iterator find(T element);
+	//int rankOf(T modeldatum); //!< returns the position (1st position=0) of the modeldatum if found, or negative value if not found
 public: // improved (easier) methods
-	void insert(T modeldatum);
-	void remove(T modeldatum);
-	void setAtRank(unsigned int rank, T modeldatum);
+	void insert(T element);
+	void remove(T element);
+	void setAtRank(unsigned int rank, T element);
 	T getAtRank(unsigned int rank);
 	T next();
 	T front();
@@ -263,3 +265,4 @@ void List<T>::sort(Compare comp) {
 	_list->sort(comp);
 }
 
+#endif

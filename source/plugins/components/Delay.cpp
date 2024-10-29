@@ -14,6 +14,7 @@
 #include "Delay.h"
 #include "../../kernel/simulator/Model.h"
 #include "../../kernel/simulator/Attribute.h"
+#include "../../kernel/simulator/SimulationControlAndResponse.h"
 
 #ifdef PLUGINCONNECT_DYNAMIC
 
@@ -35,16 +36,29 @@ Util::AllocationType Delay::getAllocation() const {
 }
 
 Delay::Delay(Model* model, std::string name) : ModelComponent(model, Util::TypeOf<Delay>(), name) {
-	PropertyT<std::string>* prop1 = new PropertyT<std::string>(Util::TypeOf<Delay>(), "Delay Expression",
-			DefineGetter<Delay, std::string>(this, &Delay::delayExpression),
-			DefineSetter<Delay, std::string>(this, &Delay::setDelayExpression));
-	model->getControls()->insert(prop1);
-	_addProperty(prop1);
-	PropertyT<Util::TimeUnit>* prop2 = new PropertyT<Util::TimeUnit>(Util::TypeOf<Delay>(), "Delay Time Unit",
-			DefineGetter<Delay, Util::TimeUnit>(this, &Delay::delayTimeUnit),
-			DefineSetter<Delay, Util::TimeUnit>(this, &Delay::setDelayTimeUnit));
-	model->getControls()->insert(prop2);
-	_addProperty(prop2);
+	SimulationControlGeneric<std::string>* propExpression = new SimulationControlGeneric<std::string>(
+									std::bind(&Delay::delayExpression, this), std::bind(&Delay::setDelayExpression, this, std::placeholders::_1, Util::TimeUnit::unknown),
+									Util::TypeOf<Delay>(), getName(), "DelayExpression", "");
+	SimulationControlGeneric<double>* propDelay = new SimulationControlGeneric<double>(
+									std::bind(&Delay::delay, this), std::bind(&Delay::setDelay, this, std::placeholders::_1),
+									Util::TypeOf<Delay>(), getName(), "Delay", "");
+    SimulationControlGenericEnum<Util::TimeUnit, Util>* propUnitTime = new SimulationControlGenericEnum<Util::TimeUnit, Util>(
+									std::bind(&Delay::delayTimeUnit, this),	std::bind(&Delay::setDelayTimeUnit, this, std::placeholders::_1),
+									Util::TypeOf<Delay>(), getName(), "DelayTimeUnit", "");
+    SimulationControlGenericEnum<Util::AllocationType, Util>* propAlloc = new SimulationControlGenericEnum<Util::AllocationType, Util>(
+                                    std::bind(&Delay::getAllocation, this), std::bind(&Delay::setAllocation,  this, std::placeholders::_1),
+                                    Util::TypeOf<Delay>(), getName(), "AllocationType", "");
+
+	_parentModel->getControls()->insert(propExpression);
+	_parentModel->getControls()->insert(propDelay);
+	_parentModel->getControls()->insert(propUnitTime);
+    _parentModel->getControls()->insert(propAlloc);
+
+	// setting properties
+	_addProperty(propExpression);
+	_addProperty(propDelay);
+	_addProperty(propUnitTime);
+    _addProperty(propAlloc);
 }
 
 void Delay::setDelay(double delay) {
@@ -61,13 +75,15 @@ std::string Delay::show() {
 			",timeUnit=" + std::to_string(static_cast<int> (this->_delayTimeUnit));
 }
 
-void Delay::setDelayExpression(std::string _delayExpression) {
-	this->_delayExpression = _delayExpression;
-}
+//void Delay::setDelayExpression(std::string _delayExpression) {
+//	this->_delayExpression = _delayExpression;
+//}
 
 void Delay::setDelayExpression(std::string _delayExpression, Util::TimeUnit _delayTimeUnit) {
 	this->_delayExpression = _delayExpression;
-	this->_delayTimeUnit = _delayTimeUnit;
+	if (_delayTimeUnit != Util::TimeUnit::unknown) {
+		this->_delayTimeUnit = _delayTimeUnit;
+	}
 }
 
 std::string Delay::delayExpression() const {
@@ -88,16 +104,21 @@ void Delay::_onDispatchEvent(Entity* entity, unsigned int inputPortNumber) {
 	waitTime *= Util::TimeUnitConvert(_delayTimeUnit, stu);
 	if (_reportStatistics) {
 		std::string allocationCategory = Util::StrAllocation(_allocation);
-		_cstatWaitTime->getStatistics()->getCollector()->addValue(waitTime);
+		//try { //@TODO: What the hell????!!!
+			_cstatWaitTime->getStatistics()->getCollector()->addValue(waitTime);
+		//} catch (const std::exception& e) {
+		//	traceError(e.what());
+		//}
 		if (entity->getEntityType()->isReportStatistics())
 			entity->getEntityType()->addGetStatisticsCollector(entity->getEntityTypeName() + "." + allocationCategory+ "Time")->getStatistics()->getCollector()->addValue(waitTime);
 		double totalWaitTime = entity->getAttributeValue("Entity.Total" + allocationCategory + "Time");
-		entity->setAttributeValue("Entity.Total" + allocationCategory + "Time", totalWaitTime + waitTime, true);
+		std::string attribIndex="";
+		entity->setAttributeValue("Entity.Total" + allocationCategory + "Time", totalWaitTime + waitTime, attribIndex, true);
 	}
 	double delayEndTime = _parentModel->getSimulation()->getSimulatedTime() + waitTime;
 	Event* newEvent = new Event(delayEndTime, entity, this->getConnections()->getFrontConnection());
 	_parentModel->getFutureEvents()->insert(newEvent);
-	_parentModel->getTracer()->traceSimulation(this, "End of delay of "/*entity " + std::to_string(entity->entityNumber())*/ + entity->getName() + " scheduled to time " + std::to_string(delayEndTime) + Util::StrTimeUnitShort(stu) + " (wait time " + std::to_string(waitTime) + Util::StrTimeUnitShort(stu) + ") // " + _delayExpression+ " "+Util::StrTimeUnitShort(_delayTimeUnit));
+	traceSimulation(this, "End of delay of "/*entity " + std::to_string(entity->entityNumber())*/ + entity->getName() + " scheduled to time " + std::to_string(delayEndTime) + Util::StrTimeUnitShort(stu) + " (wait time " + std::to_string(waitTime) + Util::StrTimeUnitShort(stu) + ") // " + _delayExpression+ " "+Util::StrTimeUnitShort(_delayTimeUnit));
 }
 
 ModelComponent* Delay::LoadInstance(Model* model, PersistenceRecord *fields) {
@@ -113,9 +134,9 @@ ModelComponent* Delay::LoadInstance(Model* model, PersistenceRecord *fields) {
 bool Delay::_loadInstance(PersistenceRecord *fields) {
 	bool res = ModelComponent::_loadInstance(fields);
 	if (res) {
-		this->_delayExpression = fields->loadField("delayExpression", DEFAULT.delayExpression);
-		this->_delayTimeUnit = fields->loadField("delayExpressionTimeUnit", DEFAULT.delayTimeUnit);
-		this->_allocation = static_cast<Util::AllocationType> (fields->loadField("allocation", static_cast<int> (DEFAULT.allocation)));
+		_delayExpression = fields->loadField("delayExpression", DEFAULT.delayExpression);
+		_delayTimeUnit = fields->loadField("delayExpressionTimeUnit", DEFAULT.delayTimeUnit);
+		_allocation = static_cast<Util::AllocationType> (fields->loadField("allocation", static_cast<int> (DEFAULT.allocation)));
 	}
 	return res;
 }

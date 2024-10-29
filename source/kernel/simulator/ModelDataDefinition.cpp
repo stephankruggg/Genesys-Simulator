@@ -15,6 +15,7 @@
 #include "ModelDataDefinition.h"
 #include <iostream>
 #include <cassert>
+#include <string>
 #include "Model.h"
 #include "../TraitsKernel.h"
 
@@ -36,20 +37,21 @@ ModelDataDefinition::ModelDataDefinition(Model* model, std::string thistypename,
 	if (insertIntoModel) {
 		model->insert(this);
 	}
-	/*
-	_addProperty(new PropertySetterString(Util::TypeOf<ModelDataDefinition>(), "name",
-		DefineGetterString<ModelDataDefinition>(this, &ModelDataDefinition::getName),
-		DefineSetterString<ModelDataDefinition>(this, &ModelDataDefinition::setName)));
-	_addProperty(new PropertySetterBool(Util::TypeOf<ModelDataDefinition>(), "report statistics",
-		DefineGetterBool<ModelDataDefinition>(this, &ModelDataDefinition::isReportStatistics),
-		DefineSetterBool<ModelDataDefinition>(this, &ModelDataDefinition::setReportStatistics)));
-	 */
-	_addProperty(new PropertyT<std::string>(Util::TypeOf<ModelDataDefinition>(), "Name",
-			DefineGetter<ModelDataDefinition, std::string>(this, &ModelDataDefinition::getName),
-			DefineSetter<ModelDataDefinition, std::string>(this, &ModelDataDefinition::setName)));
-	_addProperty(new PropertyT<bool>(Util::TypeOf<ModelDataDefinition>(), "Report Statistics",
-			DefineGetter<ModelDataDefinition, bool>(this, &ModelDataDefinition::isReportStatistics),
-			DefineSetter<ModelDataDefinition, bool>(this, &ModelDataDefinition::setReportStatistics)));
+	// make "name" a property of a component
+	SimulationControlGeneric<std::string>* propName = new SimulationControlGeneric<std::string>(
+			std::bind(&ModelDataDefinition::getName, this),
+			std::bind(&ModelDataDefinition::setName, this, std::placeholders::_1),
+			Util::TypeOf<ModelDataDefinition>(), getName(), "Name", "");
+	SimulationControlGeneric<bool>* propReportStatistics = new SimulationControlGeneric<bool>(
+			std::bind(&ModelDataDefinition::isReportStatistics, this),
+			std::bind(&ModelDataDefinition::setReportStatistics, this, std::placeholders::_1),
+			Util::TypeOf<ModelDataDefinition>(), getName(), "Report Statistics", "");
+
+	_parentModel->getControls()->insert(propName);
+
+	// setting properties
+	_addProperty(propName);
+	_addProperty(propReportStatistics);
 }
 
 bool ModelDataDefinition::hasChanged() const {
@@ -71,7 +73,7 @@ void ModelDataDefinition::setModelLevel(unsigned int _modelLevel) {
 //}
 
 ModelDataDefinition::~ModelDataDefinition() {
-	////_parentModel->getTracer()->trace(TraceManager::Level::L9_mostDetailed, "Removing Element \"" + this->_name + "\" from the model");
+	////trace(TraceManager::Level::L9_mostDetailed, "Removing Element \"" + this->_name + "\" from the model");
 	_internalDataClear();
 	_parentModel->getDataManager()->remove(this);
 }
@@ -169,6 +171,25 @@ void ModelDataDefinition::_attachedDataClear() {
 	_attachedData->clear();
 }
 
+void ModelDataDefinition::_checkCreateAttachedReferencedDataDefinition(std::string expression) {//(std::map<std::string, std::list<std::string>*>* referencedDataDefinitions) {
+	std::map<std::string, std::list<std::string>*> referencedDataDefinitions;// = nullptr; // = new std::map<std::string, std::list<std::string>*>();
+	_parentModel->checkReferencesToDataDefinitions(expression, &referencedDataDefinitions);
+	if (referencedDataDefinitions.size()>0) {
+		Util::IncIndent();
+				ModelDataDefinition* referedElem;
+		ModelDataManager* elemMan = _parentModel->getDataManager();
+		for (auto pair: referencedDataDefinitions) {
+			for (std::string referedName: *pair.second) {
+				referedElem = elemMan->getDataDefinition(pair.first, referedName);
+				assert(referedElem != nullptr);
+				_attachedDataInsert("Refered_"+pair.first, referedElem);
+				trace(this->getName()+" has an expression that refers to "+pair.first+ " "+referedName+", and therefore was attached.");
+			}
+		}
+		Util::DecIndent();
+	}
+}
+
 bool ModelDataDefinition::_getSaveDefaultsOption() {
 	return _parentModel->getPersistence()->getOption(ModelPersistence_if::Options::SAVEDEFAULTS);
 }
@@ -177,7 +198,7 @@ bool ModelDataDefinition::_loadInstance(PersistenceRecord *fields) {
 	int id = fields->loadField("id", -1);
 	if (id > 0) this->_id = id;
 	else        return false;
-	
+
 	setName(fields->loadField("name", ""));
 	this->_reportStatistics = fields->loadField("reportStatistics", TraitsKernel<ModelDataDefinition>::reportStatistics);
 
@@ -207,15 +228,15 @@ void ModelDataDefinition::_initBetweenReplications() {
 }
 
 std::string ModelDataDefinition::show() {
-	std::string internel = "";
+	std::string internal = "";
 	if (_internalData->size() > 0) {
-		internel = ", internel=[";
+		internal = ", internal=[";
 		for (std::map<std::string, ModelDataDefinition*>::iterator it = _internalData->begin(); it != _internalData->end(); it++) {
-			internel += (*it).second->getName() + ",";
+			internal += (*it).second->getName() + ",";
 		}
-		internel = internel.substr(0, internel.length() - 1) + "]";
+		internal = internal.substr(0, internal.length() - 1) + "]";
 	}
-	return "id=" + std::to_string(_id) + ",name=\"" + _name + "\"" + internel;
+	return _name + internal;//"id=" + std::to_string(_id) + ",name=\"" + _name + "\"" + internal;
 }
 
 ModelDataDefinition* ModelDataDefinition::getInternalData(std::string name) const {
@@ -263,7 +284,7 @@ void ModelDataDefinition::setName(std::string name) {
 			}
 		}
 
-		for (PropertyBase* control : *_parentModel->getControls()->list()) {
+		for (/*PropertyBase**/PropertyBase* control : *_parentModel->getControls()->list()) {
 			stuffName = control->getName();
 			pos = stuffName.find(getName(), 0);
 			if (pos < stuffName.length()) { // != std::string::npos) {
@@ -272,7 +293,7 @@ void ModelDataDefinition::setName(std::string name) {
 			}
 		}
 
-		for (PropertyBase* response : *_parentModel->getResponses()->list()) {
+		for (SimulationControl* response : *_parentModel->getResponses()->list()) {
 			stuffName = response->getName();
 			pos = stuffName.find(getName(), 0);
 			if (pos < stuffName.length()) {// != std::string::npos) {
@@ -294,11 +315,11 @@ std::string ModelDataDefinition::getClassname() const {
 }
 
 void ModelDataDefinition::InitBetweenReplications(ModelDataDefinition* modeldatum) {
-	modeldatum->_parentModel->getTracer()->trace("Initing " + modeldatum->getClassname() + " \"" + modeldatum->getName() + "\"", TraceManager::Level::L9_mostDetailed); //std::to_string(component->_id));
+	modeldatum->trace("Initing " + modeldatum->getClassname() + " \"" + modeldatum->getName() + "\"", TraceManager::Level::L9_mostDetailed); //std::to_string(component->_id));
 	try {
 		modeldatum->_initBetweenReplications();
 	} catch (const std::exception& e) {
-		modeldatum->_parentModel->getTracer()->traceError(e, "Error initing modeldatum " + modeldatum->show());
+		modeldatum->traceError("Error initing modeldatum " + modeldatum->show(), e);
 	};
 }
 
@@ -364,12 +385,23 @@ void ModelDataDefinition::_createInternalAndAttachedData() {
 }
 
 void ModelDataDefinition::_addProperty(PropertyBase* property) {
-	_properties->insert(_properties->end(), property);
+	_properties->insert(property);
 }
 
-std::list<PropertyBase *> *ModelDataDefinition::getProperties() const {
+/*
+void ModelDataDefinition::_addSimulationResponse(SimulationControl* response) {
+	_simulationResponses->insert(response); //@TODO: Check if exists before insert?
+}
+
+void ModelDataDefinition::_addSimulationControl(SimulationControl* control) {
+	_simulationControls->insert(control);
+}
+*/
+
+List<PropertyBase*> *ModelDataDefinition::getProperties() const {
 	return _properties;
 }
+
 
 void ModelDataDefinition::setReportStatistics(bool reportStatistics) {
 	if (_reportStatistics != reportStatistics) {
@@ -380,4 +412,30 @@ void ModelDataDefinition::setReportStatistics(bool reportStatistics) {
 
 bool ModelDataDefinition::isReportStatistics() const {
 	return _reportStatistics;
+}
+
+
+// just an easy access to trace manager
+void ModelDataDefinition::trace(std::string text, TraceManager::Level level){
+	_parentModel->getTracer()->traceReport(text, level);
+}
+
+void ModelDataDefinition::traceError(std::string text, TraceManager::Level level){
+	_parentModel->getTracer()->traceError(text, level);
+}
+
+void ModelDataDefinition::traceError(std::string text, std::exception e) {
+	_parentModel->getTracer()->traceError(text, e);
+}
+
+void ModelDataDefinition::traceReport(std::string text, TraceManager::Level level){
+	_parentModel->getTracer()->traceReport(text, level);
+}
+
+void ModelDataDefinition::traceSimulation(void* thisobject, std::string text, TraceManager::Level level){
+	_parentModel->getTracer()->traceSimulation(thisobject, text, level);
+}
+
+void ModelDataDefinition::traceSimulation(void* thisobject, TraceManager::Level level, std::string text) {
+	_parentModel->getTracer()->traceSimulation(thisobject, text, level);
 }

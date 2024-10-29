@@ -32,6 +32,33 @@ ModelDataDefinition* MarkovChain::NewInstance(Model* model, std::string name) {
 
 MarkovChain::MarkovChain(Model* model, std::string name) : ModelComponent(model, Util::TypeOf<MarkovChain>(), name) {
 	_sampler = new TraitsKernel<Sampler_if>::Implementation();
+
+	SimulationControlGenericClass<Variable*, Model*, Variable>* propTransitionMatrix = new SimulationControlGenericClass<Variable*, Model*, Variable>(
+									_parentModel,
+									std::bind(&MarkovChain::getTransitionMatrix, this), std::bind(&MarkovChain::setTransitionProbabilityMatrix, this, std::placeholders::_1),
+									Util::TypeOf<MarkovChain>(), getName(), "TransitionMatrix", "");
+	SimulationControlGenericClass<Variable*, Model*, Variable>* propCurrentState = new SimulationControlGenericClass<Variable*, Model*, Variable>(
+									_parentModel,
+									std::bind(&MarkovChain::getCurrentState, this), std::bind(&MarkovChain::setCurrentState, this, std::placeholders::_1),
+									Util::TypeOf<MarkovChain>(), getName(), "CurrentState", "");
+	SimulationControlGenericClass<Variable*, Model*, Variable>* propInitialDistribution = new SimulationControlGenericClass<Variable*, Model*, Variable>(
+									_parentModel,
+									std::bind(&MarkovChain::getInitialState, this), std::bind(&MarkovChain::setInitialDistribution, this, std::placeholders::_1),
+									Util::TypeOf<MarkovChain>(), getName(), "InitialDistribution", "");
+	SimulationControlGeneric<bool>* propInitilized = new SimulationControlGeneric<bool>(
+									std::bind(&MarkovChain::isInitilized, this), std::bind(&MarkovChain::setInitilized, this, std::placeholders::_1),
+									Util::TypeOf<MarkovChain>(), getName(), "Initilized", "");																											
+
+	_parentModel->getControls()->insert(propTransitionMatrix);
+	_parentModel->getControls()->insert(propCurrentState);
+	_parentModel->getControls()->insert(propInitialDistribution);
+	_parentModel->getControls()->insert(propInitilized);
+
+	// setting properties
+	_addProperty(propTransitionMatrix);
+	_addProperty(propCurrentState);
+	_addProperty(propInitialDistribution);
+	_addProperty(propInitilized);
 }
 
 std::string MarkovChain::show() {
@@ -81,7 +108,7 @@ bool MarkovChain::isInitilized() const {
 }
 
 void MarkovChain::_onDispatchEvent(Entity* entity, unsigned int inputPortNumber) {
-	//_parentModel->getTracer()->trace("I'm just a dummy model and I'll just send the entity forward");
+	//trace("I'm just a dummy model and I'll just send the entity forward");
 	unsigned int size;
 	double rnd, sum, value;
 	if (!_initilized) {
@@ -97,7 +124,7 @@ void MarkovChain::_onDispatchEvent(Entity* entity, unsigned int inputPortNumber)
 				break;
 			}
 		}
-		_parentModel->getTracer()->traceSimulation(this, "Initial current state=" + std::to_string(_currentState->getValue()));
+		traceSimulation(this, "Initial current state=" + std::to_string(_currentState->getValue()));
 		_initilized = true;
 	} else {
 		size = _transitionProbMatrix->getDimensionSizes()->front();
@@ -112,7 +139,7 @@ void MarkovChain::_onDispatchEvent(Entity* entity, unsigned int inputPortNumber)
 				break;
 			}
 		}
-		_parentModel->getTracer()->trace("Current state=" + std::to_string(_currentState->getValue()));
+		traceSimulation(this, "Current state=" + std::to_string(_currentState->getValue()));
 	}
 	_parentModel->sendEntityToComponent(entity, this->getConnections()->getFrontConnection());
 }

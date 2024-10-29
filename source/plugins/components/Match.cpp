@@ -15,6 +15,7 @@
 
 #include "../../kernel/simulator/Model.h"
 #include "../../kernel/simulator/Simulator.h"
+#include "../../kernel/simulator/SimulationControlAndResponse.h"
 
 #ifdef PLUGINCONNECT_DYNAMIC
 
@@ -27,7 +28,38 @@ ModelDataDefinition* Match::NewInstance(Model* model, std::string name) {
 	return new Match(model, name);
 }
 
+std::string Match::convertEnumToStr(Rule rule) {
+	switch (static_cast<int> (rule)) {
+		case 0: return "Any";
+		case 1: return "ByAttribute";
+	}
+	return "Unknown";
+}
+
 Match::Match(Model* model, std::string name) : ModelComponent(model, Util::TypeOf<Match>(), name) {
+    SimulationControlGenericEnum<Match::Rule, Match>* propRule = new SimulationControlGenericEnum<Match::Rule, Match>(
+                                    std::bind(&Match::getRule, this), std::bind(&Match::setRule, this, std::placeholders::_1),
+                                    Util::TypeOf<Match>(), getName(), "Rule", "");
+	SimulationControlGeneric<unsigned int>* propNumberQueues = new SimulationControlGeneric<unsigned int>(
+									std::bind(&Match::getNumberOfQueues, this), std::bind(&Match::setNumberOfQueues, this, std::placeholders::_1),
+									Util::TypeOf<Match>(), getName(), "NumberOfQueues", "");
+	SimulationControlGeneric<std::string>* propMatchSize = new SimulationControlGeneric<std::string>(
+									std::bind(&Match::getMatchSize, this), std::bind(&Match::setMatchSize, this, std::placeholders::_1),
+									Util::TypeOf<Match>(), getName(), "MatchSize", "");
+	SimulationControlGeneric<std::string>* propAttributeName = new SimulationControlGeneric<std::string>(
+									std::bind(&Match::getAttributeName, this), std::bind(&Match::setAttributeName, this, std::placeholders::_1),
+									Util::TypeOf<Match>(), getName(), "AttributeName", "");
+
+    _parentModel->getControls()->insert(propRule);
+	_parentModel->getControls()->insert(propNumberQueues);
+	_parentModel->getControls()->insert(propMatchSize);
+	_parentModel->getControls()->insert(propAttributeName);
+
+	// setting properties
+    _addProperty(propRule);
+	_addProperty(propNumberQueues);
+	_addProperty(propMatchSize);
+	_addProperty(propAttributeName);
 }
 
 std::string Match::show() {
@@ -93,7 +125,10 @@ void Match::_onDispatchEvent(Entity* entity, unsigned int inputPortNumber) {
 bool Match::_loadInstance(PersistenceRecord *fields) {
 	bool res = ModelComponent::_loadInstance(fields);
 	if (res) {
-		// @TODO: not implemented yet
+		_rule =  static_cast<Rule>(fields->loadField("rule", static_cast<int>(DEFAULT.rule)));
+		_matchSize = fields->loadField("matchSize", DEFAULT.matchSize);
+		_attributeName = fields->loadField("attributeName", DEFAULT.attributeName);
+		//@TODO _queues
 	}
 	return res;
 }
@@ -167,4 +202,3 @@ PluginInformation * Match::GetPluginInformation() {
 	// ...
 	return info;
 }
-

@@ -25,6 +25,7 @@
 
 #include "../../../../plugins/data/Variable.h"
 #include "../../../../kernel/simulator/Attribute.h"
+#include "../../../TraitsApp.h"
 
 
 Smart_ModelRunUntil1000Parts::Smart_ModelRunUntil1000Parts() {
@@ -38,22 +39,13 @@ Smart_ModelRunUntil1000Parts::Smart_ModelRunUntil1000Parts() {
  * then simulate that model.
 */
 int Smart_ModelRunUntil1000Parts::main(int argc, char** argv) {
-    // Create a new simulator instance.
-    Simulator* genesys = new Simulator();
-    this->setDefaultTraceHandlers(genesys->getTracer());
-    this->insertFakePluginsByHand(genesys);
-
-    bool isDevelop = false;    
-
-    if (isDevelop) {
-        genesys->getTracer()->setTraceLevel(TraceManager::Level::L9_mostDetailed);
-    } else {
-        genesys->getTracer()->setTraceLevel(TraceManager::Level::L2_results);
-    }
-
-    // Create the model and components instances.
-    Model* model = genesys->getModels()->newModel();
-    PluginManager* plugins = genesys->getPlugins();
+	Simulator* genesys = new Simulator();
+	genesys->getTracer()->setTraceLevel(TraitsApp<GenesysApplication_if>::traceLevel);
+	setDefaultTraceHandlers(genesys->getTracer());
+	PluginManager* plugins = genesys->getPlugins();
+	plugins->autoInsertPlugins("autoloadplugins.txt");
+	Model* model = genesys->getModels()->newModel();
+	// create model
 
     Create* create_1 = plugins->newInstance<Create>(model, "Create_1");
     Process* process_1 = plugins->newInstance<Process>(model, "Process_1");
@@ -65,8 +57,6 @@ int Smart_ModelRunUntil1000Parts::main(int argc, char** argv) {
     create_1->setEntityTypeName("Entity 1");
     create_1->setTimeBetweenCreationsExpression("EXPO(8)");
     create_1->setTimeUnit(Util::TimeUnit::minute);
-    create_1->setEntitiesPerCreation(1);
-    create_1->setFirstCreation(0.0);
 
     // Process 1
     process_1->getConnections()->insert(record_1);
@@ -74,12 +64,10 @@ int Smart_ModelRunUntil1000Parts::main(int argc, char** argv) {
     process_1->setDelayTimeUnit(Util::TimeUnit::minute);
 
     Resource* resource_1 = plugins->newInstance<Resource>(model);
-    resource_1->setCapacity(1);
 	process_1->getSeizeRequests()->insert(new SeizableItem(resource_1));
 
     Queue* process1Queue = plugins->newInstance<Queue>(model);
     process1Queue->setName("Process1Queue");
-    process1Queue->setOrderRule(Queue::OrderRule::FIFO);
     process_1->setQueueableItem(new QueueableItem(process1Queue));
 
     // Record
@@ -91,13 +79,13 @@ int Smart_ModelRunUntil1000Parts::main(int argc, char** argv) {
     model->getInfos()->setName("Model Run Until 1000 Parts Produced");
     model->save("./models/Smart_ModelRunUntil1000Parts.gen");
 
-    auto replicationLength = 8031; // +/- Needed to achieve 1k entities
 	model->getSimulation()->setReplicationLength(std::numeric_limits<double>::max(), Util::TimeUnit::week); // This is a "infinity" value.
 
-    model->getSimulation()->setNumberOfReplications(300);
+    model->getSimulation()->setNumberOfReplications(3);
     model->getSimulation()->setReplicationReportBaseTimeUnit(Util::TimeUnit::minute);
 
     // Warmup should be 5% of replication length
+    auto replicationLength = 80; 
     model->getSimulation()->setWarmUpPeriod(replicationLength * 0.05);
     model->getSimulation()->setWarmUpPeriodTimeUnit(Util::TimeUnit::minute);
 

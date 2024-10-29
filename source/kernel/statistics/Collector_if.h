@@ -19,11 +19,11 @@
 
 /*!
  */
-typedef std::function<void(double) > CollectorAddValueHandler;
+typedef std::function<void(double, double) > CollectorAddValueHandler;
 
 template<typename Class>
-CollectorAddValueHandler setCollectorAddValueHandler(void (Class::*function)(double), Class * object) {
-	return std::bind(function, object, std::placeholders::_1);
+CollectorAddValueHandler setCollectorAddValueHandler(void (Class::*function)(double, double), Class * object) {
+	return std::bind(function, object, std::placeholders::_1, std::placeholders::_2);
 }
 
 typedef std::function<void() > CollectorClearHandler;
@@ -38,12 +38,36 @@ CollectorClearHandler setCollectorClearHandler(void (Class::*function)(), Class 
  */
 class Collector_if {
 public:
+	/*!
+	 * \brief clear
+	 */
 	virtual void clear() = 0;
-	virtual void addValue(double value) = 0;
+	/*!
+	 * \brief addValue
+	 * \param value
+	 * \param weight
+	 */
+	virtual void addValue(double value, double weight=1) = 0;
+	/*!
+	 * \brief getLastValue
+	 * \return
+	 */
 	virtual double getLastValue() = 0;
+	/*!
+	 * \brief numElements
+	 * \return
+	 */
 	virtual unsigned long numElements() = 0;
 public:
+	/*!
+	 * \brief setAddValueHandler
+	 * \param addValueHandler
+	 */
 	virtual void setAddValueHandler(CollectorAddValueHandler addValueHandler) = 0;
+	/*!
+	 * \brief setClearHandler
+	 * \param clearHandler
+	 */
 	virtual void setClearHandler(CollectorClearHandler clearHandler) = 0;
 };
 

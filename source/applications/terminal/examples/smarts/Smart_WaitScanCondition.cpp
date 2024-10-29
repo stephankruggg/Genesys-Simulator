@@ -22,6 +22,7 @@
 #include "../../../../plugins/components/Wait.h"
 #include "../../../../plugins/components/Assign.h"
 #include "../../../../plugins/components/Dispose.h"
+#include "../../../TraitsApp.h"
 
 // Model data definitions
 
@@ -34,12 +35,12 @@ Smart_WaitScanCondition::Smart_WaitScanCondition() {
  */
 int Smart_WaitScanCondition::main(int argc, char** argv) {
 	Simulator* genesys = new Simulator();
-	this->setDefaultTraceHandlers(genesys->getTracer());
-	this->insertFakePluginsByHand(genesys);
-	genesys->getTracer()->setTraceLevel(TraceManager::Level::L6_arrival);
-	Model* model = genesys->getModels()->newModel();
+	genesys->getTracer()->setTraceLevel(TraitsApp<GenesysApplication_if>::traceLevel);
+	setDefaultTraceHandlers(genesys->getTracer());
 	PluginManager* plugins = genesys->getPlugins();
-	//
+	plugins->autoInsertPlugins("autoloadplugins.txt");
+	Model* model = genesys->getModels()->newModel();
+	// create model
 	Create* create1 = plugins->newInstance<Create>(model);
 	create1->setTimeBetweenCreationsExpression("1");
 	Create* create2 = plugins->newInstance<Create>(model);

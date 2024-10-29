@@ -67,6 +67,9 @@ private:
 	double _totalArea = DEFAULT.totalArea;
 	unsigned int _capacity = DEFAULT.capacity;
 	double _unitsPerArea = DEFAULT.unitsPerArea;
+
+private:
+	//@TODO: Add statisticCollector for ProportionOfStorageUsage
 };
 #endif /* STORAGE_H */
 

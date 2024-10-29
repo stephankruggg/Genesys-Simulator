@@ -17,26 +17,27 @@
 #include "../../../../plugins/components/LSODE.h"
 #include "../../../../plugins/components/Dispose.h"
 #include "../../../../plugins/data/Variable.h"
+#include "../../../TraitsApp.h"
 
 Smart_ODE::Smart_ODE() {
 }
 
 int Smart_ODE::main(int argc, char** argv) {
 	Simulator* genesys = new Simulator();
-	this->setDefaultTraceHandlers(genesys->getTracer());
-	this->insertFakePluginsByHand(genesys);
-	genesys->getTracer()->setTraceLevel(TraceManager::Level::L5_event);
-	// create model
-	Model* model = genesys->getModels()->newModel();
+	genesys->getTracer()->setTraceLevel(TraitsApp<GenesysApplication_if>::traceLevel);
+	setDefaultTraceHandlers(genesys->getTracer());
 	PluginManager* plugins = genesys->getPlugins();
+	plugins->autoInsertPlugins("autoloadplugins.txt");
+	Model* model = genesys->getModels()->newModel();
+	// create model
 	Create* create1 = plugins->newInstance<Create>(model);
 	create1->setTimeBetweenCreationsExpression("0.5");
 	Dispose* dispose1 = plugins->newInstance<Dispose>(model);
 	// define variables for the ordinary differential equations
 	Variable* varx = plugins->newInstance<Variable>(model, "x");
 	varx->insertDimentionSize(2);
-	varx->setInitialValue("0", 1.0); //x[0] = 1.0
-	varx->setInitialValue("1", 0.0); //x[1] = 0.0
+	varx->setInitialValue(1.0, "0"); //x[0] = 1.0
+	varx->setInitialValue(0.0, "1"); //x[1] = 0.0
 	Variable* vart = plugins->newInstance<Variable>(model, "t");
 	LSODE* ode1 = plugins->newInstance<LSODE>(model);
 	ode1->setVariable(varx);

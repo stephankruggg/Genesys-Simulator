@@ -30,18 +30,19 @@
 // Model data definitions
 #include "../../../../kernel/simulator/ModelDataManager.h"
 #include "../../../../plugins/data/Set.h"
+#include "../../../TraitsApp.h"
 
 Smart_AssignWriteSeizes::Smart_AssignWriteSeizes() {
 }
 
 int Smart_AssignWriteSeizes::main(int argc, char** argv) {
 	Simulator* genesys = new Simulator();
-	genesys->getTracer()->setTraceLevel(TraceManager::Level::L4_warning);
-	this->setDefaultTraceHandlers(genesys->getTracer());
-	this->insertFakePluginsByHand(genesys);
-	// create model
-	Model* model = genesys->getModels()->newModel();
+	genesys->getTracer()->setTraceLevel(TraitsApp<GenesysApplication_if>::traceLevel);
+	setDefaultTraceHandlers(genesys->getTracer());
 	PluginManager* plugins = genesys->getPlugins();
+	plugins->autoInsertPlugins("autoloadplugins.txt");
+	Model* model = genesys->getModels()->newModel();
+	// create model
 	Create* create1 = plugins->newInstance<Create>(model);
 	create1->setEntityTypeName("Part");
 	create1->setTimeBetweenCreationsExpression("norm(1.5,0.5)", Util::TimeUnit::second);

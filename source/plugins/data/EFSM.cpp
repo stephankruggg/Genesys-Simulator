@@ -1,108 +1,116 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/cppFiles/class.cc to edit this template
- */
-
-/* 
- * File:   ExFiStatMac.cpp
- * Author: rlcancian
- * 
- * Created on 7 de agosto de 2022, 12:14
- */
-
 #include "EFSM.h"
+#include <vector>
+#include <string>
+#include <map>
+#include <utility>
+
 
 #ifdef PLUGINCONNECT_DYNAMIC
 
 extern "C" StaticGetPluginInformation GetPluginInformation() {
-	return &ExtendedFSM::GetPluginInformation;
+    return &ExtendedFSM::GetPluginInformation;
 }
 #endif
 
-// constructors
+ExtendedFSM::ExtendedFSM(Model* model, std::string name) : ModelDataDefinition(model, Util::TypeOf<ExtendedFSM>(), name) {}
 
-ModelDataDefinition* ExtendedFSM::NewInstance(Model* model, std::string name) {
-	return new ExtendedFSM(model, name);
+std::string ExtendedFSM::show(){
+    auto txt = ModelDataDefinition::show() + ",variables=[";
+    for (auto* var: *_variables) {
+        txt += var->show() + ",";
+    }
+    txt = txt.substr(0, txt.length() - 1) + "]";
+    return txt;
 }
 
-ExtendedFSM::ExtendedFSM(Model* model, std::string name) : ModelDataDefinition(model, Util::TypeOf<ExtendedFSM>(), name) {
+void ExtendedFSM::_createInternalAndAttachedData(){
+    ModelDataManager* elems = _parentModel->getDataManager();
+    
+    for (Variable* variable : *_variables) {
+        _attachedDataInsert(getName() + "." + variable->getName(), variable);
+    }
+
 }
 
-//public
+void ExtendedFSM::_saveInstance(PersistenceRecord *fields, bool saveDefaultValues) {}
 
-std::string ExtendedFSM::show() {
-	return ModelDataDefinition::show();
-}
+bool ExtendedFSM::_loadInstance(PersistenceRecord *fields) {
+    bool res = true;
+    try {
+    } catch (...) {
+        res = false;
+    }
 
-// public static 
-
-ModelDataDefinition* ExtendedFSM::LoadInstance(Model* model, PersistenceRecord *fields) {
-	ExtendedFSM* newElement = new ExtendedFSM(model);
-	try {
-		newElement->_loadInstance(fields);
-	} catch (const std::exception& e) {
-
-	}
-	return newElement;
+    return res;
 }
 
 PluginInformation* ExtendedFSM::GetPluginInformation() {
-	PluginInformation* info = new PluginInformation(Util::TypeOf<ExtendedFSM>(), &ExtendedFSM::LoadInstance, &ExtendedFSM::NewInstance);
-	info->setDescriptionHelp("//@TODO");
-	//info->setDescriptionHelp("");
-	//info->setObservation("");
-	//info->setMinimumOutputs();
-	//info->setDynamicLibFilenameDependencies();
-	//info->setFields();
-	// ...
-	return info;
+    PluginInformation* info = new PluginInformation(Util::TypeOf<ExtendedFSM>(), &ExtendedFSM::LoadInstance, &ExtendedFSM::NewInstance);
+    return info;
 }
 
-// protected virtual -- must be overriden 
-
-bool ExtendedFSM::_loadInstance(PersistenceRecord *fields) {
-	bool res = ModelDataDefinition::_loadInstance(fields);
-	if (res) {
-		try {
-			this->_someString = fields->loadField("someString", DEFAULT.someString);
-			this->_someUint = fields->loadField("someUint", DEFAULT.someUint);
-		} catch (...) {
-		}
-	}
-	return res;
+ModelDataDefinition* ExtendedFSM::NewInstance(Model* model, std::string name) {
+    return new ExtendedFSM(model, name);
 }
 
-void ExtendedFSM::_saveInstance(PersistenceRecord *fields, bool saveDefaultValues) {
-	ModelDataDefinition::_saveInstance(fields, saveDefaultValues);
-	fields->saveField("someUint", _someUint, DEFAULT.someUint);
-	fields->saveField("someString", _someString, DEFAULT.someString);
+ModelDataDefinition* ExtendedFSM::LoadInstance(Model* model, PersistenceRecord *fields) {
+    ExtendedFSM* newElement = new ExtendedFSM(model);
+    try {
+        newElement->_loadInstance(fields);
+    } catch (const std::exception& e) {
+
+    }
+    return newElement;
 }
 
-// protected virtual -- could be overriden 
-
-//ParserChangesInformation* ExFiStatMac::_getParserChangesInformation() {}
-
-bool ExtendedFSM::_check(std::string* errorMessage) {
-	bool resultAll = true;
-	resultAll &= _someString != "";
-	resultAll &= _someUint > 0;
-	return resultAll;
+bool ExtendedFSM::_check(std::string* errorMessage){
+    return true;
 }
 
-void ExtendedFSM::_initBetweenReplications() {
-	_someString = "Test";
-	_someUint = 1;
+void ExtendedFSM::_initBetweenReplications(){
+    _returnModels->clear();
+    _currentState = _initialState;
+    for (auto* var: *_variables) {
+        InitBetweenReplications(var);
+        for (auto value: *var->getValues()) {
+            _parentModel->parseExpression(value.first + " = " + std::to_string(value.second));
+        }
+    }
+}
+void ExtendedFSM::reset(){
+    this->_initBetweenReplications();
 }
 
-void ExtendedFSM::_createInternalAndAttachedData() {
-	if (_reportStatistics) {
-		//if (_internal == nullptr) {
-		//	_internal = new StatisticsCollector(_parentModel, getName() + "." + "NumberInQueue", this); 
-		//	_internelElementsInsert("NumberInQueue", _internal);
-		//}
-	} else { //if (_cstatNumberInQueue != nullptr) {
-		this->_internalDataClear();
-	}
+void ExtendedFSM::insertVariable(Variable* variable) {
+    _variables->push_back(variable);
+}
+
+std::string ExtendedFSM::getCurrentState(){
+    return _currentState->getName();
 }
 
 
+void ExtendedFSM::setInitialState(FSM_State* state) {
+    _initialState = state;
+}
+
+void ExtendedFSM::setCurrentState(FSM_State* state) {
+    _currentState = state;
+}
+
+void ExtendedFSM::leaveEFSM(Entity* entity, FSM_State* newCurrentState) {
+    setCurrentState(newCurrentState);
+
+    auto returnComponent = _returnModels->back();
+    _returnModels->pop_back();
+    this->_parentModel->sendEntityToComponent(entity, returnComponent); 
+}
+
+void ExtendedFSM::enterEFSM(Entity* entity, ModelComponent* returnState) {
+    if (_currentState->isFinalState()) {
+        this->_parentModel->sendEntityToComponent(entity, returnState); 
+    } else {
+        _returnModels->push_back(returnState);
+        this->_parentModel->sendEntityToComponent(entity, _currentState); 
+    }
+}

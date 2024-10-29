@@ -32,11 +32,12 @@ Smart_Clone::Smart_Clone() {
  */
 int Smart_Clone::main(int argc, char** argv) {
 	Simulator* genesys = new Simulator();
-	this->setDefaultTraceHandlers(genesys->getTracer());
-	this->insertFakePluginsByHand(genesys);
-	// crete model
-	Model* model = genesys->getModels()->newModel();
+	//genesys->getTracer()->setTraceLevel(TraitsApp<GenesysApplication_if>::traceLevel);
+	setDefaultTraceHandlers(genesys->getTracer());
 	PluginManager* plugins = genesys->getPlugins();
+	plugins->autoInsertPlugins("autoloadplugins.txt");
+	Model* model = genesys->getModels()->newModel();
+	// crete model
 	Create* create1 = plugins->newInstance<Create>(model);
 	Clone* clone1 = plugins->newInstance<Clone>(model);
 	clone1->setNumClonesExpression("2");

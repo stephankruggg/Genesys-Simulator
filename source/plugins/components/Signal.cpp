@@ -15,6 +15,7 @@
 
 #include "../../kernel/simulator/Model.h"
 #include "../../kernel/simulator/Simulator.h"
+#include "../../kernel/simulator/SimulationControlAndResponse.h"
 #include "../../kernel/simulator/PluginManager.h"
 
 #ifdef PLUGINCONNECT_DYNAMIC
@@ -31,6 +32,14 @@ ModelDataDefinition* Signal::NewInstance(Model* model, std::string name) {
 }
 
 Signal::Signal(Model* model, std::string name) : ModelComponent(model, Util::TypeOf<Signal>(), name) {
+	SimulationControlGeneric<std::string>* propExpression = new SimulationControlGeneric<std::string>(
+									std::bind(&Signal::limitExpression, this), std::bind(&Signal::setLimitExpression, this, std::placeholders::_1),
+									Util::TypeOf<Signal>(), getName(), "LimitExpression", "");
+
+	_parentModel->getControls()->insert(propExpression);
+
+	// setting properties
+	_addProperty(propExpression);
 }
 
 // public virtual
@@ -68,7 +77,7 @@ PluginInformation* Signal::GetPluginInformation() {
 
 void Signal::_onDispatchEvent(Entity* entity, unsigned int inputPortNumber) {
 	unsigned int limit = _parentModel->parseExpression(_limitExpression);
-	_parentModel->getTracer()->trace("Triggering signal \""+_signalData->getName()+"\" with limit \""+_limitExpression+"\"="+std::to_string(limit));
+	traceSimulation(this, "Triggering signal \""+_signalData->getName()+"\" with limit \""+_limitExpression+"\"="+std::to_string(limit));
 	unsigned int freed = _signalData->generateSignal(_signalData->getId(),limit);
 	this->_parentModel->sendEntityToComponent(entity, this->getConnections()->getFrontConnection());
 }
@@ -102,9 +111,7 @@ void Signal::_createInternalAndAttachedData() {
 	PluginManager* pm = _parentModel->getParentSimulator()->getPlugins();
 	//attached
 	if (_signalData == nullptr) {
-		if (_parentModel->isAutomaticallyCreatesModelDataDefinitions()) {
-			_signalData = pm->newInstance<SignalData>(_parentModel);
-		}
+		_signalData = pm->newInstance<SignalData>(_parentModel);
 	}
 	_attachedDataInsert("SignalData", _signalData);
 }

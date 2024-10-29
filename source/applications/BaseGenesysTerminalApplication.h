@@ -17,17 +17,21 @@
 #include "GenesysApplication_if.h"
 #include "../kernel/simulator/TraceManager.h"
 #include "../kernel/simulator/OnEventManager.h"
+#include "../kernel/simulator/PluginManager.h"
+#include "../kernel/simulator/Model.h"
+
+#include <thread>
 
 class BaseGenesysTerminalApplication : public GenesysApplication_if {
 public:
 	BaseGenesysTerminalApplication();
 	virtual ~BaseGenesysTerminalApplication() = default;
 public:
-	virtual int main(int argc, char** argv) = 0;
+	virtual int main(int argc, char** argv);
+	virtual void Simulate(Simulator* genesys, Model* model, PluginManager *plugins);
 public:
 	void setDefaultTraceHandlers(TraceManager* tm);
 	void setDefaultEventHandlers(OnEventManager* oem); /*!< Add default method to handle simulator events so information is plotted to output screen */
-	void insertFakePluginsByHand(Simulator* simulator); /*!< Used to connect plugins that are NOT dynamic libraries, but are compiled whitin the kernel*/
 protected:
 	// default Trace Handlers
 	virtual void traceHandler(TraceEvent e);

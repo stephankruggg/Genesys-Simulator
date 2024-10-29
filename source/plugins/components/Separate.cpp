@@ -48,18 +48,18 @@ ModelComponent* Separate::LoadInstance(Model* model, PersistenceRecord *fields) 
 void Separate::_onDispatchEvent(Entity* entity, unsigned int inputPortNumber) {
 	unsigned int entityGroupId = entity->getAttributeValue("Entity.Group"); //This attribute refers to the Batch internal modeldatum EntityGroup (which may contain several groups --map--
 	if (entityGroupId == 0) {
-		_parentModel->getTracer()->traceSimulation(this, TraceManager::Level::L7_internal, "Entity is not grouped. Nothing to do");
+		traceSimulation(this, TraceManager::Level::L7_internal, "Entity is not grouped. Nothing to do");
 		this->_parentModel->sendEntityToComponent(entity, getConnections()->getFrontConnection());
 	} else {
 		EntityGroup* entityGroup = dynamic_cast<EntityGroup*> (_parentModel->getDataManager()->getDataDefinition(Util::TypeOf<EntityGroup>(), entityGroupId));
 		if (entityGroup == nullptr) {
-			_parentModel->getTracer()->traceError(TraceManager::Level::L3_errorRecover, "Error: Could not find EntityGroup Id=" + std::to_string(entityGroupId));
+			traceError("Error: Could not find EntityGroup Id=" + std::to_string(entityGroupId), TraceManager::Level::L3_errorRecover);
 		} else {
 			Entity* e;
 			unsigned int idGroupKey = entity->getId();
 			while ((e = entityGroup->getGroup(idGroupKey)->front()) != nullptr) {
 				entityGroup->removeElement(idGroupKey, e);
-				_parentModel->getTracer()->traceSimulation(this, TraceManager::Level::L7_internal, "Entity " + e ->getName() + " was separated out of the group " + std::to_string(entityGroupId) + " key=" + std::to_string(idGroupKey));
+				traceSimulation(this, TraceManager::Level::L7_internal, "Entity " + e ->getName() + " was separated out of the group " + std::to_string(entityGroupId) + " key=" + std::to_string(idGroupKey));
 				_parentModel->sendEntityToComponent(e, _connections->getFrontConnection());
 			}
 			_parentModel->removeEntity(entity);

@@ -11,6 +11,7 @@
  * Created on 30 de Maio de 2019, 17:49
  */
 
+#include <fstream>
 #include "PluginManager.h"
 #include "Simulator.h"
 #include "../TraitsKernel.h"
@@ -24,8 +25,35 @@
 
 PluginManager::PluginManager(Simulator* simulator) {
 	_simulator = simulator;
-	this->_pluginConnector = new TraitsKernel<PluginConnector_if>::Implementation();
-	this->_insertDefaultKernelElements();
+	_pluginConnector = new TraitsKernel<PluginConnector_if>::Implementation();
+	_insertDefaultKernelElements();
+}
+
+bool PluginManager::autoInsertPlugins(const std::string pluginsListFilename) {
+	if (pluginsListFilename.empty())
+		return false;
+	std::string line;
+	std::string fullFilename;
+	if (pluginsListFilename[0] == Util::DirSeparator()) // absolute path
+		fullFilename = pluginsListFilename;
+	else	// relative path
+		fullFilename = Util::RunningPath()+Util::DirSeparator()+pluginsListFilename;
+	std::ifstream file(fullFilename, std::ifstream::in);
+	if (file.is_open()) {
+		while (std::getline(file, line)) {
+			if (line.length()>=1) {
+				if (line[0] != '#') { // not a comment
+					insert(line);
+				}
+			}
+		}
+		file.close();
+		completePluginsFieldsAndTemplates();
+	} else {
+		_simulator->getTracer()->traceError("Could not open file \""+pluginsListFilename+"\" (\""+fullFilename+"\")");
+		return false;
+	}
+	return true;
 }
 
 std::string PluginManager::show() {
@@ -67,13 +95,13 @@ bool PluginManager::_insert(Plugin * plugin) {
 		else
 			msg += "modeldatum";
 		msg += " plugin \"" + plugin->getPluginInfo()->getPluginTypename() + "\"";
-		_simulator->getTracer()->trace(TraceManager::Level::L8_detailed, msg);
+		_simulator->getTracer()->trace(msg);
 		// insert all dependencies before to insert this plugin
 		bool allDependenciesInserted = true;
 		if (plugInfo->getDynamicLibFilenameDependencies()->size() > 0) {
 			Util::IncIndent();
 			{
-				_simulator->getTracer()->trace(TraceManager::Level::L8_detailed, "Inserting dependencies...");
+				_simulator->getTracer()->trace("Inserting dependencies...");
 				Util::IncIndent();
 				{
 					for (std::string str : *plugInfo->getDynamicLibFilenameDependencies()) {
@@ -85,12 +113,12 @@ bool PluginManager::_insert(Plugin * plugin) {
 			Util::DecIndent();
 		}
 		if (!allDependenciesInserted) {
-			_simulator->getTracer()->traceError(TraceManager::Level::L3_errorRecover, "Plugin dependencies could not be inserted; therefore, plugin will not be inserted");
+			_simulator->getTracer()->traceError("Plugin dependencies could not be inserted; therefore, the plugin will not be inserted", TraceManager::Level::L3_errorRecover);
 			return false;
 		}
 		if (this->find(plugInfo->getPluginTypename()) != nullptr) { // plugin alread exists
 			Util::IncIndent();
-			_simulator->getTracer()->trace(TraceManager::Level::L8_detailed, "Plugin alread exists and was not inserted again");
+			_simulator->getTracer()->trace("The plugin already exists and was not inserted again");
 			Util::DecIndent();
 			return false;
 		}
@@ -125,13 +153,13 @@ Plugin * PluginManager::insert(std::string dynamicLibraryFilename) {
 		if (plugin != nullptr)
 			_insert(plugin);
 		else {
-			_simulator->getTracer()->traceError(TraceManager::Level::L3_errorRecover, "Plugin from file \"" + dynamicLibraryFilename + "\" could not be loaded.");
+			_simulator->getTracer()->traceError("Plugin from file \"" + dynamicLibraryFilename + "\" could not be loaded.", TraceManager::Level::L3_errorRecover);
 		}
 	} catch (...) {
 
 		return nullptr;
 	}
-	return plugin;
+	return plugin; //@TODO Use of memory after it is freed
 }
 
 bool PluginManager::remove(std::string dynamicLibraryFilename) {

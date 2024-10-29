@@ -66,13 +66,20 @@
               <itemPath>../../source/applications/terminal/examples/arenaExamples/AirportSecurityExample.h</itemPath>
               <itemPath>../../source/applications/terminal/examples/arenaExamples/AirportSecurityExampleExtended.cpp</itemPath>
               <itemPath>../../source/applications/terminal/examples/arenaExamples/AirportSecurityExampleExtended.h</itemPath>
-              <itemPath>../../source/applications/terminal/examples/arenaExamples/Example_Basic_Order_Shipping.cpp</itemPath>
-              <itemPath>../../source/applications/terminal/examples/arenaExamples/Example_Basic_Order_Shipping.h</itemPath>
+              <itemPath>../../source/applications/terminal/examples/arenaExamples/Airport_Extended1.cpp</itemPath>
+              <itemPath>../../source/applications/terminal/examples/arenaExamples/Airport_Extended1.h</itemPath>
+              <itemPath>../../source/applications/terminal/examples/arenaExamples/Assembly_Line.cpp</itemPath>
+              <itemPath>../../source/applications/terminal/examples/arenaExamples/Assembly_Line.h</itemPath>
+              <itemPath>../../source/applications/terminal/examples/arenaExamples/Banking_Transactions.cpp</itemPath>
+              <itemPath>../../source/applications/terminal/examples/arenaExamples/Banking_Transactions.h</itemPath>
+              <itemPath>../../source/applications/terminal/examples/arenaExamples/Example_BasicOrderShipping.cpp</itemPath>
+              <itemPath>../../source/applications/terminal/examples/arenaExamples/Example_BasicOrderShipping.h</itemPath>
+              <itemPath>../../source/applications/terminal/examples/arenaExamples/Example_PortModel.cpp</itemPath>
+              <itemPath>../../source/applications/terminal/examples/arenaExamples/Example_PortModel.h</itemPath>
               <itemPath>../../source/applications/terminal/examples/arenaExamples/Example_PublicTransport.cpp</itemPath>
               <itemPath>../../source/applications/terminal/examples/arenaExamples/Example_PublicTransport.h</itemPath>
             </logicalFolder>
             <logicalFolder name="arenaSmarts" displayName="arenaSmarts" projectFiles="true">
-              <itemPath>../../source/applications/terminal/examples/arenaSmarts/Arrivals Element Stops Entities Arriving After a Set Time Modificado.doe</itemPath>
               <itemPath>../../source/applications/terminal/examples/arenaSmarts/Smart_AddingResource.cpp</itemPath>
               <itemPath>../../source/applications/terminal/examples/arenaSmarts/Smart_AddingResource.h</itemPath>
               <itemPath>../../source/applications/terminal/examples/arenaSmarts/Smart_AlternatingEntityCreation.cpp</itemPath>
@@ -117,6 +124,8 @@
               <itemPath>../../source/applications/terminal/examples/arenaSmarts/Smart_ModelRunUntil1000Parts.h</itemPath>
               <itemPath>../../source/applications/terminal/examples/arenaSmarts/Smart_ModuleDisplayVariables.cpp</itemPath>
               <itemPath>../../source/applications/terminal/examples/arenaSmarts/Smart_ModuleDisplayVariables.h</itemPath>
+              <itemPath>../../source/applications/terminal/examples/arenaSmarts/Smart_OverlappingResources.cpp</itemPath>
+              <itemPath>../../source/applications/terminal/examples/arenaSmarts/Smart_OverlappingResources.h</itemPath>
               <itemPath>../../source/applications/terminal/examples/arenaSmarts/Smart_ParallelProcessingOfEntities.cpp</itemPath>
               <itemPath>../../source/applications/terminal/examples/arenaSmarts/Smart_ParallelProcessingOfEntities.h</itemPath>
               <itemPath>../../source/applications/terminal/examples/arenaSmarts/Smart_PlacingEntitiesInQueueSets.cpp</itemPath>
@@ -127,6 +136,8 @@
               <itemPath>../../source/applications/terminal/examples/arenaSmarts/Smart_ProcessArena.h</itemPath>
               <itemPath>../../source/applications/terminal/examples/arenaSmarts/Smart_Record.cpp</itemPath>
               <itemPath>../../source/applications/terminal/examples/arenaSmarts/Smart_Record.h</itemPath>
+              <itemPath>../../source/applications/terminal/examples/arenaSmarts/Smart_RemovingAndReorderingEntitiesInAQueue.cpp</itemPath>
+              <itemPath>../../source/applications/terminal/examples/arenaSmarts/Smart_RemovingAndReorderingEntitiesInAQueue.h</itemPath>
               <itemPath>../../source/applications/terminal/examples/arenaSmarts/Smart_ResourceCosting.cpp</itemPath>
               <itemPath>../../source/applications/terminal/examples/arenaSmarts/Smart_ResourceCosting.h</itemPath>
               <itemPath>../../source/applications/terminal/examples/arenaSmarts/Smart_ResourceScheduleCosting.cpp</itemPath>
@@ -221,6 +232,10 @@
             <itemPath>../../source/applications/terminal/GenesysShell/GenesysShell.cpp</itemPath>
             <itemPath>../../source/applications/terminal/GenesysShell/GenesysShell.h</itemPath>
             <itemPath>../../source/applications/terminal/GenesysShell/GenesysShell_if.h</itemPath>
+          </logicalFolder>
+          <logicalFolder name="f2" displayName="underDevelopment" projectFiles="true">
+            <itemPath>../../source/applications/terminal/underDevelopment/TestingTerminalApp.cpp</itemPath>
+            <itemPath>../../source/applications/terminal/underDevelopment/TestingTerminalApp.h</itemPath>
           </logicalFolder>
         </logicalFolder>
         <itemPath>../../source/applications/BaseGenesysTerminalApplication.cpp</itemPath>
@@ -331,10 +346,6 @@
           <itemPath>../../source/kernel/simulator/PluginInformation.h</itemPath>
           <itemPath>../../source/kernel/simulator/PluginManager.cpp</itemPath>
           <itemPath>../../source/kernel/simulator/PluginManager.h</itemPath>
-          <itemPath>../../source/kernel/simulator/Property.cpp</itemPath>
-          <itemPath>../../source/kernel/simulator/Property.h</itemPath>
-          <itemPath>../../source/kernel/simulator/PropertyManager.cpp</itemPath>
-          <itemPath>../../source/kernel/simulator/PropertyManager.h</itemPath>
           <itemPath>../../source/kernel/simulator/ScenarioExperiment_if.h</itemPath>
           <itemPath>../../source/kernel/simulator/SimulationExperiment.cpp</itemPath>
           <itemPath>../../source/kernel/simulator/SimulationExperiment.h</itemPath>
@@ -414,6 +425,8 @@
           <itemPath>../../source/plugins/components/Assign.h</itemPath>
           <itemPath>../../source/plugins/components/Batch.cpp</itemPath>
           <itemPath>../../source/plugins/components/Batch.h</itemPath>
+          <itemPath>../../source/plugins/components/Buffer.cpp</itemPath>
+          <itemPath>../../source/plugins/components/Buffer.h</itemPath>
           <itemPath>../../source/plugins/components/CellularAutomata.cpp</itemPath>
           <itemPath>../../source/plugins/components/CellularAutomata.h</itemPath>
           <itemPath>../../source/plugins/components/Clone.cpp</itemPath>
@@ -580,21 +593,20 @@
     <conf name="Debug" type="1">
       <toolsSet>
         <compilerSet>default</compilerSet>
-        <dependencyChecking>true</dependencyChecking>
+        <dependencyChecking>false</dependencyChecking>
         <rebuildPropChanged>false</rebuildPropChanged>
+        <prependToolCollectionPath>false</prependToolCollectionPath>
       </toolsSet>
       <compileType>
         <cTool>
           <standard>10</standard>
         </cTool>
         <ccTool>
-          <developmentMode>2</developmentMode>
           <standard>11</standard>
           <incDir>
             <pElem>../../source/gtest</pElem>
           </incDir>
           <commandLine>-fPIC</commandLine>
-          <warningLevel>2</warningLevel>
         </ccTool>
         <asmTool>
           <warningLevel>2</warningLevel>
@@ -741,12 +753,52 @@
             tool="3"
             flavor2="0">
       </item>
-      <item path="../../source/applications/terminal/examples/arenaExamples/Example_Basic_Order_Shipping.cpp"
+      <item path="../../source/applications/terminal/examples/arenaExamples/Airport_Extended1.cpp"
             ex="false"
             tool="1"
             flavor2="0">
       </item>
-      <item path="../../source/applications/terminal/examples/arenaExamples/Example_Basic_Order_Shipping.h"
+      <item path="../../source/applications/terminal/examples/arenaExamples/Airport_Extended1.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../source/applications/terminal/examples/arenaExamples/Assembly_Line.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="../../source/applications/terminal/examples/arenaExamples/Assembly_Line.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../source/applications/terminal/examples/arenaExamples/Banking_Transactions.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="../../source/applications/terminal/examples/arenaExamples/Banking_Transactions.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../source/applications/terminal/examples/arenaExamples/Example_BasicOrderShipping.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="../../source/applications/terminal/examples/arenaExamples/Example_BasicOrderShipping.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../source/applications/terminal/examples/arenaExamples/Example_PortModel.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="../../source/applications/terminal/examples/arenaExamples/Example_PortModel.h"
             ex="false"
             tool="3"
             flavor2="0">
@@ -757,11 +809,6 @@
             flavor2="0">
       </item>
       <item path="../../source/applications/terminal/examples/arenaExamples/Example_PublicTransport.h"
-            ex="false"
-            tool="3"
-            flavor2="0">
-      </item>
-      <item path="../../source/applications/terminal/examples/arenaSmarts/Arrivals Element Stops Entities Arriving After a Set Time Modificado.doe"
             ex="false"
             tool="3"
             flavor2="0">
@@ -986,6 +1033,16 @@
             tool="3"
             flavor2="0">
       </item>
+      <item path="../../source/applications/terminal/examples/arenaSmarts/Smart_OverlappingResources.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="../../source/applications/terminal/examples/arenaSmarts/Smart_OverlappingResources.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
       <item path="../../source/applications/terminal/examples/arenaSmarts/Smart_ParallelProcessingOfEntities.cpp"
             ex="false"
             tool="1"
@@ -1032,6 +1089,16 @@
             flavor2="0">
       </item>
       <item path="../../source/applications/terminal/examples/arenaSmarts/Smart_Record.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../source/applications/terminal/examples/arenaSmarts/Smart_RemovingAndReorderingEntitiesInAQueue.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="../../source/applications/terminal/examples/arenaSmarts/Smart_RemovingAndReorderingEntitiesInAQueue.h"
             ex="false"
             tool="3"
             flavor2="0">
@@ -1432,6 +1499,16 @@
             flavor2="0">
       </item>
       <item path="../../source/applications/terminal/examples/teaching/OperatingSystem03.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../source/applications/terminal/underDevelopment/TestingTerminalApp.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="../../source/applications/terminal/underDevelopment/TestingTerminalApp.h"
             ex="false"
             tool="3"
             flavor2="0">
@@ -1915,26 +1992,6 @@
             tool="3"
             flavor2="0">
       </item>
-      <item path="../../source/kernel/simulator/Property.cpp"
-            ex="false"
-            tool="1"
-            flavor2="0">
-      </item>
-      <item path="../../source/kernel/simulator/Property.h"
-            ex="false"
-            tool="3"
-            flavor2="0">
-      </item>
-      <item path="../../source/kernel/simulator/PropertyManager.cpp"
-            ex="false"
-            tool="1"
-            flavor2="0">
-      </item>
-      <item path="../../source/kernel/simulator/PropertyManager.h"
-            ex="false"
-            tool="3"
-            flavor2="0">
-      </item>
       <item path="../../source/kernel/simulator/ScenarioExperiment_if.h"
             ex="false"
             tool="3"
@@ -2224,6 +2281,16 @@
             flavor2="0">
       </item>
       <item path="../../source/plugins/components/Batch.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../source/plugins/components/Buffer.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="../../source/plugins/components/Buffer.h"
             ex="false"
             tool="3"
             flavor2="0">
@@ -3020,12 +3087,52 @@
             tool="3"
             flavor2="0">
       </item>
-      <item path="../../source/applications/terminal/examples/arenaExamples/Example_Basic_Order_Shipping.cpp"
+      <item path="../../source/applications/terminal/examples/arenaExamples/Airport_Extended1.cpp"
             ex="false"
             tool="1"
             flavor2="0">
       </item>
-      <item path="../../source/applications/terminal/examples/arenaExamples/Example_Basic_Order_Shipping.h"
+      <item path="../../source/applications/terminal/examples/arenaExamples/Airport_Extended1.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../source/applications/terminal/examples/arenaExamples/Assembly_Line.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="../../source/applications/terminal/examples/arenaExamples/Assembly_Line.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../source/applications/terminal/examples/arenaExamples/Banking_Transactions.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="../../source/applications/terminal/examples/arenaExamples/Banking_Transactions.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../source/applications/terminal/examples/arenaExamples/Example_BasicOrderShipping.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="../../source/applications/terminal/examples/arenaExamples/Example_BasicOrderShipping.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../source/applications/terminal/examples/arenaExamples/Example_PortModel.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="../../source/applications/terminal/examples/arenaExamples/Example_PortModel.h"
             ex="false"
             tool="3"
             flavor2="0">
@@ -3036,11 +3143,6 @@
             flavor2="0">
       </item>
       <item path="../../source/applications/terminal/examples/arenaExamples/Example_PublicTransport.h"
-            ex="false"
-            tool="3"
-            flavor2="0">
-      </item>
-      <item path="../../source/applications/terminal/examples/arenaSmarts/Arrivals Element Stops Entities Arriving After a Set Time Modificado.doe"
             ex="false"
             tool="3"
             flavor2="0">
@@ -3265,6 +3367,16 @@
             tool="3"
             flavor2="0">
       </item>
+      <item path="../../source/applications/terminal/examples/arenaSmarts/Smart_OverlappingResources.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="../../source/applications/terminal/examples/arenaSmarts/Smart_OverlappingResources.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
       <item path="../../source/applications/terminal/examples/arenaSmarts/Smart_ParallelProcessingOfEntities.cpp"
             ex="false"
             tool="1"
@@ -3311,6 +3423,16 @@
             flavor2="0">
       </item>
       <item path="../../source/applications/terminal/examples/arenaSmarts/Smart_Record.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../source/applications/terminal/examples/arenaSmarts/Smart_RemovingAndReorderingEntitiesInAQueue.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="../../source/applications/terminal/examples/arenaSmarts/Smart_RemovingAndReorderingEntitiesInAQueue.h"
             ex="false"
             tool="3"
             flavor2="0">
@@ -3711,6 +3833,16 @@
             flavor2="0">
       </item>
       <item path="../../source/applications/terminal/examples/teaching/OperatingSystem03.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../source/applications/terminal/underDevelopment/TestingTerminalApp.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="../../source/applications/terminal/underDevelopment/TestingTerminalApp.h"
             ex="false"
             tool="3"
             flavor2="0">
@@ -4194,26 +4326,6 @@
             tool="3"
             flavor2="0">
       </item>
-      <item path="../../source/kernel/simulator/Property.cpp"
-            ex="false"
-            tool="1"
-            flavor2="0">
-      </item>
-      <item path="../../source/kernel/simulator/Property.h"
-            ex="false"
-            tool="3"
-            flavor2="0">
-      </item>
-      <item path="../../source/kernel/simulator/PropertyManager.cpp"
-            ex="false"
-            tool="1"
-            flavor2="0">
-      </item>
-      <item path="../../source/kernel/simulator/PropertyManager.h"
-            ex="false"
-            tool="3"
-            flavor2="0">
-      </item>
       <item path="../../source/kernel/simulator/ScenarioExperiment_if.h"
             ex="false"
             tool="3"
@@ -4503,6 +4615,16 @@
             flavor2="0">
       </item>
       <item path="../../source/plugins/components/Batch.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../source/plugins/components/Buffer.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="../../source/plugins/components/Buffer.h"
             ex="false"
             tool="3"
             flavor2="0">

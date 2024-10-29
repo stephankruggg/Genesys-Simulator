@@ -21,6 +21,7 @@
 #include "../../../../plugins/components/Delay.h"
 #include "../../../../plugins/components/Decide.h"
 #include "../../../../plugins/components/Dispose.h"
+#include "../../../TraitsApp.h"
 
 Smart_DecideNWayByChance::Smart_DecideNWayByChance() {
 
@@ -34,24 +35,14 @@ Smart_DecideNWayByChance::Smart_DecideNWayByChance() {
 */
 
 int Smart_DecideNWayByChance::main(int argc, char** argv) {
-    // Create a new simulator instance.
-    Simulator* genesys = new Simulator();
-    this->setDefaultTraceHandlers(genesys->getTracer());
-    this->insertFakePluginsByHand(genesys);
-
-    bool isDevelop = false;    
-
-    if (isDevelop) {
-        genesys->getTracer()->setTraceLevel(TraceManager::Level::L9_mostDetailed);
-    } else {
-        genesys->getTracer()->setTraceLevel(TraceManager::Level::L2_results);
-    }
-    
-    // Create the model and components instances.
-    Model* model = genesys->getModels()->newModel();
-    PluginManager* plugins = genesys->getPlugins();
-    
-    Create* create_1 = plugins->newInstance<Create>(model, "Create_1");
+	Simulator* genesys = new Simulator();
+	genesys->getTracer()->setTraceLevel(TraitsApp<GenesysApplication_if>::traceLevel);
+	setDefaultTraceHandlers(genesys->getTracer());
+	PluginManager* plugins = genesys->getPlugins();
+	plugins->autoInsertPlugins("autoloadplugins.txt");
+	Model* model = genesys->getModels()->newModel();
+	// create model
+	Create* create_1 = plugins->newInstance<Create>(model, "Create_1");
     Delay* process_1 = plugins->newInstance<Delay>(model, "Process_1");
     Decide* decide_1 = plugins->newInstance<Decide>(model, "5_Way_Decide_By_Chance");
     Dispose* dispose_1 = plugins->newInstance<Dispose>(model, "Send_to_Warehouse");
@@ -65,8 +56,6 @@ int Smart_DecideNWayByChance::main(int argc, char** argv) {
     create_1->setEntityTypeName("Entity 1");
     create_1->setTimeBetweenCreationsExpression("EXPO(9)");
     create_1->setTimeUnit(Util::TimeUnit::minute);
-    create_1->setEntitiesPerCreation(1);
-    create_1->setFirstCreation(0.0);
 
     // Process 1
     // As the Process component on Genesys is a abstraction between Seize/Delay/Release
@@ -90,6 +79,19 @@ int Smart_DecideNWayByChance::main(int argc, char** argv) {
 
     decide_1->getConnections()->insert(dispose_5);
 
+
+    // Set options, save and run simulation.
+    model->getInfos()->setName("Decide N-way By Chance");
+	model->save("./models/Smart_DecideNWayByChance.gen");
+
+	model->getSimulation()->setReplicationLength(std::numeric_limits<double>::max(), Util::TimeUnit::week); // This is a "infinity" value.
+    model->getSimulation()->setReplicationReportBaseTimeUnit(Util::TimeUnit::minute);
+
+    // Warmup should be 5% of replication length
+    auto replicationLength = 400; 
+    model->getSimulation()->setWarmUpPeriod(replicationLength * 0.05);
+    model->getSimulation()->setWarmUpPeriodTimeUnit(Util::TimeUnit::minute);
+
     // This sums up all of our Dipose components to ensure that 1k entities are leaving the SMART.
     std::string countWarehouse = "COUNT(Send_to_Warehouse.CountNumberIn) + ";
     std::string countRebuild = "COUNT(Send_to_Rebuild.CountNumberIn) + ";
@@ -97,28 +99,11 @@ int Smart_DecideNWayByChance::main(int argc, char** argv) {
     std::string countRepackage = "COUNT(Send_to_Repackage.CountNumberIn) + ";
     std::string countScrap = "COUNT(Scrap.CountNumberIn)";
     std::string totalEntities = " > 1000";
-
-    // Set options, save and run simulation.
-    model->getInfos()->setName("Decide N-way By Chance");
-    model->save("./models/Smart_DecideNWayByChance.gen");
-
-    auto replicationLength = 8939.977654; // +/- Needed to achieve 1k entities
-	model->getSimulation()->setReplicationLength(std::numeric_limits<double>::max(), Util::TimeUnit::week); // This is a "infinity" value.
-    model->getSimulation()->setReplicationReportBaseTimeUnit(Util::TimeUnit::minute);
-
-    // Warmup should be 5% of replication length
-    model->getSimulation()->setWarmUpPeriod(replicationLength * 0.05);
-    model->getSimulation()->setWarmUpPeriodTimeUnit(Util::TimeUnit::minute);
-
-    model->
-    getSimulation()->
-    setTerminatingCondition(countWarehouse + countRebuild + countRefinish + countRepackage + countScrap + totalEntities);
-    
-    model->getSimulation()->setNumberOfReplications(300);
+    model->getSimulation()->setTerminatingCondition(countWarehouse + countRebuild + countRefinish + countRepackage + countScrap + totalEntities);
+    model->getSimulation()->setNumberOfReplications(3);
     model->getSimulation()->start();
 
 	for (int i = 0; i < 1e9; i++); // Give time to UI print everything.
-
     delete genesys;
     return 0;
 }

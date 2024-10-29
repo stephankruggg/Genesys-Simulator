@@ -10,24 +10,23 @@
 #include "../../../../plugins/components/Dispose.h"
 #include "../../../../plugins/components/Decide.h"
 #include "../../../../plugins/components/Assign.h"
+#include "../../../TraitsApp.h"
 
 Smart_AssignExample::Smart_AssignExample() {
 }
 
 int Smart_AssignExample::main(int argc, char** argv) {
-    Simulator *genesys = new Simulator();
-    genesys->getTracer()->setTraceLevel(TraceManager::Level::L2_results);
-    this->setDefaultTraceHandlers(genesys->getTracer());
-    this->insertFakePluginsByHand(genesys);
-
-    Model *model = genesys->getModels()->newModel();
-    PluginManager *plugins = genesys->getPlugins();
-
-    Create *create = plugins->newInstance<Create>(model);
+	Simulator* genesys = new Simulator();
+	genesys->getTracer()->setTraceLevel(TraitsApp<GenesysApplication_if>::traceLevel);
+	setDefaultTraceHandlers(genesys->getTracer());
+	PluginManager* plugins = genesys->getPlugins();
+	plugins->autoInsertPlugins("autoloadplugins.txt");
+	Model* model = genesys->getModels()->newModel();
+	// create model
+	Create *create = plugins->newInstance<Create>(model);
     create->setName("Calls Arrive");
     create->setEntityTypeName("Call");
     create->setTimeBetweenCreationsExpression("expo(1)", Util::TimeUnit::hour);
-    create->setEntitiesPerCreation(1);
     
     Assign *assign = plugins->newInstance<Assign>(model);
     assign->setName("Assign Module");
@@ -52,7 +51,6 @@ int Smart_AssignExample::main(int argc, char** argv) {
     process1->setDelayTimeUnit(Util::TimeUnit::hour);
 
     Resource *resource2 = plugins->newInstance<Resource>(model, "Accountant");
-    resource2->setCapacity(1);
     
     Process *process2 = plugins->newInstance<Process>(model);
     process2->setName("Accounting");
@@ -73,8 +71,8 @@ int Smart_AssignExample::main(int argc, char** argv) {
     process2->getConnections()->insert(dispose);
     
     ModelSimulation *s = model->getSimulation();
-    s->setNumberOfReplications(300);
-    double replicationLength = 7;
+    s->setNumberOfReplications(3);
+    double replicationLength = 1;
     s->setReplicationLength(replicationLength, Util::TimeUnit::week);
     s->setWarmUpPeriod(replicationLength * 0.05);
     s->setWarmUpPeriodTimeUnit(Util::TimeUnit::week);

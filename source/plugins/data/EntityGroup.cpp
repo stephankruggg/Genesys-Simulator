@@ -37,7 +37,7 @@ EntityGroup::~EntityGroup() {
 
 std::string EntityGroup::show() {
 	return ModelDataDefinition::show(); // +
-	// TODO: Sow every group in the map",entities=" + this->_list->show();
+	//@TODO: Show every group in the map",entities=" + this->_list->show();
 }
 
 void EntityGroup::insertElement(unsigned int idKey, Entity* modeldatum) {

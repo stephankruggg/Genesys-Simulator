@@ -83,13 +83,13 @@ void TraceManager::trace(std::string text, TraceManager::Level level) {
 	}
 }
 
-void TraceManager::traceError(std::exception e, std::string text) {
-	traceError(text, e);
-}
+//void TraceManager::traceError(std::exception e, std::string text) {
+//	traceError(text, e);
+//}
 
-void TraceManager::traceError(TraceManager::Level level, std::string text) {
-	traceError(text, level);
-}
+//void TraceManager::traceError(TraceManager::Level level, std::string text) {
+//	traceError(text, level);
+//}
 
 void TraceManager::traceError(std::string text, TraceManager::Level level) {
 	std::exception e;
@@ -144,9 +144,9 @@ void TraceManager::traceSimulation(void* thisobject, double time, Entity* entity
 	}
 }
 
-void TraceManager::traceReport(TraceManager::Level level, std::string text) {
-	traceReport(text, level);
-}
+//void TraceManager::traceReport(TraceManager::Level level, std::string text) {
+//	traceReport(text, level);
+//}
 
 void TraceManager::traceReport(std::string text, TraceManager::Level level) {
 	if (_traceConditionPassed(level)) {

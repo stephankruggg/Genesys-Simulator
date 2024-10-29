@@ -18,6 +18,7 @@
 #include "../../../../plugins/components/Record.h"
 #include "../../../../plugins/components/Delay.h"
 #include "../../../../plugins/components/Decide.h"
+#include "../../../TraitsApp.h"
 
 
 Smart_DefiningAttributesAsStrings::Smart_DefiningAttributesAsStrings() {
@@ -29,14 +30,13 @@ Smart_DefiningAttributesAsStrings::Smart_DefiningAttributesAsStrings() {
  */
 int Smart_DefiningAttributesAsStrings::main(int argc, char** argv) {
 	Simulator* genesys = new Simulator();
-	this->setDefaultTraceHandlers(genesys->getTracer());
-	this->insertFakePluginsByHand(genesys);
-        genesys->getTracer()->setTraceLevel(TraceManager::Level::L2_results);
-	// create model
-	Model* model = genesys->getModels()->newModel();
+	genesys->getTracer()->setTraceLevel(TraitsApp<GenesysApplication_if>::traceLevel);
+	setDefaultTraceHandlers(genesys->getTracer());
 	PluginManager* plugins = genesys->getPlugins();
-        
-        // create 1
+	plugins->autoInsertPlugins("autoloadplugins.txt");
+	Model* model = genesys->getModels()->newModel();
+	// create model
+		// create 1
 	Create* create1 = plugins->newInstance<Create>(model);
         create1->setEntityTypeName("Create 1");
 	create1->setTimeBetweenCreationsExpression("expo(1)");

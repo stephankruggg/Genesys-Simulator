@@ -11,6 +11,7 @@
 #include "../../../../plugins/components/Release.h"
 #include "../../../../plugins/components/Dispose.h"
 #include "../../../../plugins/data/Failure.h"
+#include "../../../TraitsApp.h"
 
 Smart_Failures::Smart_Failures() {
 }
@@ -21,12 +22,12 @@ Smart_Failures::Smart_Failures() {
  */
 int Smart_Failures::main(int argc, char** argv) {
 	Simulator* genesys = new Simulator();
-	this->setDefaultTraceHandlers(genesys->getTracer());
-	this->insertFakePluginsByHand(genesys);
-	genesys->getTracer()->setTraceLevel(TraceManager::Level::L9_mostDetailed);
-	// crete model
-	Model* model = genesys->getModels()->newModel();
+	genesys->getTracer()->setTraceLevel(TraitsApp<GenesysApplication_if>::traceLevel);
+	setDefaultTraceHandlers(genesys->getTracer());
 	PluginManager* plugins = genesys->getPlugins();
+	plugins->autoInsertPlugins("autoloadplugins.txt");
+	Model* model = genesys->getModels()->newModel();
+	// create model
 	Create* create1 = plugins->newInstance<Create>(model);
 	//create1->setTimeBetweenCreationsExpression("100");
 	//create1->setFirstCreation(100);

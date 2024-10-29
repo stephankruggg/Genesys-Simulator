@@ -4,10 +4,10 @@
  * and open the template in the editor.
  */
 
-/* 
+/*
  * File:   Batch.cpp
  * Author: rlcancian
- * 
+ *
  * Created on 03 de Junho de 2019, 15:14
  */
 
@@ -29,7 +29,67 @@ ModelDataDefinition* Batch::NewInstance(Model* model, std::string name) {
 	return new Batch(model, name);
 }
 
+std::string Batch::convertEnumToStr(BatchType type) {
+	switch (static_cast<int> (type)) {
+		case 0: return "Temporary";
+		case 1: return "Permanent";
+	}
+	return "Unknown";
+}
+
+std::string Batch::convertEnumToStr(Rule rule) {
+	switch (static_cast<int> (rule)) {
+		case 0: return "Any";
+		case 1: return "ByAttribute";
+	}
+	return "Unknown";
+}
+
+std::string Batch::convertEnumToStr(GroupedAttribs attribs) {
+	switch (static_cast<int> (attribs)) {
+		case 0: return "FirstEntity";
+		case 1: return "LastEntity";
+		case 2: return "SumAttributes";
+	}
+	return "Unknown";
+}
+
 Batch::Batch(Model* model, std::string name) : ModelComponent(model, Util::TypeOf<Batch>(), name) {
+    SimulationControlGenericEnum<Batch::Rule, Batch>* propRule = new SimulationControlGenericEnum<Batch::Rule, Batch>(
+                std::bind(&Batch::getRule, this),
+                std::bind(&Batch::setRule, this, std::placeholders::_1),
+                Util::TypeOf<Batch>(), getName(), "Rule", "");
+    SimulationControlGenericEnum<Batch::GroupedAttribs, Batch>* propGroupedAttribs = new SimulationControlGenericEnum<Batch::GroupedAttribs, Batch>(
+                std::bind(&Batch::getGroupedAttributes, this),
+                std::bind(&Batch::setGroupedAttributes, this, std::placeholders::_1),
+                Util::TypeOf<Batch>(), getName(), "GroupedAttributes", "");
+	SimulationControlGenericClass<EntityType*, Model*, EntityType>* propGroupedEntity = new SimulationControlGenericClass<EntityType*, Model*, EntityType>(
+				_parentModel,
+				std::bind(&Batch::getGroupedEntityType, this),
+				std::bind(&Batch::setGroupedEntityType, this, std::placeholders::_1),
+				Util::TypeOf<Batch>(), getName(), "GroupedEntityType", "");
+	SimulationControlGeneric<std::string>* propAttributeName = new SimulationControlGeneric<std::string>(
+				std::bind(&Batch::getAttributeName, this),
+				std::bind(&Batch::setAttributeName, this, std::placeholders::_1),
+				Util::TypeOf<Batch>(), getName(), "AttributeName", "");
+	SimulationControlGeneric<std::string>* propSize = new SimulationControlGeneric<std::string>(
+				std::bind(&Batch::getBatchSize, this),
+				std::bind(&Batch::setBatchSize, this, std::placeholders::_1),
+				Util::TypeOf<Batch>(), getName(), "BatchSize", "");
+	
+
+    _parentModel->getControls()->insert(propRule);
+    _parentModel->getControls()->insert(propGroupedAttribs);
+	_parentModel->getControls()->insert(propGroupedEntity);
+	_parentModel->getControls()->insert(propAttributeName);
+	_parentModel->getControls()->insert(propSize);
+
+	// setting properties
+    _addProperty(propRule);
+    _addProperty(propGroupedAttribs);
+	_addProperty(propGroupedEntity);
+	_addProperty(propAttributeName);
+	_addProperty(propSize);
 }
 
 std::string Batch::show() {
@@ -107,10 +167,10 @@ void Batch::_onDispatchEvent(Entity* entity, unsigned int inputPortNumber) {
 			for (unsigned int i = 0; i < _queue->size(); i++) {
 				entitiesToGroup->insert(entitiesToGroup->end(), _queue->getAtRank(i));
 			}
-			_parentModel->getTracer()->traceSimulation(this, TraceManager::Level::L7_internal, "Queue has " + std::to_string(_queue->size()) + " elements and a group with " + std::to_string(batchSize) + " elements will be created");
+			traceSimulation(this, "Queue has " + std::to_string(_queue->size()) + " elements and a group with " + std::to_string(batchSize) + " elements will be created",TraceManager::Level::L7_internal);
 
 		} else {
-			_parentModel->getTracer()->traceSimulation(this, "Queue has " + std::to_string(_queue->size()) + " elements, not enought to form a group with " + std::to_string(batchSize));
+			traceSimulation(this, "Queue has " + std::to_string(_queue->size()) + " elements, not enought to form a group with " + std::to_string(batchSize));
 		}
 	} else if (_rule == Batch::Rule::ByAttribute) {// rule IS Batch::Rule::ByAttribute
 		std::map<double, unsigned int>* countByValue = new std::map<double, unsigned int>();
@@ -133,7 +193,7 @@ void Batch::_onDispatchEvent(Entity* entity, unsigned int inputPortNumber) {
 						entitiesToGroup->insert(entitiesToGroup->end(), we);
 					}
 				}
-				_parentModel->getTracer()->traceSimulation(this, TraceManager::Level::L7_internal, "Found " + std::to_string(entitiesToGroup->size()) + " elements in queue with the same value (" + std::to_string(value) + ") for attribute \"" + _attributeName + "\", and a group will be created");
+				traceSimulation(this,  "Found " + std::to_string(entitiesToGroup->size()) + " elements in queue with the same value (" + std::to_string(value) + ") for attribute \"" + _attributeName + "\", and a group will be created", TraceManager::Level::L7_internal);
 				break; //@TODO //breake? //next? 
 			}
 		}
@@ -141,7 +201,7 @@ void Batch::_onDispatchEvent(Entity* entity, unsigned int inputPortNumber) {
 
 	}
 	if (entitiesToGroup != nullptr) { // there are enought entities to group in
-		//_parentModel->getTracer()->traceSimulation(this, "Queue has " + std::to_string(_queue->size()) + " elements, not enought to form a group");
+		//traceSimulation(this, "Queue has " + std::to_string(_queue->size()) + " elements, not enought to form a group");
 		assert(entitiesToGroup->size() == batchSize);
 		// creates a new entity that represents the group
 		Entity* representativeEnt;
@@ -154,7 +214,7 @@ void Batch::_onDispatchEvent(Entity* entity, unsigned int inputPortNumber) {
 		}
 		unsigned int groupIdKey = representativeEnt->getId(); // an "EntityGroup" is a MAP, with one LIST for every RepresentativeEntity ID as KEY
 		if (_batchType == Batch::BatchType::Temporary) {
-			representativeEnt->setAttributeValue("Entity.Group", _entityGroup->getId()); // The "Entity.Group" attribute is the EntityGroup Id (an internel modeldatum of Batch), while the ID of the representative entity is the KEY of the map of that EntityGroup
+			representativeEnt->setAttributeValue("Entity.Group", _entityGroup->getId()); // The "Entity.Group" attribute is the EntityGroup Id (an internal modeldatum of Batch), while the ID of the representative entity is the KEY of the map of that EntityGroup
 		}
 		// remove all entities from the queue while storing attributes depending on representative
 		Entity* enqueuedEnt;
@@ -187,16 +247,16 @@ void Batch::_onDispatchEvent(Entity* entity, unsigned int inputPortNumber) {
 		}
 		txtEntsInGroup = txtEntsInGroup.substr(0, txtEntsInGroup.length() - 2);
 		if (_batchType == Batch::BatchType::Temporary) {
-			_parentModel->getTracer()->traceSimulation(this, TraceManager::Level::L7_internal, "Group key " + std::to_string(groupIdKey) + " was created containing entities: " + txtEntsInGroup + " and representative entity wih attribute 'Entity.Group'=" + std::to_string(_entityGroup->getId()));
+			traceSimulation(this, "Group key " + std::to_string(groupIdKey) + " was created containing entities: " + txtEntsInGroup + " and representative entity wih attribute 'Entity.Group'=" + std::to_string(_entityGroup->getId()), TraceManager::Level::L7_internal);
 		} else {
-			_parentModel->getTracer()->traceSimulation(this, TraceManager::Level::L7_internal, "Entity \"" + representativeEnt->getName() + "\" id=" + std::to_string(groupIdKey) + " now represented the removed entities: " + txtEntsInGroup);
+			traceSimulation(this, "Entity \"" + representativeEnt->getName() + "\" id=" + std::to_string(groupIdKey) + " now represented the removed entities: " + txtEntsInGroup, TraceManager::Level::L7_internal);
 		}
 		this->_parentModel->sendEntityToComponent(representativeEnt, this->getConnections()->getFrontConnection());
 	} else {
 		if (_rule == Batch::Rule::Any) {
-			_parentModel->getTracer()->traceSimulation(this, "Entity \"" + entity->getName() + "\" is waiting in the queue " + _queue->getName());
+			traceSimulation(this, "Entity \"" + entity->getName() + "\" is waiting in the queue " + _queue->getName());
 		} else if (_rule == Batch::Rule::ByAttribute) {
-			_parentModel->getTracer()->traceSimulation(this, "Entity \"" + entity->getName() + "\" with attribute '" + _attributeName + "'=" + std::to_string(entity->getAttributeValue(_attributeName)) + " is waiting in the queue " + _queue->getName());
+			traceSimulation(this, "Entity \"" + entity->getName() + "\" with attribute '" + _attributeName + "'=" + std::to_string(entity->getAttributeValue(_attributeName)) + " is waiting in the queue " + _queue->getName());
 		} else { // by entity type
 		}
 	}
@@ -232,20 +292,18 @@ void Batch::_saveInstance(PersistenceRecord *fields, bool saveDefaultValues) {
 
 void Batch::_createInternalAndAttachedData() {
 	_attachedAttributesInsert({"Entity.Group"});
-	if (_parentModel->isAutomaticallyCreatesModelDataDefinitions()) {
-		_attachedDataInsert("GroupdEntityType", _groupedEntityType);
-		if (_queue == nullptr) {
-			PluginManager* plugins = _parentModel->getParentSimulator()->getPlugins();
-			_queue = plugins->newInstance<Queue>(_parentModel, this->getName() + ".Queue");
-			_internalDataInsert("EntityQueue", _queue);
-			_entityGroup = plugins->newInstance<EntityGroup>(_parentModel, this->getName() + ".EntiyGroup");
-			_internalDataInsert("EntityGroup", _entityGroup);
-		}
-		if (_attributeName != "") {
-			ModelDataManager* elements = _parentModel->getDataManager();
-			ModelDataDefinition* attribute = elements->getDataDefinition(Util::TypeOf<Attribute>(), _attributeName);
-			_attachedDataInsert("AttributeName", attribute);
-		}
+	_attachedDataInsert("GroupdEntityType", _groupedEntityType);
+	if (_queue == nullptr) {
+		PluginManager* plugins = _parentModel->getParentSimulator()->getPlugins();
+		_queue = plugins->newInstance<Queue>(_parentModel, this->getName() + ".Queue");
+		_internalDataInsert("EntityQueue", _queue);
+		_entityGroup = plugins->newInstance<EntityGroup>(_parentModel, this->getName() + ".EntiyGroup");
+		_internalDataInsert("EntityGroup", _entityGroup);
+	}
+	if (_attributeName != "") {
+		ModelDataManager* elements = _parentModel->getDataManager();
+		ModelDataDefinition* attribute = elements->getDataDefinition(Util::TypeOf<Attribute>(), _attributeName);
+		_attachedDataInsert("AttributeName", attribute);
 	}
 }
 
@@ -284,5 +342,3 @@ PluginInformation * Batch::GetPluginInformation() {
 	info->setDescriptionHelp(help);
 	return info;
 }
-
-

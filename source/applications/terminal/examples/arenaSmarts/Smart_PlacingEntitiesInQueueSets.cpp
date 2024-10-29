@@ -25,6 +25,7 @@
 #include "../../../../plugins/components/Assign.h"
 #include "../../../../plugins/components/Wait.h"
 #include "../../../../plugins/components/Decide.h"
+#include "../../../TraitsApp.h"
 
 Smart_PlacingEntitiesInQueueSets::Smart_PlacingEntitiesInQueueSets() {
 }
@@ -36,29 +37,25 @@ Smart_PlacingEntitiesInQueueSets::Smart_PlacingEntitiesInQueueSets() {
 
 int Smart_PlacingEntitiesInQueueSets::main(int argc, char** argv) {
 	Simulator* genesys = new Simulator();
-	this->setDefaultTraceHandlers(genesys->getTracer());
-	this->insertFakePluginsByHand(genesys);
-	// crete model
-	Model* model = genesys->getModels()->newModel();
+	genesys->getTracer()->setTraceLevel(TraitsApp<GenesysApplication_if>::traceLevel);
+	setDefaultTraceHandlers(genesys->getTracer());
 	PluginManager* plugins = genesys->getPlugins();
-	
-	///////////////////////// Placing Entities in Queue Sets (Queue) ///////////////////////// 
-	
+	plugins->autoInsertPlugins("autoloadplugins.txt");
+	Model* model = genesys->getModels()->newModel();
+	// create model
+
 	// Create Customer into system
 	Create* create1 = plugins->newInstance<Create>(model);
 	create1->setEntityTypeName("Entity 1");
-	create1->setTimeBetweenCreationsExpression("tria(6,7,8)");
+	create1->setTimeBetweenCreationsExpression("tria(6,7,8)"); 
 	create1->setTimeUnit(Util::TimeUnit::minute);
 	create1->setEntitiesPerCreation(20);
 	create1->setMaxCreations(1); 
-	create1->setFirstCreation(0.0);
 
 	// Assign aCustomerType
 	Assign* assign = plugins->newInstance<Assign>(model);
-
 	// O aCustomerType é sempre = 0 com a expressão do Arena: disc(0.25, 1, 0.5, 2, 0.75, 3, 1, 4)
 	// assign->getAssignments()->insert(new Assignment(model, "aCustomerType", "disc(0.25, 1, 0.5, 2, 0.75, 3, 1, 4)"));
-	
 	// Optamos por alterar a experessão por "trunc(unif(1, 5))" (aqui e no Arena)
 	assign->getAssignments()->insert(new Assignment(model, "aCustomerType", "trunc(unif(1, 5))"));
 
@@ -66,10 +63,10 @@ int Smart_PlacingEntitiesInQueueSets::main(int argc, char** argv) {
 	Queue* queue2 =  plugins->newInstance<Queue>(model, "Queue for Customer Type 2");
 	Queue* queue3 =  plugins->newInstance<Queue>(model, "Queue for Customer Type 3");
 	Queue* queue4 =  plugins->newInstance<Queue>(model, "Queue for Customer Type 4");
-	queue1->setAttributeName("aCustomerType");
-	queue2->setAttributeName("aCustomerType");
-	queue3->setAttributeName("aCustomerType");
-	queue4->setAttributeName("aCustomerType");
+	//queue1->setAttributeName("aCustomerType");
+	//queue2->setAttributeName("aCustomerType");
+	//queue3->setAttributeName("aCustomerType");
+	//queue4->setAttributeName("aCustomerType");
 
 	Decide* decide1 = plugins->newInstance<Decide>(model, "Decide_1");
 	decide1->getConditions()->insert("aCustomerType == 1");

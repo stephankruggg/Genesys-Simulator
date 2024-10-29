@@ -29,6 +29,7 @@
 #include "../../../../plugins/data/Resource.h"
 #include "../../../../plugins/data/Queue.h"
 #include "../../../../plugins/data/Variable.h"
+#include "../../../TraitsApp.h"
 
 Smart_SynchronizingParallelEntities::Smart_SynchronizingParallelEntities() {
 }
@@ -39,13 +40,13 @@ Smart_SynchronizingParallelEntities::Smart_SynchronizingParallelEntities() {
  */
 int Smart_SynchronizingParallelEntities::main(int argc, char** argv) {
 	Simulator* genesys = new Simulator();
-	this->setDefaultTraceHandlers(genesys->getTracer());
-	this->insertFakePluginsByHand(genesys);
-	genesys->getTracer()->setTraceLevel(TraceManager::Level::L2_results);
-	//create model
-	Model* model = genesys->getModels()->newModel();
+	genesys->getTracer()->setTraceLevel(TraitsApp<GenesysApplication_if>::traceLevel);
+	setDefaultTraceHandlers(genesys->getTracer());
 	PluginManager* plugins = genesys->getPlugins();
-        
+	plugins->autoInsertPlugins("autoloadplugins.txt");
+	Model* model = genesys->getModels()->newModel();
+	// create model
+
         //Orders Arrive
 	Create* orders_arrive = plugins->newInstance<Create>(model, "OrdersArrive");
         orders_arrive->setEntityTypeName("Entity1");

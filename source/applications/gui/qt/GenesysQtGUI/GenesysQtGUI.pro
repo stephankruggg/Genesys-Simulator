@@ -1,9 +1,10 @@
-QT       += core gui
-
-greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
+QT += core gui
 QT += printsupport
-
+QT += designer
+greaterThan(QT_MAJOR_VERSION, 6): QT += widgets
 CONFIG += c++14
+
+QMAKE_CXXFLAGS += -pedantic -Wno-unused -Wmissing-field-initializers
 
 # You can make your code fail to compile if it uses deprecated APIs.
 # In order to do so, uncomment the following line.
@@ -43,8 +44,6 @@ SOURCES += \
 	../../../../kernel/simulator/PluginConnectorDummyImpl1.cpp \
 	../../../../kernel/simulator/PluginInformation.cpp \
 	../../../../kernel/simulator/PluginManager.cpp \
-	../../../../kernel/simulator/Property.cpp \
-	../../../../kernel/simulator/PropertyManager.cpp \
 	../../../../kernel/simulator/SimulationExperiment.cpp \
 	../../../../kernel/simulator/SimulationReporterDefaultImpl1.cpp \
 	../../../../kernel/simulator/SimulationScenario.cpp \
@@ -69,17 +68,32 @@ SOURCES += \
 	../../../../plugins/components/Access.cpp \
 	../../../../plugins/components/Assign.cpp \
 	../../../../plugins/components/Batch.cpp \
+	../../../../plugins/components/Buffer.cpp \
+	../../../../plugins/components/CellularAutomata/Cell.cpp \
+	../../../../plugins/components/CellularAutomata/CellularAutomataBase.cpp \
+	../../../../plugins/components/CellularAutomata/Lattice.cpp \
+	../../../../plugins/components/CellularAutomata/StateSet.cpp \
+	../../../../plugins/components/CellularAutomata/StateSet_Enumerable.cpp \
+	../../../../plugins/components/CellularAutomataComp.cpp \
 	../../../../plugins/components/CellularAutomata.cpp \
+	../../../../plugins/components/Clone.cpp \
 	../../../../plugins/components/CppForG.cpp \
 	../../../../plugins/components/Create.cpp \
 	../../../../plugins/components/Decide.cpp \
 	../../../../plugins/components/Delay.cpp \
+	../../../../plugins/components/DiffEquations.cpp \
 	../../../../plugins/components/Dispose.cpp \
 	../../../../plugins/components/DropOff.cpp \
 	../../../../plugins/components/DummyComponent.cpp \
 	../../../../plugins/components/Enter.cpp \
 	../../../../plugins/components/Exit.cpp \
+        ../../../../plugins/components/FSM_ModalModel.cpp \
+        ../../../../plugins/components/FSM_State.cpp \
+        ../../../../plugins/components/FSM_Transition.cpp \
 	../../../../plugins/components/FiniteStateMachine.cpp \
+	../../../../plugins/components/PickableStationItem.cpp \
+        ../../../../plugins/components/SPICECircuit.cpp \
+        ../../../../plugins/components/SPICENode.cpp \
 	../../../../plugins/components/Wait.cpp \
 	../../../../plugins/components/LSODE.cpp \
 	../../../../plugins/components/Leave.cpp \
@@ -106,16 +120,17 @@ SOURCES += \
 	../../../../plugins/components/Unstore.cpp \
 	../../../../plugins/components/Write.cpp \
 	../../../../plugins/data/AssignmentItem.cpp \
-	../../../../plugins/data/CppCode.cpp \
+	../../../../plugins/data/CppCompiler.cpp \
 	../../../../plugins/data/DummyElement.cpp \
+	../../../../plugins/data/EFSM.cpp \
 	../../../../plugins/data/EntityGroup.cpp \
-	../../../../plugins/data/ExFiStatMac.cpp \
 	../../../../plugins/data/Failure.cpp \
 	../../../../plugins/data/File.cpp \
 	../../../../plugins/data/Formula.cpp \
 	../../../../plugins/data/Label.cpp \
 	../../../../plugins/data/Queue.cpp \
 	../../../../plugins/data/Resource.cpp \
+        ../../../../plugins/data/SPICERunner.cpp \
 	../../../../plugins/data/Schedule.cpp \
 	../../../../plugins/data/Sequence.cpp \
 	../../../../plugins/data/Set.cpp \
@@ -123,51 +138,62 @@ SOURCES += \
 	../../../../plugins/data/Station.cpp \
 	../../../../plugins/data/Storage.cpp \
 	../../../../plugins/data/Variable.cpp \
-	../../../../tests/Tests.cpp \
+	../../../../tools/FitterDummyImpl.cpp \
 	../../../../tools/HypothesisTesterDefaultImpl1.cpp \
 	../../../../tools/ProbabilityDistribution.cpp \
 	../../../../tools/ProbabilityDistributionBase.cpp \
 	../../../../tools/SolverDefaultImpl1.cpp \
 	../../../BaseGenesysTerminalApplication.cpp \
-	../../../terminal/examples/book/Book_Cap02_Example01.cpp \
-	../../../terminal/examples/smarts/Smart_AssignWriteSeizes.cpp \
-	../../../terminal/examples/smarts/Smart_BatchSeparate.cpp \
-	../../../terminal/examples/smarts/Smart_CellularAutomata1.cpp \
-	../../../terminal/examples/smarts/Smart_CppForG.cpp \
-	../../../terminal/examples/smarts/Smart_Delay.cpp \
-	../../../terminal/examples/smarts/Smart_Dummy.cpp \
-	../../../terminal/examples/smarts/Smart_Failures.cpp \
-	../../../terminal/examples/smarts/Smart_WaitScanCondition.cpp \
-	../../../terminal/examples/smarts/Smart_WaitSignal.cpp \
-	../../../terminal/examples/smarts/Smart_ModelInfoModelSimulation.cpp \
-	../../../terminal/examples/smarts/Smart_ODE.cpp \
-	../../../terminal/examples/smarts/Smart_OnEvent.cpp \
-	../../../terminal/examples/smarts/Smart_Parser.cpp \
-	../../../terminal/examples/smarts/Smart_ParserModelFunctions.cpp \
-	../../../terminal/examples/smarts/Smart_Plugin.cpp \
-	../../../terminal/examples/smarts/Smart_Process.cpp \
-	../../../terminal/examples/smarts/Smart_ProcessSet.cpp \
-	../../../terminal/examples/smarts/Smart_RouteStation.cpp \
-	../../../terminal/examples/smarts/Smart_SeizeDelayRelease.cpp \
-	../../../terminal/examples/smarts/Smart_SeizeDelayReleaseMany.cpp \
-	../../../terminal/examples/smarts/Smart_Sequence.cpp \
-	../../../terminal/examples/teaching/AnElectronicAssemblyAndTestSystem.cpp \
-	../../../terminal/examples/teaching/FullSimulationOfComplexModel.cpp \
-	../../../terminal/examples/teaching/OperatingSystem02.cpp \
-	../../../terminal/examples/teaching/OperatingSystem03.cpp \
-	AnimateExpression.cpp \
+	../../../terminal/GenesysShell/GenesysShell.cpp \
+	../../../terminal/examples/smarts/Smart_CellularAutomata.cpp \
+       ../../../terminal/examples/teaching/Half_Adder.cpp \
+        ../../../terminal/examples/teaching/Rectifier.cpp \
 	CodeEditor.cpp \
-	GraphicalComponentPort.cpp \
-	GraphicalConnection.cpp \
-	GraphicalModelComponent.cpp \
-	GraphicalModelDataDefinition.cpp \
+	DataComponentProperty.cpp \
 	ModelGraphicsScene.cpp \
 	ModelGraphicsView.cpp \
+	ObjectPropertyBrowser.cpp \
 	PropertyEditor.cpp \
-	dialogBreakpoint.cpp \
+	DataComponentEditor.cpp \
+	ComboBoxEnum.cpp \
+    actions/AddUndoCommand.cpp \
+    actions/DeleteUndoCommand.cpp \
+    actions/GroupUndoCommand.cpp \
+    actions/MoveUndoCommand.cpp \
+    actions/PasteUndoCommand.cpp \
+    actions/UngroupUndoCommand.cpp \
+	animations/AnimationCounter.cpp \
+    animations/AnimationQueue.cpp \
+    animations/AnimationTimer.cpp \
+    animations/AnimationTransition.cpp \
+    animations/AnimationVariable.cpp \
+    dialogs/DialogFind.cpp \
+	dialogs/DialogSelectCounter.cpp \
+    dialogs/DialogSelectVariable.cpp \
+    dialogs/DialogTimerConfigure.cpp \
+	dialogs/Dialogmodelinformation.cpp \
+	dialogs/dialogBreakpoint.cpp \
+	dialogs/dialogpluginmanager.cpp \
+	dialogs/dialogsimulationconfigure.cpp \
+	dialogs/dialogsystempreferences.cpp \
+	graphicals/GraphicalAnimateExpression.cpp \
+	graphicals/GraphicalAssociation.cpp \
+	graphicals/GraphicalComponentPort.cpp \
+	graphicals/GraphicalConnection.cpp \
+	graphicals/GraphicalDiagramConnection.cpp \
+	graphicals/GraphicalImageAnimation.cpp \
+	graphicals/GraphicalModelComponent.cpp \
+	graphicals/GraphicalModelDataDefinition.cpp \
 	main.cpp \
 	mainwindow.cpp \
-	qcustomplot.cpp
+    qtpropertybrowser/qtbuttonpropertybrowser.cpp \
+    qtpropertybrowser/qteditorfactory.cpp \
+    qtpropertybrowser/qtgroupboxpropertybrowser.cpp \
+    qtpropertybrowser/qtpropertybrowser.cpp \
+    qtpropertybrowser/qtpropertybrowserutils.cpp \
+    qtpropertybrowser/qtpropertymanager.cpp \
+    qtpropertybrowser/qttreepropertybrowser.cpp \
+    qtpropertybrowser/qtvariantproperty.cpp
 
 HEADERS += \
 	../../../../kernel/TraitsKernel.h \
@@ -176,6 +202,7 @@ HEADERS += \
 	../../../../kernel/simulator/ConnectionManager.h \
 	../../../../kernel/simulator/Counter.h \
 	../../../../kernel/simulator/CppSerializer.h \
+	../../../../kernel/simulator/DefineGetterSetter.h \
 	../../../../kernel/simulator/Entity.h \
 	../../../../kernel/simulator/EntityType.h \
 	../../../../kernel/simulator/Event.h \
@@ -208,9 +235,9 @@ HEADERS += \
 	../../../../kernel/simulator/PluginConnector_if.h \
 	../../../../kernel/simulator/PluginInformation.h \
 	../../../../kernel/simulator/PluginManager.h \
-	../../../../kernel/simulator/Property.h \
-	../../../../kernel/simulator/PropertyManager.h \
+	../../../../kernel/simulator/PropertyGenesys.h \
 	../../../../kernel/simulator/ScenarioExperiment_if.h \
+	../../../../kernel/simulator/SimulationControlAndResponse.h \
 	../../../../kernel/simulator/SimulationExperiment.h \
 	../../../../kernel/simulator/SimulationReporterDefaultImpl1.h \
 	../../../../kernel/simulator/SimulationReporter_if.h \
@@ -248,17 +275,49 @@ HEADERS += \
 	../../../../plugins/components/Access.h \
 	../../../../plugins/components/Assign.h \
 	../../../../plugins/components/Batch.h \
+	../../../../plugins/components/Buffer.h \
+	../../../../plugins/components/CellularAutomata/BoundaryCondition.h \
+	../../../../plugins/components/CellularAutomata/Boundary_Closed.h \
+	../../../../plugins/components/CellularAutomata/Boundary_Fixed.h \
+	../../../../plugins/components/CellularAutomata/Cell.h \
+	../../../../plugins/components/CellularAutomata/CellularAutomataBase.h \
+	../../../../plugins/components/CellularAutomata/CellularAutomata_1DTimed.h \
+	../../../../plugins/components/CellularAutomata/CellularAutomata_Classic.h \
+	../../../../plugins/components/CellularAutomata/Lattice.h \
+	../../../../plugins/components/CellularAutomata/LocalRule.h \
+	../../../../plugins/components/CellularAutomata/LocalRule_Elementary.h \
+	../../../../plugins/components/CellularAutomata/LocalRule_FlorestalFire.h \
+	../../../../plugins/components/CellularAutomata/LocalRule_GameOfLife.h \
+	../../../../plugins/components/CellularAutomata/LocalRule_Growty.h \
+	../../../../plugins/components/CellularAutomata/LocalRule_ShowNeighbordhood.h \
+	../../../../plugins/components/CellularAutomata/Neighborhood.h \
+	../../../../plugins/components/CellularAutomata/Neighborhood_Center.h \
+	../../../../plugins/components/CellularAutomata/Neighborhood_Moore.h \
+	../../../../plugins/components/CellularAutomata/Neighborhood_VonNeumann.h \
+	../../../../plugins/components/CellularAutomata/State.h \
+	../../../../plugins/components/CellularAutomata/StateSet.h \
+	../../../../plugins/components/CellularAutomata/StateSet_Enumerable.h \
+	../../../../plugins/components/CellularAutomata/State_Numerical.h \
+	../../../../plugins/components/CellularAutomataComp.h \
 	../../../../plugins/components/CellularAutomata.h \
+	../../../../plugins/components/Clone.h \
 	../../../../plugins/components/CppForG.h \
 	../../../../plugins/components/Create.h \
 	../../../../plugins/components/Decide.h \
 	../../../../plugins/components/Delay.h \
+	../../../../plugins/components/DiffEquations.h \
 	../../../../plugins/components/Dispose.h \
 	../../../../plugins/components/DropOff.h \
 	../../../../plugins/components/DummyComponent.h \
 	../../../../plugins/components/Enter.h \
 	../../../../plugins/components/Exit.h \
+        ../../../../plugins/components/FSM_ModalModel.h \
+        ../../../../plugins/components/FSM_State.h \
+        ../../../../plugins/components/FSM_Transition.h \
 	../../../../plugins/components/FiniteStateMachine.h \
+	../../../../plugins/components/PickableStationItem.h \
+        ../../../../plugins/components/SPICECircuit.h \
+        ../../../../plugins/components/SPICENode.h \
 	../../../../plugins/components/Wait.h \
 	../../../../plugins/components/LSODE.h \
 	../../../../plugins/components/Leave.h \
@@ -285,16 +344,17 @@ HEADERS += \
 	../../../../plugins/components/Unstore.h \
 	../../../../plugins/components/Write.h \
 	../../../../plugins/data/AssignmentItem.h \
-	../../../../plugins/data/CppCode.h \
+	../../../../plugins/data/CppCompiler.h \
 	../../../../plugins/data/DummyElement.h \
+	../../../../plugins/data/EFSM.h \
 	../../../../plugins/data/EntityGroup.h \
-	../../../../plugins/data/ExFiStatMac.h \
 	../../../../plugins/data/Failure.h \
 	../../../../plugins/data/File.h \
 	../../../../plugins/data/Formula.h \
 	../../../../plugins/data/Label.h \
 	../../../../plugins/data/Queue.h \
 	../../../../plugins/data/Resource.h \
+       ../../../../plugins/data/SPICERunner.h \
 	../../../../plugins/data/Schedule.h \
 	../../../../plugins/data/Sequence.h \
 	../../../../plugins/data/Set.h \
@@ -302,62 +362,130 @@ HEADERS += \
 	../../../../plugins/data/Station.h \
 	../../../../plugins/data/Storage.h \
 	../../../../plugins/data/Variable.h \
-	../../../../tests/Tests.h \
 	../../../../tools/DataAnalyser_if.h \
+	../../../../tools/FitterDummyImpl.h \
+	../../../../tools/Fitter_if.h \
 	../../../../tools/HypothesisTesterDefaultImpl1.h \
 	../../../../tools/HypothesisTester_if.h \
 	../../../../tools/ProbabilityDistribution.h \
 	../../../../tools/ProbabilityDistributionBase.h \
 	../../../../tools/SolverDefaultImpl1.h \
+	../../../../tools/Solver_if.h \
 	../../../../tools/TraitsTools.h \
-	../../../../tools/solver_if.h \
 	../../../BaseGenesysTerminalApplication.h \
 	../../../GenesysApplication_if.h \
 	../../../TraitsApp.h \
+	../../../terminal/GenesysShell/GenesysShell.h \
 	../../../terminal/GenesysShell/GenesysShell_if.h \
-	../../../terminal/GenesysShell/TraitsTerminalApplications.h \
-	../../../terminal/examples/book/Book_Cap02_Example01.h \
-	../../../terminal/examples/smarts/Smart_AssignWriteSeizes.h \
-	../../../terminal/examples/smarts/Smart_BatchSeparate.h \
-	../../../terminal/examples/smarts/Smart_CellularAutomata1.h \
-	../../../terminal/examples/smarts/Smart_CppForG.h \
-	../../../terminal/examples/smarts/Smart_Delay.h \
-	../../../terminal/examples/smarts/Smart_Dummy.h \
-	../../../terminal/examples/smarts/Smart_Failures.h \
-	../../../terminal/examples/smarts/Smart_WaitScanCondition.h \
-	../../../terminal/examples/smarts/Smart_WaitSignal.h \
-	../../../terminal/examples/smarts/Smart_ModelInfoModelSimulation.h \
-	../../../terminal/examples/smarts/Smart_ODE.h \
-	../../../terminal/examples/smarts/Smart_OnEvent.h \
-	../../../terminal/examples/smarts/Smart_Parser.h \
-	../../../terminal/examples/smarts/Smart_ParserModelFunctions.h \
-	../../../terminal/examples/smarts/Smart_Plugin.h \
-	../../../terminal/examples/smarts/Smart_Process.h \
-	../../../terminal/examples/smarts/Smart_ProcessSet.h \
-	../../../terminal/examples/smarts/Smart_RouteStation.h \
-	../../../terminal/examples/smarts/Smart_SeizeDelayRelease.h \
-	../../../terminal/examples/smarts/Smart_SeizeDelayReleaseMany.h \
-	../../../terminal/examples/smarts/Smart_Sequence.h \
-	../../../terminal/examples/teaching/AnElectronicAssemblyAndTestSystem.h \
-	../../../terminal/examples/teaching/FullSimulationOfComplexModel.h \
-	../../../terminal/examples/teaching/OperatingSystem02.h \
-	../../../terminal/examples/teaching/OperatingSystem03.h \
-	AnimateExpression.h \
+	../../../terminal/TraitsTerminalApp.h \
+	../../../terminal/examples/smarts/Smart_CellularAutomata.h \
+        ../../../terminal/examples/teaching/Half_Adder.h \
+        ../../../terminal/examples/teaching/Rectifier.h \
 	CodeEditor.h \
-	GraphicalComponentPort.h \
-	GraphicalConnection.h \
-	GraphicalModelComponent.h \
-	GraphicalModelDataDefinition.h \
 	LineNumberArea.h \
 	ModelGraphicsScene.h \
 	ModelGraphicsView.h \
+	ObjectPropertyBrowser.h \
 	PropertyEditor.h \
-	dialogBreakpoint.h \
+	DataComponentProperty.h \
+	DataComponentEditor.h \
+	ComboBoxEnum.h \
+    TraitsGUI.h \
+    UtilGUI.h \
+    actions/AddUndoCommand.h \
+    actions/DeleteUndoCommand.h \
+    actions/GroupUndoCommand.h \
+    actions/MoveUndoCommand.h \
+    actions/PasteUndoCommand.h \
+    actions/UngroupUndoCommand.h \
+	animations/AnimationCounter.h \
+    animations/AnimationQueue.h \
+    animations/AnimationTimer.h \
+    animations/AnimationTransition.h \
+    animations/AnimationVariable.h \
+    dialogs/DialogFind.h \
+	dialogs/DialogSelectCounter.h \
+    dialogs/DialogSelectVariable.h \
+    dialogs/DialogTimerConfigure.h \
+	dialogs/Dialogmodelinformation.h \
+	dialogs/dialogBreakpoint.h \
+	dialogs/dialogpluginmanager.h \
+	dialogs/dialogsimulationconfigure.h \
+	dialogs/dialogsystempreferences.h \
+	graphicals/GraphicalAnimateExpression.h \
+	graphicals/GraphicalAssociation.h \
+	graphicals/GraphicalComponentPort.h \
+	graphicals/GraphicalConnection.h \
+    graphicals/GraphicalDiagramConnection.h \
+	graphicals/GraphicalImageAnimation.h \
+	graphicals/GraphicalModelComponent.h \
+	graphicals/GraphicalModelDataDefinition.h \
 	mainwindow.h \
-	qcustomplot.h
+    qtpropertybrowser/QtAbstractEditorFactoryBase \
+    qtpropertybrowser/QtAbstractPropertyBrowser \
+    qtpropertybrowser/QtAbstractPropertyManager \
+    qtpropertybrowser/QtBoolPropertyManager \
+    qtpropertybrowser/QtBrowserItem \
+    qtpropertybrowser/QtButtonPropertyBrowser \
+    qtpropertybrowser/QtCharEditorFactory \
+    qtpropertybrowser/QtCharPropertyManager \
+    qtpropertybrowser/QtCheckBoxFactory \
+    qtpropertybrowser/QtColorEditorFactory \
+    qtpropertybrowser/QtColorPropertyManager \
+    qtpropertybrowser/QtCursorEditorFactory \
+    qtpropertybrowser/QtCursorPropertyManager \
+    qtpropertybrowser/QtDateEditFactory \
+    qtpropertybrowser/QtDatePropertyManager \
+    qtpropertybrowser/QtDateTimeEditFactory \
+    qtpropertybrowser/QtDateTimePropertyManager \
+    qtpropertybrowser/QtDoublePropertyManager \
+    qtpropertybrowser/QtDoubleSpinBoxFactory \
+    qtpropertybrowser/QtEnumEditorFactory \
+    qtpropertybrowser/QtEnumPropertyManager \
+    qtpropertybrowser/QtFlagPropertyManager \
+    qtpropertybrowser/QtFontEditorFactory \
+    qtpropertybrowser/QtFontPropertyManager \
+    qtpropertybrowser/QtGroupBoxPropertyBrowser \
+    qtpropertybrowser/QtGroupPropertyManager \
+    qtpropertybrowser/QtIntPropertyManager \
+    qtpropertybrowser/QtKeySequenceEditorFactory \
+    qtpropertybrowser/QtKeySequencePropertyManager \
+    qtpropertybrowser/QtLineEditFactory \
+    qtpropertybrowser/QtLocalePropertyManager \
+    qtpropertybrowser/QtPointFPropertyManager \
+    qtpropertybrowser/QtPointPropertyManager \
+    qtpropertybrowser/QtProperty \
+    qtpropertybrowser/QtRectFPropertyManager \
+    qtpropertybrowser/QtRectPropertyManager \
+    qtpropertybrowser/QtScrollBarFactory \
+    qtpropertybrowser/QtSizeFPropertyManager \
+    qtpropertybrowser/QtSizePolicyPropertyManager \
+    qtpropertybrowser/QtSizePropertyManager \
+    qtpropertybrowser/QtSliderFactory \
+    qtpropertybrowser/QtSpinBoxFactory \
+    qtpropertybrowser/QtStringPropertyManager \
+    qtpropertybrowser/QtTimeEditFactory \
+    qtpropertybrowser/QtTimePropertyManager \
+    qtpropertybrowser/QtTreePropertyBrowser \
+    qtpropertybrowser/QtVariantEditorFactory \
+    qtpropertybrowser/QtVariantProperty \
+    qtpropertybrowser/QtVariantPropertyManager \
+    qtpropertybrowser/qtbuttonpropertybrowser.h \
+    qtpropertybrowser/qteditorfactory.h \
+    qtpropertybrowser/qtgroupboxpropertybrowser.h \
+    qtpropertybrowser/qtpropertybrowser.h \
+    qtpropertybrowser/qtpropertybrowserutils_p.h \
+    qtpropertybrowser/qtpropertymanager.h \
+    qtpropertybrowser/qttreepropertybrowser.h \
+    qtpropertybrowser/qtvariantproperty.h
 
 FORMS += \
-	dialogBreakpoint.ui \
+	dialogs/DialogTimerConfigure.ui \
+	dialogs/Dialogmodelinformation.ui \
+	dialogs/dialogBreakpoint.ui \
+	dialogs/dialogpluginmanager.ui \
+	dialogs/dialogsimulationconfigure.ui \
+	dialogs/dialogsystempreferences.ui \
 	mainwindow.ui
 
 TRANSLATIONS += \
@@ -370,7 +498,29 @@ qnx: target.path = /tmp/$${TARGET}/bin
 else: unix:!android: target.path = /opt/$${TARGET}/bin
 !isEmpty(target.path): INSTALLS += target
 
-DISTFILES +=
+DISTFILES += \
+	../../../../../autoloadplugins.txt \
+	qtpropertybrowser/CMakeLists.txt \
+	qtpropertybrowser/images/cursor-arrow.png \
+	qtpropertybrowser/images/cursor-busy.png \
+	qtpropertybrowser/images/cursor-closedhand.png \
+	qtpropertybrowser/images/cursor-cross.png \
+	qtpropertybrowser/images/cursor-forbidden.png \
+	qtpropertybrowser/images/cursor-hand.png \
+	qtpropertybrowser/images/cursor-hsplit.png \
+	qtpropertybrowser/images/cursor-ibeam.png \
+	qtpropertybrowser/images/cursor-openhand.png \
+	qtpropertybrowser/images/cursor-sizeall.png \
+	qtpropertybrowser/images/cursor-sizeb.png \
+	qtpropertybrowser/images/cursor-sizef.png \
+	qtpropertybrowser/images/cursor-sizeh.png \
+	qtpropertybrowser/images/cursor-sizev.png \
+	qtpropertybrowser/images/cursor-uparrow.png \
+	qtpropertybrowser/images/cursor-vsplit.png \
+	qtpropertybrowser/images/cursor-wait.png \
+	qtpropertybrowser/images/cursor-whatsthis.png
 
 RESOURCES += \
-	GenesysQtGUI_resources.qrc
+	GenesysQtGUI_resources.qrc \
+	qtpropertybrowser/qtpropertybrowser.qrc
+

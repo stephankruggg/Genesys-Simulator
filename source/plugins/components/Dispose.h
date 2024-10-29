@@ -52,7 +52,7 @@ protected:
 	virtual void _saveInstance(PersistenceRecord *fields, bool saveDefaultValues);
 	virtual bool _check(std::string* errorMessage);
 	virtual void _createInternalAndAttachedData();
-private: // internel elements
+private: // internal elements
 	Counter* _numberOut = nullptr;
 };
 

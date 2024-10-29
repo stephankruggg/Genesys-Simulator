@@ -30,7 +30,7 @@ double ParserDefaultImpl2::parse(const std::string expression) { // may throw ex
 			throw std::string("Error parsing expression \"" + expression + "\"");
 		}
 	} catch (std::string e) {
-		_model->getTracer()->traceError(TraceManager::Level::L1_errorFatal, e);
+		_model->getTracer()->traceError(e);
 		return _wrapper.getResult();
 	}
 }
@@ -62,6 +62,10 @@ void ParserDefaultImpl2::setSampler(Sampler_if* _sampler) {
 	_wrapper.setSampler(_sampler);
 }
 
-Sampler_if* ParserDefaultImpl2::sampler() const {
-	return _wrapper.sampler();
+Sampler_if* ParserDefaultImpl2::getSampler() const {
+	return _wrapper.getSampler();
+}
+
+genesyspp_driver ParserDefaultImpl2::getParser() const {
+	return _wrapper;
 }

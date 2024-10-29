@@ -13,8 +13,7 @@
 
 #include "Write.h"
 #include "../../kernel/simulator/Model.h"
-
-#include <fstream>
+#include "../../kernel/simulator/SimulationControlAndResponse.h"
 
 #ifdef PLUGINCONNECT_DYNAMIC
 
@@ -27,7 +26,30 @@ ModelDataDefinition* Write::NewInstance(Model* model, std::string name) {
 	return new Write(model, name);
 }
 
+std::string Write::convertEnumToStr(WriteToType type) {
+	switch (static_cast<int> (type)) {
+		case 0: return "SCREEN";
+		case 1: return "FILE";
+	}
+	return "Unknown";
+}
+
 Write::Write(Model* model, std::string name) : ModelComponent(model, Util::TypeOf<Write>(), name) {
+	SimulationControlGeneric<std::string>* propFilename = new SimulationControlGeneric<std::string>(
+									std::bind(&Write::filename, this), std::bind(&Write::setFilename, this, std::placeholders::_1),
+									Util::TypeOf<Write>(), getName(), "Filename", "");
+    SimulationControlGenericEnum<Write::WriteToType, Write>* propWriteToType = new SimulationControlGenericEnum<Write::WriteToType, Write>(
+                                    std::bind(&Write::writeToType, this), std::bind(&Write::setWriteToType, this, std::placeholders::_1),
+                                    Util::TypeOf<Write>(), getName(), "WriteToType", "");
+
+	// _parentModel->getControls()->insert();
+	_parentModel->getControls()->insert(propFilename);
+    _parentModel->getControls()->insert(propWriteToType);
+
+	// setting properties
+	// _addProperty();
+	_addProperty(propFilename);
+    _addProperty(propWriteToType);
 }
 
 std::string Write::show() {
@@ -79,9 +101,8 @@ Write::WriteToType Write::writeToType() const {
 }
 
 void Write::_onDispatchEvent(Entity* entity, unsigned int inputPortNumber) {
-	std::ofstream savefile;
-	if (this->_writeToType == Write::WriteToType::FILE) {
-		savefile.open(_filename, std::ofstream::app);
+	if (this->_writeToType == Write::WriteToType::FILE) { // file is kept open during replication
+		_savefile.open(_filename, std::ofstream::app);
 	}
 	std::string message = "";
 	bool lastWasShown = true;
@@ -95,36 +116,41 @@ void Write::_onDispatchEvent(Entity* entity, unsigned int inputPortNumber) {
 		if (lastWasShown) {
 			message = message.substr(0, message.length() - 1);
 			if (message != "") {
-				if (this->_writeToType == Write::WriteToType::SCREEN) { //@TODO: Write To FILE not implemented
-					_parentModel->getTracer()->traceSimulation(this, TraceManager::Level::L2_results, message);
+				if (this->_writeToType == Write::WriteToType::SCREEN) {
+					traceSimulation(this, TraceManager::Level::L2_results, message);
 				} else if (this->_writeToType == Write::WriteToType::FILE) {
-					savefile << message << std::endl;
+					_savefile << message << std::endl;
 				}
 				message = "";
 			}
 		}
 	}
 	if (!lastWasShown) {
-		if (this->_writeToType == Write::WriteToType::SCREEN) { //@TODO: Write To FILE not implemented
-			_parentModel->getTracer()->traceSimulation(this, TraceManager::Level::L2_results, message);
+		if (this->_writeToType == Write::WriteToType::SCREEN) {
+			traceSimulation(this, TraceManager::Level::L2_results, message);
 		} else if (this->_writeToType == Write::WriteToType::FILE) {
-			savefile << message << std::endl;
+			_savefile << message << std::endl;
 		}
 	}
-	if (this->_writeToType == Write::WriteToType::FILE) {
-		savefile.close();
+	if (this->_writeToType == Write::WriteToType::FILE) { // file is kept open during replication (//@TODO: whould need to intercept end of simulation event
+		_savefile.close();
 	}
 	this->_parentModel->sendEntityToComponent(entity, this->getConnections()->getFrontConnection());
 }
 
 void Write::_initBetweenReplications() {
-	try {
-		std::ofstream savefile;
-		savefile.open(_filename, std::ofstream::app);
-		savefile << "# Replication number " << _parentModel->getSimulation()->getCurrentReplicationNumber() << "/" << _parentModel->getSimulation()->getNumberOfReplications() << std::endl;
-		savefile.close();
-	} catch (...) {
+	if (this->_writeToType == Write::WriteToType::FILE) {
+		try {
+			if (!_savefile.is_open()) {
+				_savefile.open(_filename, std::ofstream::app);
+			} else {
+				_savefile.flush(); // flush the content of previous replication
+			}
+			_savefile << "#ReplicationNumber=" << _parentModel->getSimulation()->getCurrentReplicationNumber() << std::endl; //"/" << _parentModel->getSimulation()->getNumberOfReplications() << std::endl;
+			_savefile.close();
+		} catch (...) {
 
+		}
 	}
 }
 
@@ -182,5 +208,3 @@ PluginInformation* Write::GetPluginInformation() {
 	// ...
 	return info;
 }
-
-

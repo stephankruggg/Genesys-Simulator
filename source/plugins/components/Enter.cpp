@@ -28,6 +28,15 @@ ModelDataDefinition* Enter::NewInstance(Model* model, std::string name) {
 }
 
 Enter::Enter(Model* model, std::string name) : ModelComponent(model, Util::TypeOf<Enter>(), name) {
+	SimulationControlGenericClass<Station*, Model*, Station>* propStation = new SimulationControlGenericClass<Station*, Model*, Station>(
+									_parentModel,
+									std::bind(&Enter::getStation, this), std::bind(&Enter::setStation, this, std::placeholders::_1),
+									Util::TypeOf<Enter>(), getName(), "Station", "");
+
+	_parentModel->getControls()->insert(propStation);
+
+	// setting properties
+	_addProperty(propStation);
 }
 
 std::string Enter::show() {
@@ -111,15 +120,12 @@ void Enter::_createInternalAndAttachedData() {
 		}
 	} else
 		if (_numberIn != nullptr) {
-		_internalDataClear();
-	}
-	if (_parentModel->isAutomaticallyCreatesModelDataDefinitions()) {
-		if (_station == nullptr) {
-			_station = _parentModel->getParentSimulator()->getPlugins()->newInstance<Station>(_parentModel);
+			_internalDataClear();
 		}
+	if (_station == nullptr) {
+		_station = _parentModel->getParentSimulator()->getPlugins()->newInstance<Station>(_parentModel);
 	}
 	_attachedDataInsert("Station", _station);
-
 }
 
 bool Enter::_check(std::string* errorMessage) {

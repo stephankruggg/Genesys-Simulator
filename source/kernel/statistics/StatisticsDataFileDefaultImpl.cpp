@@ -28,7 +28,7 @@ StatisticsDatafileDefaultImpl1::StatisticsDatafileDefaultImpl1() {
 	_z.insert(std::make_pair(0.995, 2.807));
 }
 
-Collector_if* StatisticsDatafileDefaultImpl1::getCollector() {
+Collector_if* StatisticsDatafileDefaultImpl1::getCollector() const {
 	return this->_collector;
 }
 
@@ -158,7 +158,7 @@ unsigned int StatisticsDatafileDefaultImpl1::newSampleSize(double halfWidth) {
 	return _newSampleSize;
 }
 
-double StatisticsDatafileDefaultImpl1::getConfidenceLevel() {
+double StatisticsDatafileDefaultImpl1::confidenceLevel() {
 	return _confidenceLevel;
 }
 

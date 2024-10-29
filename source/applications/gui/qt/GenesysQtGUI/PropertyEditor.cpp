@@ -1,6 +1,5 @@
 #include "PropertyEditor.h"
 #include "../../../../kernel/simulator/ModelDataDefinition.h"
-#include "../../../../kernel/simulator/Property.h"
 #include <QLineEdit>
 
 PropertyEditor::PropertyEditor(QWidget *parent)
@@ -23,18 +22,18 @@ void PropertyEditor::setModelBlock(ModelDataDefinition* modelblock) {
 	QTreeWidgetItem *treeRootItem;
 	QString category;
 	QBrush brush;
-	PropertyT<double>* propDouble;
-	PropertyT<unsigned int>* propUInt;
-	PropertyT<bool>* propBool;
-	PropertyT<std::string>* propStr;
-	PropertyT<Util::TimeUnit>* propTUnit;
-	for (auto prop : *modelblock->getProperties()) {
+	//PropertyT<double>* propDouble;
+	//PropertyT<unsigned int>* propUInt;
+	//PropertyT<bool>* propBool;
+	//PropertyT<std::string>* propStr;
+	//PropertyT<Util::TimeUnit>* propTUnit;
+	for (auto prop : *modelblock->getProperties()->list()) {
 		//propDouble = dynamic_cast<PropertyT<double>*>(prop);
 		//propUInt = dynamic_cast<PropertyT<unsigned int>*>(prop);
 		//propBool = dynamic_cast<PropertyT<bool>*>(prop);
 		//propStr = dynamic_cast<PropertyT<std::string>*>(prop);
 		//propTUnit = dynamic_cast<PropertyT<Util::TimeUnit>*>(prop);
-		category = QString::fromStdString(prop->getClassname());
+		category = QString::fromStdString(prop->getName()); ///!@TODO Era para ser getClassName());
 		QList<QTreeWidgetItem*> founds = findItems(category, Qt::MatchContains);
 		if (founds.size() == 0) {
 			treeRootItem = new QTreeWidgetItem(this);
@@ -71,7 +70,7 @@ void PropertyEditor::setModelBlock(ModelDataDefinition* modelblock) {
 		//treeItemChild->setStatusTip(0, QString::fromStdString(plugin->getPluginInfo()->getLanguageTemplate()));
 		//treeItemChild->setFlags(Qt::ItemIsSelectable | Qt::ItemIsDragEnabled | Qt::ItemNeverHasChildren);
 		treeRootItem->addChild(treeItemChild);
-		QWidget* lineEdit = new QLineEdit(QString::fromStdString(std::to_string(prop->getValue())));
+		QWidget* lineEdit = new QLineEdit(QString::fromStdString(prop->getValue()));
 		this->setItemWidget(treeItemChild, 1, lineEdit);
 	}
 	resizeColumnToContents(0);

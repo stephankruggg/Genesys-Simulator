@@ -29,6 +29,7 @@
 #include "../../../../plugins/components/Seize.h"
 #include "../../../../plugins/components/Delay.h"
 #include "../../../../plugins/components/Release.h"
+#include "../../../TraitsApp.h"
 
 
 
@@ -53,15 +54,13 @@ void Smart_DelayBasedOnReplication::TestEventHandler(SimulationEvent *re) {
 
 int Smart_DelayBasedOnReplication::main(int argc, char** argv) {
 	Simulator* genesys = new Simulator();
-	this->setDefaultTraceHandlers(genesys->getTracer());
-	this->insertFakePluginsByHand(genesys);
-	// crete model
-	Model* model = genesys->getModels()->newModel();
+	genesys->getTracer()->setTraceLevel(TraitsApp<GenesysApplication_if>::traceLevel);
+	setDefaultTraceHandlers(genesys->getTracer());
 	PluginManager* plugins = genesys->getPlugins();
+	plugins->autoInsertPlugins("autoloadplugins.txt");
+	Model* model = genesys->getModels()->newModel();
+	// create model
 
-	///////////////////////// Delay Based on Replication (Resources) ///////////////////////// 
-
-	// Create 1
 	Create* create1 = plugins->newInstance<Create>(model);
 	create1->setEntityTypeName("Entity 1");
 	create1->setTimeBetweenCreationsExpression("EXPO(9)"); // Random(Expo), 9

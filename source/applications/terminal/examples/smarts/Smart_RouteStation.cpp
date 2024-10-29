@@ -24,6 +24,7 @@
 #include "../../../../plugins/components/Enter.h"
 #include "../../../../plugins/components/Delay.h"
 #include "../../../../plugins/components/Dispose.h"
+#include "../../../TraitsApp.h"
 
 Smart_RouteStation::Smart_RouteStation() {
 }
@@ -34,12 +35,12 @@ Smart_RouteStation::Smart_RouteStation() {
  */
 int Smart_RouteStation::main(int argc, char** argv) {
 	Simulator* genesys = new Simulator();
-	this->setDefaultTraceHandlers(genesys->getTracer());
-	this->insertFakePluginsByHand(genesys);
-	genesys->getTracer()->setTraceLevel(TraceManager::Level::L9_mostDetailed);
-	// create model
-	Model* model = genesys->getModels()->newModel();
+	genesys->getTracer()->setTraceLevel(TraitsApp<GenesysApplication_if>::traceLevel);
+	setDefaultTraceHandlers(genesys->getTracer());
 	PluginManager* plugins = genesys->getPlugins();
+	plugins->autoInsertPlugins("autoloadplugins.txt");
+	Model* model = genesys->getModels()->newModel();
+	// create model
 	Create* create1 = plugins->newInstance<Create>(model);
 	create1->setTimeBetweenCreationsExpression("4.0");
 	Route* route1 = plugins->newInstance<Route>(model);

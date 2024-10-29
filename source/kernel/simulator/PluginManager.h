@@ -36,6 +36,7 @@ public:
 	bool remove(const std::string dynamicLibraryFilename);
 	bool remove(Plugin* plugin);
 	Plugin* find(std::string pluginTypeName);
+	bool autoInsertPlugins(const std::string pluginsListFilename);
 public:
 	Plugin* front();
 	Plugin* next();
@@ -59,7 +60,7 @@ public:
 				return instance;
 			}
 		}
-		/// innvalid use of incomplete class
+		// innvalid use of incomplete class
 		///_simulator->getTracer()->traceError(TraceManager::Level::L1_errorFatal, "Error: Could not find any plugin with Typename \"" + pluginTypename + "\"");
 		return nullptr;
 	}

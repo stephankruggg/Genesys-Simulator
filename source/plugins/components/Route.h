@@ -33,9 +33,9 @@ If the station destination is entered as By Sequence, the next station is determ
 the entity’s sequence and step within the set (defined by special-purpose attributes
 Entity.Sequence and Entity.Jobstep, respectively).
 TYPICAL USES
-* Send a part to its next processing station based on its routing slip
-* Send an account balance call to an account agent
-* Send restaurant customers to a specific table
+ * Send a part to its next processing station based on its routing slip
+ * Send an account balance call to an account agent
+ * Send restaurant customers to a specific table
 PROMPTS
 Prompt Description
 Name Unique name of the module that will be displayed in the
@@ -56,8 +56,10 @@ class Route : public ModelComponent {
 public:
 
 	enum class DestinationType : int {
-		Station = 0, Sequence = 1, Label = 2
+		Station = 0, Sequence = 1, Label = 2, num_elements = 3
 	};
+public:
+	static std::string convertEnumToStr(DestinationType type);
 public:
 	Route(Model* model, std::string name = "");
 	virtual ~Route() = default;
@@ -71,9 +73,10 @@ public:
 	void setStationName(std::string stationName);
 	void setStation(Station* _station);
 	Station* getStation() const;
-    void setStationExpression(std::string _stationExpression);
-    std::string getStationExpression() const;
+	void setStationExpression(std::string _stationExpression);
+	std::string getStationExpression() const;
 	void setRouteTimeExpression(std::string _routeTimeExpression);
+	void setRouteTimeExpression(std::string _routeTimeExpression, Util::TimeUnit _routeTimeTimeUnit);
 	std::string getRouteTimeExpression() const;
 	void setRouteTimeTimeUnit(Util::TimeUnit _routeTimeTimeUnit);
 	Util::TimeUnit getRouteTimeTimeUnit() const;
@@ -104,7 +107,7 @@ private:
 private: // association
 	Station* _station = nullptr;
 	Label* _label = nullptr;
-private: // internel elements
+private: // internal elements
 	Counter* _numberIn = nullptr;
 };
 

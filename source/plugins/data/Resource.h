@@ -97,9 +97,10 @@ public:
 	}
 
 	enum class ResourceState : int {
-		IDLE = 1, BUSY = 2, FAILED = 3, INACTIVE = 4, OTHER = 5
+		IDLE = 0, BUSY = 1, FAILED = 2, INACTIVE = 3, OTHER = 4, num_elements = 5
 	};
-
+public:	
+	static std::string convertEnumToStr(ResourceState state);
 public:
 	//Resource(Model* model);
 	Resource(Model* model, std::string name = "");
@@ -123,7 +124,7 @@ public:
 public: // g&s
 	void setResourceState(ResourceState _resourceState);
 	Resource::ResourceState getResourceState() const;
-	void setCapacity(unsigned int _capacity);
+	void setCapacity(unsigned int capacity);
 	unsigned int getCapacity() const;
 	void setCostBusyTimeUnit(double _costBusyTimeUnit);
 	double getCostBusyTimeUnit() const;
@@ -144,8 +145,8 @@ protected: // protected could override
 	virtual void _initBetweenReplications();
 
 private: //methods
-	void _notifyReleaseEventHandlers(); ///< Notify observer classes that some of the resource capacity has been released. It is useful for allocation components (such as Seize) to know when an entity waiting into a queue can try to seize the resource again
-	void _onReplicationEnd(SimulationEvent* se); ///< Nofified whe replication ended to update cstats based on final replication length
+	void _notifyReleaseEventHandlers(); //!< Notify observer classes that some of the resource capacity has been released. It is useful for allocation components (such as Seize) to know when an entity waiting into a queue can try to seize the resource again
+	void _onReplicationEnd(SimulationEvent* se); //!< Nofified whe replication ended to update cstats based on final replication length
 	void _fail();
 	void _active();
 	void _checkFailByCount();
@@ -182,7 +183,7 @@ private: //1::n
 	List<Failure*>* _failures = new List<Failure*>();
 private: // attached elements
 	Schedule* _capacitySchedule = nullptr;
-private: // internel elements
+private: // internal elements
 	StatisticsCollector* _cstatTimeSeized = nullptr;
 	StatisticsCollector* _cstatTimeFailed = nullptr;
 	StatisticsCollector* _cstatProportionSeized = nullptr;

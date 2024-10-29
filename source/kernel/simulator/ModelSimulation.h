@@ -37,21 +37,22 @@ public:
 public:
 	std::string show();
 public: // simulation control
-	void start(); ///< Starts a sequential execution of a simulation, ie, a set of replications of this model.
-	void pause(); ///<
-	void step(); ///< Executes the processing of a single event, the next one in the future events list.
-	void stop(); ///<
+	void start(); //!< Starts a sequential execution of a simulation, ie, a set of replications of this model.
+	void pause(); //!<
+	void step(); //!< Executes the processing of a single event, the next one in the future events list.
+	void stop(); //!<
 public: // old modelInfos
 	void setNumberOfReplications(unsigned int _numberOfReplications);
 	unsigned int getNumberOfReplications() const;
-	void setReplicationLength(double _replicationLength);
-	void setReplicationLength(double _replicationLength, Util::TimeUnit _replicationLengthTimeUnit);
+	//void setReplicationLength(double _replicationLength);
+	void setReplicationLength(double _replicationLength, Util::TimeUnit _replicationLengthTimeUnit = Util::TimeUnit::unknown);
 	double getReplicationLength() const;
 	void setReplicationLengthTimeUnit(Util::TimeUnit _replicationLengthTimeUnit);
 	Util::TimeUnit getReplicationLengthTimeUnit() const;
 	void setReplicationReportBaseTimeUnit(Util::TimeUnit _replicationReportBaseTimeUnit);
 	Util::TimeUnit getReplicationBaseTimeUnit() const;
-	void setWarmUpPeriod(double _warmUpPeriod);
+	//void setWarmUpPeriod(double warmUpPeriod);
+	void setWarmUpPeriod(double warmUpPeriod, Util::TimeUnit warmUpPeriodTimeUnit = Util::TimeUnit::unknown);
 	double getWarmUpPeriod() const;
 	void setWarmUpPeriodTimeUnit(Util::TimeUnit _warmUpPeriodTimeUnit);
 	Util::TimeUnit getWarmUpPeriodTimeUnit() const;
@@ -95,28 +96,29 @@ public:
 	 * PRIVATE
 	 */
 private: // simulation control
-	void _initSimulation(); ///<
-	void _initReplication(); ///< Clear the event list, restarts simulated time, initialize event list and statistics, request components to reinitialize
-	void _clearStatistics(); ///<
-	void _checkWarmUpTime(Event* nextEvent); ///<
-	void _stepSimulation(); ///<
-	void _replicationEnded(); ///<
-	void _simulationEnded(); ///<
+	void _initSimulation(); //!<
+	void _initReplication(); //!< Clear the event list, restarts simulated time, initialize event list and statistics, request components to reinitialize
+	void _clearStatistics(); //!<
+	void _checkWarmUpTime(Event* nextEvent); //!<
+	void _stepSimulation(); //!<
+	void _replicationEnded(); //!<
+	void _simulationEnded(); //!<
 private:
 	void _dispatchEvent(Event* event);
-	bool _checkBreakpointAt(Event* event); ///<
-	bool _isReplicationEndCondition(); ///<
-	void _actualizeSimulationStatistics(); ///<
-	void _showSimulationHeader(); ///<
-	void _traceReplicationEnded(); ///<
+	bool _checkBreakpointAt(Event* event); //!<
+	bool _isReplicationEndCondition(); //!<
+	void _actualizeSimulationStatistics(); //!<
+	void _showSimulationHeader(); //!<
+	void _traceReplicationEnded(); //!<
 private:
-	SimulationEvent* _createSimulationEvent(void* thiscustomObject = nullptr); ///<
+	SimulationEvent* _createSimulationEvent(void* thiscustomObject = nullptr); //!<
 	//friend Entity* Model::createEntity(std::string name, bool insertIntoModel); //@TODO: make it work (only friend functions, not the entire class)
 	//friend void Model::removeEntity(Entity* entity);
 	//friend void Model::sendEntityToComponent(Entity* entity, ModelComponent* component, double timeDelay, unsigned int componentinputPortNumber);
 	friend class Model;
 private:
 	double _simulatedTime = 0.0;
+	double _justTriggeredBreakpointsOnTime = 0.0;
 	// @TODO: list of double double _breakOnTimes;
 	// @TODO: list of modules _breakOnModules;
 	bool _stepByStep = false;
@@ -130,10 +132,7 @@ private:
 	bool _stopRequested = false;
 	bool _simulationIsInitiated = false;
 	bool _replicationIsInitiaded = false;
-	bool _showReportsAfterSimulation = true;
-	bool _showReportsAfterReplication = true;
-	bool _showSimulationControlsInReport = false;
-	bool _showSimulationResposesInReport = false;
+	bool _hasChanged = false;
 private:
 
 	const struct DEFAULT_VALUES {
@@ -149,7 +148,7 @@ private:
 		const bool initializeSystem = true;
 		const bool showReportsAfterSimulation = true;
 		const bool showReportsAfterReplication = true;
-		const bool showSimulationControlsInReport = false;
+		const bool showSimulationControlsInReport = true;
 		const bool showSimulationResposesInReport = false;
 	} DEFAULT;
 	unsigned int _numberOfReplications = DEFAULT.numberOfReplications;
@@ -159,7 +158,11 @@ private:
 	double _warmUpPeriod = DEFAULT.warmUpPeriod;
 	Util::TimeUnit _warmUpPeriodTimeUnit = DEFAULT.warmUpPeriodTimeUnit;
 	std::string _terminatingCondition = DEFAULT.terminatingCondition;
-	bool _hasChanged = false;
+	bool _showReportsAfterSimulation = DEFAULT.showReportsAfterSimulation;
+	bool _showReportsAfterReplication = DEFAULT.showReportsAfterReplication;
+	bool _showSimulationControlsInReport = DEFAULT.showSimulationControlsInReport;
+	bool _showSimulationResposesInReport = DEFAULT.showSimulationResposesInReport;
+	//
 	double _replicationTimeScaleFactorToBase; // a scale that converts ReplicationLenghtTimeUnit to ReplicationBaseTimeUnit. Future events are in "times" of unit ReplicationBaseTimeUnit
 	std::chrono::system_clock::time_point _startRealSimulationTimeSimulation;
 	std::chrono::system_clock::time_point _startRealSimulationTimeReplication;
@@ -178,7 +181,6 @@ private:
 	List<double>* _breakpointsOnTime = new List<double>();
 	List<ModelComponent*>* _breakpointsOnComponent = new List<ModelComponent*>();
 	List<Entity*>* _breakpointsOnEntity = new List<Entity*>();
-	double _justTriggeredBreakpointsOnTime = 0.0;
 	ModelComponent* _justTriggeredBreakpointsOnComponent = nullptr;
 	Entity* _justTriggeredBreakpointsOnEntity = nullptr;
 };

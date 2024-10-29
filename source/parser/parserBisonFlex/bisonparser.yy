@@ -39,6 +39,10 @@
 
 	/****end_Includes_plugins****/
 
+#ifdef YYDEBUG
+  yydebug = 1;
+#endif
+
 	class genesyspp_driver;
 }
 
@@ -244,7 +248,7 @@
 
 input: 
       expression    { driver.setResult($1.valor);}
-    | error '\n'        { yyerrok; }
+//    | error '\n'        { yyerrok; }
     ;
 
 expression:
@@ -255,7 +259,7 @@ expression:
 	| arithmetic                       {$$.valor = $1.valor;}
     | logical                           {$$.valor = $1.valor;}
     | relacional                       {$$.valor = $1.valor;}
-    | "(" expression ")"               {$$.valor = $2.valor;}
+	| LPAREN expression RPAREN          {$$.valor = $2.valor;}
     | attribute                         {$$.valor = $1.valor;}
 
 /****begin_Expression_plugins****/
@@ -285,8 +289,9 @@ arithmetic:
     | MINUS expression %prec NEG     { $$.valor = -$2.valor;}
 
 
-	| mathMIN "(" expression "," expression ")"   { $$.valor = std::min($3.valor,$5.valor);}
-	| mathMAX "(" expression "," expression ")"   { $$.valor = std::max($3.valor,$5.valor);}
+	| mathMIN LPAREN expression "," expression RPAREN   {std::cout <<"MIN(" << $3.valor << "," << $5.valor <<")"<< std::endl;
+														 $$.valor = std::min($3.valor,$5.valor);}
+	| mathMAX LPAREN expression "," expression RPAREN   { $$.valor = std::max($3.valor,$5.valor);}
     ;
 
 logical:
@@ -370,17 +375,17 @@ mathFunction:
     ;
 
 probFunction:
-      fRND1					     { $$.valor = driver.sampler()->sampleUniform(0.0,1.0);}
-	| fEXPO  "(" expression ")"  { $$.valor = driver.sampler()->sampleExponential($3.valor);}
-    | fNORM  "(" expression "," expression ")"  { $$.valor = driver.sampler()->sampleNormal($3.valor,$5.valor);}
-    | fUNIF  "(" expression "," expression ")"  { $$.valor = driver.sampler()->sampleUniform($3.valor,$5.valor);}
-    | fWEIB  "(" expression "," expression ")"  { $$.valor = driver.sampler()->sampleWeibull($3.valor,$5.valor);}
-    | fLOGN  "(" expression "," expression ")"  { $$.valor = driver.sampler()->sampleLogNormal($3.valor,$5.valor);}
-    | fGAMM  "(" expression "," expression ")"  { $$.valor = driver.sampler()->sampleGamma($3.valor,$5.valor);}
-    | fERLA  "(" expression "," expression ")"  { $$.valor = driver.sampler()->sampleErlang($3.valor,$5.valor);}
-    | fTRIA  "(" expression "," expression "," expression ")"   { $$.valor = driver.sampler()->sampleTriangular($3.valor,$5.valor,$7.valor);}
-    | fBETA  "(" expression "," expression "," expression "," expression ")"  { $$.valor = driver.sampler()->sampleBeta($3.valor,$5.valor,$7.valor,$9.valor);}
-    | fDISC  "(" listaparm ")"                  { $$.valor = driver.sampler()->sampleDiscrete(0,0); /*@TODO: NOT IMPLEMENTED YET*/ }
+	  fRND1					     { $$.valor = driver.getSampler()->sampleUniform(0.0,1.0);}
+	| fEXPO  "(" expression ")"  { $$.valor = driver.getSampler()->sampleExponential($3.valor);}
+	| fNORM  "(" expression "," expression ")"  { $$.valor = driver.getSampler()->sampleNormal($3.valor,$5.valor);}
+	| fUNIF  "(" expression "," expression ")"  { $$.valor = driver.getSampler()->sampleUniform($3.valor,$5.valor);}
+	| fWEIB  "(" expression "," expression ")"  { $$.valor = driver.getSampler()->sampleWeibull($3.valor,$5.valor);}
+	| fLOGN  "(" expression "," expression ")"  { $$.valor = driver.getSampler()->sampleLogNormal($3.valor,$5.valor);}
+	| fGAMM  "(" expression "," expression ")"  { $$.valor = driver.getSampler()->sampleGamma($3.valor,$5.valor);}
+	| fERLA  "(" expression "," expression ")"  { $$.valor = driver.getSampler()->sampleErlang($3.valor,$5.valor);}
+	| fTRIA  "(" expression "," expression "," expression ")"   { $$.valor = driver.getSampler()->sampleTriangular($3.valor,$5.valor,$7.valor);}
+	| fBETA  "(" expression "," expression "," expression "," expression ")"  { $$.valor = driver.getSampler()->sampleBeta($3.valor,$5.valor,$7.valor,$9.valor);}
+	| fDISC  "(" listaparm ")"                  { $$.valor = driver.getSampler()->sampleDiscrete(0,0); /*@TODO: NOT IMPLEMENTED YET*/ }
     ;
 
 
@@ -433,7 +438,7 @@ attribute:
 		std::string index = std::to_string(static_cast<unsigned int>($3.valor));
 		if (driver.getModel()->getSimulation()->getCurrentEvent() != nullptr) {
 			// it could crach because there may be no current entity, if the parse is running before simulation and therefore there is no CurrentEntity
-			attributeValue = driver.getModel()->getSimulation()->getCurrentEvent()->getEntity()->getAttributeValue(index, $1.id);
+			attributeValue = driver.getModel()->getSimulation()->getCurrentEvent()->getEntity()->getAttributeValue($1.id, index);
 		}
 		$$.valor = attributeValue; 
 	}
@@ -442,7 +447,7 @@ attribute:
 		std::string index = std::to_string(static_cast<unsigned int>($3.valor))+","+std::to_string(static_cast<unsigned int>($5.valor));
 		if (driver.getModel()->getSimulation()->getCurrentEvent() != nullptr) {
 			// it could crach because there may be no current entity, if the parse is running before simulation and therefore there is no CurrentEntity
-			attributeValue = driver.getModel()->getSimulation()->getCurrentEvent()->getEntity()->getAttributeValue(index, $1.id);
+			attributeValue = driver.getModel()->getSimulation()->getCurrentEvent()->getEntity()->getAttributeValue($1.id, index);
 		}
 		$$.valor = attributeValue; 
 	}
@@ -451,7 +456,7 @@ attribute:
 		std::string index = std::to_string(static_cast<unsigned int>($3.valor))+","+std::to_string(static_cast<unsigned int>($5.valor))+","+std::to_string(static_cast<unsigned int>($7.valor));
 		if (driver.getModel()->getSimulation()->getCurrentEvent() != nullptr) {
 			// it could crach because there may be no current entity, if the parse is running before simulation and therefore there is no CurrentEntity
-			attributeValue = driver.getModel()->getSimulation()->getCurrentEvent()->getEntity()->getAttributeValue(index, $1.id);
+			attributeValue = driver.getModel()->getSimulation()->getCurrentEvent()->getEntity()->getAttributeValue($1.id, index);
 		}
 		$$.valor = attributeValue; 
 	}
@@ -479,28 +484,28 @@ attribute:
 					std::string index = "";
 					Formula* formula = dynamic_cast<Formula*>(driver.getModel()->getDataManager()->getDataDefinition(Util::TypeOf<Formula>(), $1.id));
 					std::string expression = formula->getExpression(index);
-					std::cout << "Formula["<< index <<"]="<< expression << std::endl;
+					//std::cout << "Formula["<< index <<"]="<< expression << std::endl;
 					double value = 0.0; //@TODO: Can't parse the epression!  //formula->getValue(index);
 					$$.valor = value;}
 				| FORM LBRACKET expression RBRACKET {
 					std::string index = std::to_string(static_cast<unsigned int>($3.valor));
 					Formula* formula = dynamic_cast<Formula*>(driver.getModel()->getDataManager()->getDataDefinition(Util::TypeOf<Formula>(), $1.id));
 					std::string expression = formula->getExpression(index);
-					std::cout << "Formula["<< index <<"]="<< expression << std::endl;
+					//std::cout << "Formula["<< index <<"]="<< expression << std::endl;
 					double value = 0.0; //@TODO: Can't parse the epression!  //formula->getValue(index);
 					$$.valor = value;}
 				| FORM LBRACKET expression "," expression RBRACKET {
 					std::string index = std::to_string(static_cast<unsigned int>($3.valor)) +","+std::to_string(static_cast<unsigned int>($5.valor));
 					Formula* formula = dynamic_cast<Formula*>(driver.getModel()->getDataManager()->getDataDefinition(Util::TypeOf<Formula>(), $1.id));
 					std::string expression = formula->getExpression(index);
-					std::cout << "Formula["<< index <<"]="<< expression << std::endl;
+					//std::cout << "Formula["<< index <<"]="<< expression << std::endl;
 					double value = 0.0; //@TODO: Can't parse the epression!  //formula->getValue(index);
 					$$.valor = value;}
 				| FORM LBRACKET expression "," expression "," expression RBRACKET {
 					std::string index = std::to_string(static_cast<unsigned int>($3.valor)) +","+std::to_string(static_cast<unsigned int>($5.valor))+","+std::to_string(static_cast<unsigned int>($7.valor));
 					Formula* formula = dynamic_cast<Formula*>(driver.getModel()->getDataManager()->getDataDefinition(Util::TypeOf<Formula>(), $1.id));
 					std::string expression = formula->getExpression(index);
-					std::cout << "Formula["<< index <<"]="<< expression << std::endl;
+					//std::cout << "Formula["<< index <<"]="<< expression << std::endl;
 					double value = 0.0; //@TODO: Can't parse the epression!  //formula->getValue(index);
 					$$.valor = value;}
 				;
@@ -510,19 +515,19 @@ attribute:
 	//Check if want to set the attribute or variable with expression or just return the expression value, for now just returns expression value
 	assigment  : ATRIB ASSIGN expression    { 
 					// @TODO: getCurrentEvent()->getEntity() may be nullptr if simulation hasn't started yet
-					driver.getModel()->getSimulation()->getCurrentEvent()->getEntity()->setAttributeValue("", $1.id, $3.valor);
+					driver.getModel()->getSimulation()->getCurrentEvent()->getEntity()->setAttributeValue($1.id, $3.valor);
 					$$.valor = $3.valor; }
 				| ATRIB LBRACKET expression RBRACKET ASSIGN expression    { 
 					std::string index = std::to_string(static_cast<unsigned int>($3.valor));
-					driver.getModel()->getSimulation()->getCurrentEvent()->getEntity()->setAttributeValue(index, $1.id, $6.valor);
+					driver.getModel()->getSimulation()->getCurrentEvent()->getEntity()->setAttributeValue($1.id, $6.valor, index);
 					$$.valor = $6.valor; }
 				| ATRIB LBRACKET expression "," expression RBRACKET ASSIGN expression   {
 					std::string index = std::to_string(static_cast<unsigned int>($3.valor))+","+std::to_string(static_cast<unsigned int>($5.valor)); 
-					driver.getModel()->getSimulation()->getCurrentEvent()->getEntity()->setAttributeValue(index, $1.id, $8.valor); 
+					driver.getModel()->getSimulation()->getCurrentEvent()->getEntity()->setAttributeValue($1.id, $8.valor, index);
 					$$.valor = $8.valor;}
 				| ATRIB LBRACKET expression "," expression "," expression RBRACKET ASSIGN expression      {
 					std::string index = std::to_string(static_cast<unsigned int>($3.valor))+","+std::to_string(static_cast<unsigned int>($5.valor))+","+std::to_string(static_cast<unsigned int>($7.valor));
-					driver.getModel()->getSimulation()->getCurrentEvent()->getEntity()->setAttributeValue(index, $1.id, $10.valor);
+					driver.getModel()->getSimulation()->getCurrentEvent()->getEntity()->setAttributeValue($1.id, $10.valor, index);
 					$$.valor = $10.valor; }
 	/****begin_Assignment_plugins****/
 	/**begin_Assignment:Variable**/
@@ -532,15 +537,15 @@ attribute:
 					}
 				| VARI LBRACKET expression RBRACKET ASSIGN expression    { 
 					std::string index = std::to_string(static_cast<unsigned int>($3.valor));
-					((Variable*)(driver.getModel()->getDataManager()->getDataDefinition(Util::TypeOf<Variable>(), $1.id)))->setValue(index, $6.valor); 
+					((Variable*)(driver.getModel()->getDataManager()->getDataDefinition(Util::TypeOf<Variable>(), $1.id)))->setValue($6.valor, index);
 					$$.valor = $6.valor; }
 				| VARI LBRACKET expression "," expression RBRACKET ASSIGN expression   {
 					std::string index = std::to_string(static_cast<unsigned int>($3.valor))+","+std::to_string(static_cast<unsigned int>($5.valor)); 
-					((Variable*)(driver.getModel()->getDataManager()->getDataDefinition(Util::TypeOf<Variable>(), $1.id)))->setValue(index, $8.valor);
+					((Variable*)(driver.getModel()->getDataManager()->getDataDefinition(Util::TypeOf<Variable>(), $1.id)))->setValue($8.valor, index);
 					$$.valor = $8.valor; }
 				| VARI LBRACKET expression "," expression "," expression RBRACKET ASSIGN expression      {
 					std::string index = std::to_string(static_cast<unsigned int>($3.valor))+","+std::to_string(static_cast<unsigned int>($5.valor))+","+std::to_string(static_cast<unsigned int>($7.valor));
-					((Variable*)(driver.getModel()->getDataManager()->getDataDefinition(Util::TypeOf<Variable>(), $1.id)))->setValue(index, $10.valor); 
+					((Variable*)(driver.getModel()->getDataManager()->getDataDefinition(Util::TypeOf<Variable>(), $1.id)))->setValue($10.valor, index);
 					$$.valor = $10.valor; }
 	/**end_Assignment:Variable**/
 

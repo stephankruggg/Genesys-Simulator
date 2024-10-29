@@ -8,20 +8,20 @@
 #include "../../../../plugins/components/Create.h"
 #include "../../../../plugins/components/Process.h"
 #include "../../../../plugins/components/Dispose.h"
+#include "../../../TraitsApp.h"
 
 Smart_BasicModeling::Smart_BasicModeling() {
 }
 
 int Smart_BasicModeling::main(int argc, char** argv) {
-    Simulator *genesys = new Simulator();
-    genesys->getTracer()->setTraceLevel(TraceManager::Level::L2_results);
-    this->setDefaultTraceHandlers(genesys->getTracer());
-    this->insertFakePluginsByHand(genesys);
-
-    Model *model = genesys->getModels()->newModel();
-    PluginManager *plugins = genesys->getPlugins();
-
-    Create *create = plugins->newInstance<Create>(model);
+	Simulator* genesys = new Simulator();
+	genesys->getTracer()->setTraceLevel(TraitsApp<GenesysApplication_if>::traceLevel);
+	setDefaultTraceHandlers(genesys->getTracer());
+	PluginManager* plugins = genesys->getPlugins();
+	plugins->autoInsertPlugins("autoloadplugins.txt");
+	Model* model = genesys->getModels()->newModel();
+	// create model
+	Create *create = plugins->newInstance<Create>(model);
     create->setName("Create 1");
     create->setEntityTypeName("Entity 1");
     create->setTimeBetweenCreationsExpression("expo(1)", Util::TimeUnit::hour);

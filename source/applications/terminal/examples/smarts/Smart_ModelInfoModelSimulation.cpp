@@ -21,6 +21,7 @@
 #include "../../../../plugins/components/Create.h"
 #include "../../../../plugins/components/Delay.h"
 #include "../../../../plugins/components/Dispose.h"
+#include "../../../TraitsApp.h"
 
 Smart_ModelInfoModelSimulation::Smart_ModelInfoModelSimulation() {
 }
@@ -31,12 +32,11 @@ Smart_ModelInfoModelSimulation::Smart_ModelInfoModelSimulation() {
  */
 int Smart_ModelInfoModelSimulation::main(int argc, char** argv) {
 	Simulator* genesys = new Simulator();
-	genesys->getTracer()->setTraceLevel(TraceManager::Level::L6_arrival);
-	this->setDefaultTraceHandlers(genesys->getTracer());
-	this->insertFakePluginsByHand(genesys);
-	//
-	Model* model = genesys->getModels()->newModel();
+	genesys->getTracer()->setTraceLevel(TraitsApp<GenesysApplication_if>::traceLevel);
+	setDefaultTraceHandlers(genesys->getTracer());
 	PluginManager* plugins = genesys->getPlugins();
+	plugins->autoInsertPlugins("autoloadplugins.txt");
+	Model* model = genesys->getModels()->newModel();
 	// set general info about the model
 	ModelInfo* infos = model->getInfos();
 	infos->setAnalystName("Your name");

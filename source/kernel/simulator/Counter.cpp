@@ -29,17 +29,8 @@ ModelDataDefinition* Counter::NewInstance(Model* model, std::string name) {
 
 Counter::Counter(Model* model, std::string name, ModelDataDefinition* parent) : ModelDataDefinition(model, Util::TypeOf<Counter>(), name) {
 	_parent = parent;
-	std::string parentName = "";
-	if (_parent != nullptr)
-		parentName = _parent->getName();
-	// OLD
-	//GetterMemberDouble getterMember = DefineGetterMember<Counter>(this, &Counter::getCountValue);
-	//SimulationResponse* resp = new SimulationResponse(Util::TypeOf<Counter>(), /*parentName + ":" +*/ getName(), getterMember, parentName);
-	//_parentModel->getResponses()->insert(resp);
-	// NEW !!
-	model->getResponses()->insert(new PropertyT<double>(Util::TypeOf<Counter>(), getName(),
-			DefineGetter<Counter,double>(this, &Counter::getCountValue),
-			nullptr));
+	_parentModel->getResponses()->insert(new SimulationControlDouble(
+					 std::bind(&Counter::getCountValue, this), nullptr, this->getClassname(), getName(), "CountValue"));
 }
 
 std::string Counter::show() {
