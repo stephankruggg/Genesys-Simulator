@@ -17,6 +17,3 @@ if ! command -v docker &> /dev/null; then
 else
   echo "Docker já instalado"
 fi
-
-sudo chown $USER /var/run/docker.sock
-
