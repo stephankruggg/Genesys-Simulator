@@ -303,10 +303,13 @@ std::string Util::Map2str(std::map<std::string, double>* mapss) {
 }
 
 char Util::DirSeparator() {
-	//#if defined(__linux__)
-	return '/';
-	//#endif
-	//	return '\';
+#ifdef __linux__
+    return '/';
+#elif _WIN32
+    return '\';
+#else
+    return '/';
+#endif
 }
 
 std::string Util::List2str(std::list<unsigned int>* list) {
@@ -339,8 +342,13 @@ std::string Util::PathFromFullFilename(const std::string& s) {
 }
 
 std::string Util::RunningPath() {
-	char result[ PATH_MAX ];
-	ssize_t count = readlink("/proc/self/exe", result, PATH_MAX);
+    char result[PATH_MAX];
+#ifdef __linux__
+    ssize_t count = readlink("/proc/self/exe", result, PATH_MAX);
+#elif _WIN32
+    // TODO: Get runningPath For windows
+    ssize_t count = readlink("/proc/self/exe", result, PATH_MAX);
+#endif
 	std::string fullfilename = std::string(result, (count > 0) ? count : 0);
 	return PathFromFullFilename(fullfilename);
 }
@@ -379,4 +387,11 @@ bool Util::FileExists(const std::string& name) {
 		return false;
 
 	}
+}
+
+
+//-------------------
+
+Util::CommandResult Util::ExecuteCommand(std::string command) {
+
 }

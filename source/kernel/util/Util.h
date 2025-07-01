@@ -139,6 +139,19 @@ public: // files
 	static std::vector<std::string> ListFiles(std::string dir, std::string fileFilter = "", mode_t attribFilter = S_IFREG & S_IFDIR);
 	static bool FileExists(const std::string& name);
 
+//public: // operating system specifics
+    class CommandResult {
+    public:
+        CommandResult() { }
+        bool success = false;
+        std::string commandStdOutput = "";
+        std::string commandErrOutput = "";
+        std::string workingDirectory = "./";
+        std::string destinationPath = "./";
+    };
+    static Util::CommandResult ExecuteCommand(std::string command);
+
+
 public: // template implementations
 
 	/*!

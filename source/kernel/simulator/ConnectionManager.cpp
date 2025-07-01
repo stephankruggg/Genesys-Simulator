@@ -35,7 +35,7 @@ Connection* ConnectionManager::getConnectionAtPort(unsigned int rank) {
 }
 
 void ConnectionManager::insert(ModelComponent* component, unsigned int inputPortNumber) {
-	Connection* connection = new Connection({component, inputPortNumber});
+    Connection* connection = new Connection({component, {inputPortNumber}});
 	insert(connection);
 }
 

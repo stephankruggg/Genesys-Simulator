@@ -62,6 +62,7 @@ List<ModelDataDefinition*>* Set::getElementSet() const {
 
 void Set::addElementSet(ModelDataDefinition* newElement) {
     _elementSet->insert(newElement);
+    _setOfType = newElement->getClassname();
 }
 
 void Set::removeElementSet(ModelDataDefinition* element) {

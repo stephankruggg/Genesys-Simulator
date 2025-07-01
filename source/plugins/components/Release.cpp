@@ -98,7 +98,7 @@ Resource* Release::_getResourceFromSeizableItem(SeizableItem* seizable, Entity* 
 		unsigned int index = 0;
 		double value, bestValue;
 		unsigned int bestIndex;
-		switch (rule) {
+        switch (rule) {
 			case SeizableItem::SelectionRule::CYCLICAL:
 				index = (seizable->getLastMemberSeized() + 1) % _releaseRequests->list()->size();
 				trace("Member index " + std::to_string(index) + " was cyclically choosen", TraceManager::Level::L9_mostDetailed);

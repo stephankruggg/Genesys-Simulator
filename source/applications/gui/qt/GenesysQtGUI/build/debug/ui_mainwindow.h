@@ -709,7 +709,7 @@ public:
         scrollArea_Graphic->setWidgetResizable(true);
         scrollAreaWidgetContents = new QWidget();
         scrollAreaWidgetContents->setObjectName("scrollAreaWidgetContents");
-        scrollAreaWidgetContents->setGeometry(QRect(0, 0, 680, 70));
+        scrollAreaWidgetContents->setGeometry(QRect(0, 0, 98, 36));
         scrollAreaWidgetContents->setAutoFillBackground(true);
         verticalLayout_5 = new QVBoxLayout(scrollAreaWidgetContents);
         verticalLayout_5->setObjectName("verticalLayout_5");
@@ -1047,7 +1047,7 @@ public:
         MainWindow->setCentralWidget(centralwidget);
         menubar = new QMenuBar(MainWindow);
         menubar->setObjectName("menubar");
-        menubar->setGeometry(QRect(0, 0, 1081, 22));
+        menubar->setGeometry(QRect(0, 0, 1081, 26));
         menuModel = new QMenu(menubar);
         menuModel->setObjectName("menuModel");
         menuSimulation = new QMenu(menubar);
@@ -1087,7 +1087,7 @@ public:
         sizePolicy2.setVerticalStretch(0);
         sizePolicy2.setHeightForWidth(dockWidgetConsole->sizePolicy().hasHeightForWidth());
         dockWidgetConsole->setSizePolicy(sizePolicy2);
-        dockWidgetConsole->setMinimumSize(QSize(118, 138));
+        dockWidgetConsole->setMinimumSize(QSize(118, 141));
         QIcon icon66;
         icon66.addFile(QString::fromUtf8(":/icons4/resources/icons/pack4/console.png"), QSize(), QIcon::Normal, QIcon::Off);
         dockWidgetConsole->setWindowIcon(icon66);
@@ -1364,12 +1364,11 @@ public:
         toolBarArranje->addAction(actionArranjeBototm);
 
         retranslateUi(MainWindow);
-        //QObject::connect(horizontalSlider_ZoomGraphical, &QSlider::valueChanged, label_ZoomValue, &QLabel::setNum);
 
-        tabWidgetCentral->setCurrentIndex(0);
-        tabWidgetModel->setCurrentIndex(2);
+        tabWidgetCentral->setCurrentIndex(2);
+        tabWidgetModel->setCurrentIndex(4);
         tabWidgetSimulation->setCurrentIndex(0);
-        tabWidgetReports->setCurrentIndex(1);
+        tabWidgetReports->setCurrentIndex(0);
 
 
         QMetaObject::connectSlotsByName(MainWindow);
@@ -1642,7 +1641,7 @@ public:
 "hr { height: 1px; border-width: 0; }\n"
 "li.unchecked::marker { content: \"\\2610\"; }\n"
 "li.checked::marker { content: \"\\2612\"; }\n"
-"</style></head><body style=\" font-family:'Sans Serif'; font-size:8pt; font-weight:400; font-style:normal;\">\n"
+"</style></head><body style=\" font-family:'Noto Sans Brahmi'; font-size:8pt; font-weight:400; font-style:normal;\">\n"
 "<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-family:'DejaVu LGC Sans';\">Console</span></p></body></html>", nullptr));
         dockWidgetPlugins->setWindowTitle(QCoreApplication::translate("MainWindow", "Plugins", nullptr));
         dockWidgetPropertyEditor->setWindowTitle(QCoreApplication::translate("MainWindow", "Property Editor", nullptr));

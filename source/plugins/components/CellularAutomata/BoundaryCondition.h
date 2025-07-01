@@ -16,10 +16,8 @@ public:
 	BoundaryCondition(const BoundaryCondition& orig){}
     virtual ~BoundaryCondition()=default;
 public:
-	virtual std::string show() {
-
-	}
-	virtual Cell* getNeighborCell(std::vector<int> cellPosition, std::vector<int> neighborCellPosition) = 0; ///< Pure virtual method that has to be overiden by derived class, responsable for defining the missing neighbor of a cell
+    virtual std::string show() { return "To be overloaded"; };
+    virtual Cell* getNeighborCell(std::vector<int> cellPosition, std::vector<int> neighborCellPosition) = 0; ///< Pure virtual method that has to be overiden by derived class, responsable for defining the missing neighbor of a cell
 public:
 	void setNeighborhood(Neighborhood* neighborhood){
 		this->neighborhood = neighborhood;

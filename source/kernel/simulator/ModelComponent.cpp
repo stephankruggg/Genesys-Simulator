@@ -112,7 +112,7 @@ void ModelComponent::DispatchEvent(Event* event) {
 	Entity* entity = event->getEntity();
 	ModelComponent* component = event->getComponent();
 	unsigned int inputPortNumber = event->getComponentinputPortNumber();
-	/*
+    /* @TODO: Show entity based on a configuration
 	//"Entity " +std::to_string(entity->entityNumber())
 	std::string msg =  entity->getName() + " has arrived at component \"" + component->getName() + "\"";
 	if (component->getDescription() != "")

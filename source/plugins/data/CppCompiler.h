@@ -22,9 +22,9 @@
 #include <sys/types.h>
 #include <limits.h>
 #include <sys/stat.h>
-#include <stdio.h>
+//#include <stdio.h>
 #include <unistd.h>
-#include <errno.h>
+//#include <errno.h>
 #include <paths.h>
 
 #include "../../kernel/simulator/ModelDataDefinition.h"

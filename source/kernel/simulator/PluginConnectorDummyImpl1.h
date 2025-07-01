@@ -27,7 +27,16 @@ public:
 	virtual bool disconnect(const std::string dynamicLibraryFilename);
 	virtual bool disconnect(Plugin* plugin);
 private:
-
+    //StaticGetPluginInformation _connectModelDefinitions(const std::string fn);
+    StaticGetPluginInformation _connectBasic(const std::string fn);
+    StaticGetPluginInformation _connectContinuos(const std::string fn);
+    StaticGetPluginInformation _connectDiscrete(const std::string fn);
+    StaticGetPluginInformation _connectInputOutput(const std::string fn);
+    StaticGetPluginInformation _connectIntegrations(const std::string fn);
+    StaticGetPluginInformation _connectNetwork(const std::string fn);
+    StaticGetPluginInformation _connectTransfer(const std::string fn);
+    StaticGetPluginInformation _connectElectronicDomain(const std::string fn);
+    StaticGetPluginInformation _connectBiochemicalDomain(const std::string fn);
 };
 //namespace\\}
 #endif /* PLUGINCONNECTORDUMMYIMPL1_H */

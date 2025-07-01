@@ -346,7 +346,7 @@ CppCompiler::CompilationResult CppCompiler::_invokeCompiler(std::string command)
 	//trace(execCommand);
 	system(execCommand.c_str());
 	for (short i = 0; i < 32; i++)
-		std::this_thread::yield(); // give the system some time
+        std::this_thread::yield(); // give the system some time // TODO: Does it work? Is this enough?
 	const std::string resultStdout = _read(destPath+"stdout.log");
 	const std::string resultStderr = _read(destPath+"stderr.log");
 	//trace(resultStdout);

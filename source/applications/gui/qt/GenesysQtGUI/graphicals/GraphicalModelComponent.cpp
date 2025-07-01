@@ -303,7 +303,7 @@ qreal GraphicalModelComponent::getHeight() const {
 }
 
 bool GraphicalModelComponent::sceneEvent(QEvent *event) {
-    //QGraphicsObject::sceneEvent(event); // Unnecessary
+    return QGraphicsObject::sceneEvent(event); // Unnecessary
 }
 
 QList<GraphicalComponentPort *> GraphicalModelComponent::getGraphicalOutputPorts() const {

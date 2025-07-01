@@ -3700,6 +3700,6 @@ void MainWindow::on_actionParallelization_triggered()
 
 void MainWindow::on_horizontalSlider_ZoomGraphical_actionTriggered(int action)
 {
-    //...
+
 }
 

@@ -24,7 +24,7 @@ struct TraitsTerminalApp {
  *  Configure the Genesys Application to be compiled and executed
  */
 template <> struct TraitsTerminalApp<GenesysApplication_if> {
-    	//typedef GenesysShell Application;
+    //typedef GenesysShell Application;
 
 	//
 	// MODEL SPECIFIC TERMINAL SIMULATORS:
@@ -69,7 +69,7 @@ template <> struct TraitsTerminalApp<GenesysApplication_if> {
 	//typedef Smart_AlternatingEntityCreation Application;
 	//typedef Smart_ArrivalsElementStopsEntitiesArrivingAfterASetTime Application;
 	//typedef Smart_ArrivalsEntityTypeVsAttribute Application;
-	//typedef Smart_AssignExample Application;
+    //typedef Smart_AssignExample Application;
 	//typedef Smart_AutomaticStatisticsCollection Application;
 	//typedef Smart_BasicModeling Application;
 	//typedef Smart_BatchAndSeparate Application;
@@ -102,7 +102,7 @@ template <> struct TraitsTerminalApp<GenesysApplication_if> {
 	//typedef Smart_SelectingShorterQueue Application;
 	//typedef Smart_SynchronizingParallelEntities Application;
 	//typedef Smart_ValueAdded Application;
-	//typedef Smart_WaitForSignal Application;
+    //typedef Smart_WaitForSignal Application;
 
 	// ARENA EXAMPLES
 	//typedef AirportSecurityExample Application;
@@ -118,19 +118,21 @@ template <> struct TraitsTerminalApp<GenesysApplication_if> {
 	//typedef Rectifier Application;
 	//typedef Half_Adder Application;
 
-	// TEACHING
-	//typedef AnElectronicAssemblyAndTestSystem Application;
-	//typedef OperatingSystem01 Application;
-	//typedef OperatingSystem02 Application;
-	//typedef OperatingSystem03 Application;
-	//typedef BufferFIFO Application;
-	//typedef ContinuousModel Application;
+    // TEACHING
+    //typedef AnElectronicAssemblyAndTestSystem Application;
+    //typedef OperatingSystem01 Application;
+    //typedef OperatingSystem02 Application;
+    //typedef OperatingSystem03 Application;
+    //typedef BufferFIFO Application;
+    //typedef ContinuousModel Application;
+    // TEACHING -- Exercices list
+    //typedef Loja01 Application;
 
 	// BOOK
 	//typedef Book_Cap02_Example01 Application;
 
 
-	// UNDER DEVELPMENT
+    // UNDER DEVELOPMENT
 	//typedef TestingTerminalApp Application;
 };
 

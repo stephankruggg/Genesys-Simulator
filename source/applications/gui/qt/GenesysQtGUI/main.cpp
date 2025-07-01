@@ -28,6 +28,10 @@ int mainTerminalApp(int argc, char *argv[]) {
     return app->main(argc, argv);
 }
 
+
+/**
+ *  THIS IS THE GENESYS MAIN FUNCTION
+ */
 int main(int argc, char *argv[]) {
     if (TraitsApp<GenesysApplication_if>::runGraphicalUserInterface) {
 		return mainGraphicQtApp(argc, argv);

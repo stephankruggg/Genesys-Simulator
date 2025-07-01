@@ -42,6 +42,10 @@ bool PluginManager::autoInsertPlugins(const std::string pluginsListFilename) {
 	if (file.is_open()) {
 		while (std::getline(file, line)) {
 			if (line.length()>=1) {
+                // TODO 2500701 why [0-2] are special chars?
+                while (line[0]>126 || line[0]<32) {
+                    line.erase(0,1);
+                }
 				if (line[0] != '#') { // not a comment
 					insert(line);
 				}

@@ -430,6 +430,7 @@ void ModelSimulation::_stepSimulation() {
 void ModelSimulation::_dispatchEvent(Event* event) {
 	InternalEvent* intEvent = dynamic_cast<InternalEvent*> (event);
 	if (intEvent==nullptr) {
+        /*@TODO SHOW ONLY BASED ON CONFIGURATION*/
 		_model->getTracer()->traceSimulation(this, TraceManager::Level::L9_mostDetailed, "Entity "+event->getEntity()->show());
 		try {
 			ModelComponent::DispatchEvent(event); //->_onDispatchEvent(entity, inputPortNumber);

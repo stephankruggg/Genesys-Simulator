@@ -68,7 +68,7 @@ int Smart_SeizeDelayRelease::main(int argc, char** argv) {
 	ModelSimulation* sim = model->getSimulation();
 	sim->setReplicationLength(1000, Util::TimeUnit::second);
 	sim->setNumberOfReplications(30);
-	model->getTracer()->setTraceLevel(TraceManager::Level::L2_results);
+    model->getTracer()->setTraceLevel(TraceManager::Level::L5_event);
 	model->save("./models/Smart_SeizeDelayRelease.gen");
 	// execute the simulation
 	sim->start();

@@ -130,7 +130,7 @@ SOURCES += \
 	../../../../plugins/data/Label.cpp \
 	../../../../plugins/data/Queue.cpp \
 	../../../../plugins/data/Resource.cpp \
-        ../../../../plugins/data/SPICERunner.cpp \
+	../../../../plugins/data/SPICERunner.cpp \
 	../../../../plugins/data/Schedule.cpp \
 	../../../../plugins/data/Sequence.cpp \
 	../../../../plugins/data/Set.cpp \
@@ -145,8 +145,94 @@ SOURCES += \
 	../../../../tools/SolverDefaultImpl1.cpp \
 	../../../BaseGenesysTerminalApplication.cpp \
 	../../../terminal/GenesysShell/GenesysShell.cpp \
+	../../../terminal/examples/arenaExamples/AirportSecurityExample.cpp \
+	../../../terminal/examples/arenaExamples/AirportSecurityExampleExtended.cpp \
+	../../../terminal/examples/arenaExamples/Airport_Extended1.cpp \
+	../../../terminal/examples/arenaExamples/Assembly_Line.cpp \
+	../../../terminal/examples/arenaExamples/Banking_Transactions.cpp \
+	../../../terminal/examples/arenaExamples/Example_BasicOrderShipping.cpp \
+	../../../terminal/examples/arenaExamples/Example_PortModel.cpp \
+	../../../terminal/examples/arenaExamples/Example_PublicTransport.cpp \
+	../../../terminal/examples/arenaSmarts/Smart_AddingResource.cpp \
+	../../../terminal/examples/arenaSmarts/Smart_AlternatingEntityCreation.cpp \
+	../../../terminal/examples/arenaSmarts/Smart_ArrivalsElementStopsEntitiesArrivingAfterASetTime.cpp \
+	../../../terminal/examples/arenaSmarts/Smart_ArrivalsEntityTypeVsAttribute.cpp \
+	../../../terminal/examples/arenaSmarts/Smart_AssignExample.cpp \
+	../../../terminal/examples/arenaSmarts/Smart_AutomaticStatisticsCollection.cpp \
+	../../../terminal/examples/arenaSmarts/Smart_BasicModeling.cpp \
+	../../../terminal/examples/arenaSmarts/Smart_BatchAndSeparate.cpp \
+	../../../terminal/examples/arenaSmarts/Smart_ContinuousFlowEntities.cpp \
+	../../../terminal/examples/arenaSmarts/Smart_Create.cpp \
+	../../../terminal/examples/arenaSmarts/Smart_DecideNWayByChance.cpp \
+	../../../terminal/examples/arenaSmarts/Smart_DefiningAttributesAsStrings.cpp \
+	../../../terminal/examples/arenaSmarts/Smart_DefiningControlLogic.cpp \
+	../../../terminal/examples/arenaSmarts/Smart_DefiningResourceCapacity.cpp \
+	../../../terminal/examples/arenaSmarts/Smart_DelayBasedOnReplication.cpp \
+	../../../terminal/examples/arenaSmarts/Smart_EntitiesProcessedByPriority.cpp \
+	../../../terminal/examples/arenaSmarts/Smart_EvaluatingConditionsBeforeEnteringQueue.cpp \
+	../../../terminal/examples/arenaSmarts/Smart_Expression.cpp \
+	../../../terminal/examples/arenaSmarts/Smart_InventoryAndHoldingCosts.cpp \
+	../../../terminal/examples/arenaSmarts/Smart_MaxArrivalsField.cpp \
+	../../../terminal/examples/arenaSmarts/Smart_ModelRunUntil1000Parts.cpp \
+	../../../terminal/examples/arenaSmarts/Smart_ModuleDisplayVariables.cpp \
+	../../../terminal/examples/arenaSmarts/Smart_OverlappingResources.cpp \
+	../../../terminal/examples/arenaSmarts/Smart_ParallelProcessingOfEntities.cpp \
+	../../../terminal/examples/arenaSmarts/Smart_PlacingEntitiesInQueueSets.cpp \
+	../../../terminal/examples/arenaSmarts/Smart_PriorityExample.cpp \
+	../../../terminal/examples/arenaSmarts/Smart_ProcessArena.cpp \
+	../../../terminal/examples/arenaSmarts/Smart_Record_Arena.cpp \
+	../../../terminal/examples/arenaSmarts/Smart_RemovingAndReorderingEntitiesInAQueue.cpp \
+	../../../terminal/examples/arenaSmarts/Smart_ResourceCosting.cpp \
+	../../../terminal/examples/arenaSmarts/Smart_ResourceScheduleCosting.cpp \
+	../../../terminal/examples/arenaSmarts/Smart_ResourceSets.cpp \
+	../../../terminal/examples/arenaSmarts/Smart_SeizingMultipleSimultaneosly.cpp \
+	../../../terminal/examples/arenaSmarts/Smart_SelectingRouteBasedOnProbability.cpp \
+	../../../terminal/examples/arenaSmarts/Smart_SelectingShorterQueue.cpp \
+	../../../terminal/examples/arenaSmarts/Smart_SynchronizingParallelEntities.cpp \
+	../../../terminal/examples/arenaSmarts/Smart_ValueAdded.cpp \
+	../../../terminal/examples/arenaSmarts/Smart_WaitForSignal.cpp \
+	../../../terminal/examples/book/Book_Cap02_Example01.cpp \
+	../../../terminal/examples/smarts/Smart_AssignWriteSeizes.cpp \
+	../../../terminal/examples/smarts/Smart_BatchSeparate.cpp \
+	../../../terminal/examples/smarts/Smart_Buffer.cpp \
 	../../../terminal/examples/smarts/Smart_CellularAutomata.cpp \
+	../../../terminal/examples/smarts/Smart_CellularAutomata1.cpp \
+	../../../terminal/examples/smarts/Smart_Clone.cpp \
+	../../../terminal/examples/smarts/Smart_CppForG.cpp \
+	../../../terminal/examples/smarts/Smart_Delay.cpp \
+	../../../terminal/examples/smarts/Smart_Dummy.cpp \
+	../../../terminal/examples/smarts/Smart_EFSM1.cpp \
+	../../../terminal/examples/smarts/Smart_EFSM2.cpp \
+	../../../terminal/examples/smarts/Smart_ExtendedFSM.cpp \
+	../../../terminal/examples/smarts/Smart_Failures.cpp \
+	../../../terminal/examples/smarts/Smart_FiniteStateMachine.cpp \
+	../../../terminal/examples/smarts/Smart_HoldSearchRemove.cpp \
+	../../../terminal/examples/smarts/Smart_LSODE.cpp \
+	../../../terminal/examples/smarts/Smart_MarkovChain.cpp \
+	../../../terminal/examples/smarts/Smart_ModelInfoModelSimulation.cpp \
+	../../../terminal/examples/smarts/Smart_ODE.cpp \
+	../../../terminal/examples/smarts/Smart_OnEvent.cpp \
+	../../../terminal/examples/smarts/Smart_Parser.cpp \
+	../../../terminal/examples/smarts/Smart_ParserModelFunctions.cpp \
+	../../../terminal/examples/smarts/Smart_Plugin.cpp \
+	../../../terminal/examples/smarts/Smart_Process.cpp \
+	../../../terminal/examples/smarts/Smart_ProcessSet.cpp \
+	../../../terminal/examples/smarts/Smart_Record.cpp \
+	../../../terminal/examples/smarts/Smart_RouteStation.cpp \
+	../../../terminal/examples/smarts/Smart_SeizeDelayRelease.cpp \
+	../../../terminal/examples/smarts/Smart_SeizeDelayReleaseMany.cpp \
+	../../../terminal/examples/smarts/Smart_SeizeDelayReleaseNoDataDefs.cpp \
+	../../../terminal/examples/smarts/Smart_Sequence.cpp \
+	../../../terminal/examples/smarts/Smart_SimulationControlResponse.cpp \
+	../../../terminal/examples/smarts/Smart_WaitScanCondition.cpp \
+	../../../terminal/examples/smarts/Smart_WaitSignal.cpp \
+	../../../terminal/examples/teaching/AnElectronicAssemblyAndTestSystem.cpp \
+	../../../terminal/examples/teaching/ContinuousModel.cpp \
+	../../../terminal/examples/teaching/FullSimulationOfComplexModel.cpp \
        ../../../terminal/examples/teaching/Half_Adder.cpp \
+	../../../terminal/examples/teaching/Loja/Loja01.cpp \
+	../../../terminal/examples/teaching/OperatingSystem02.cpp \
+	../../../terminal/examples/teaching/OperatingSystem03.cpp \
         ../../../terminal/examples/teaching/Rectifier.cpp \
 	CodeEditor.cpp \
 	DataComponentProperty.cpp \
@@ -378,8 +464,95 @@ HEADERS += \
 	../../../terminal/GenesysShell/GenesysShell.h \
 	../../../terminal/GenesysShell/GenesysShell_if.h \
 	../../../terminal/TraitsTerminalApp.h \
+	../../../terminal/examples/arenaExamples/AirportSecurityExample.h \
+	../../../terminal/examples/arenaExamples/AirportSecurityExampleExtended.h \
+	../../../terminal/examples/arenaExamples/Airport_Extended1.h \
+	../../../terminal/examples/arenaExamples/Assembly_Line.h \
+	../../../terminal/examples/arenaExamples/Banking_Transactions.h \
+	../../../terminal/examples/arenaExamples/Example_BasicOrderShipping.h \
+	../../../terminal/examples/arenaExamples/Example_PortModel.h \
+	../../../terminal/examples/arenaExamples/Example_PublicTransport.h \
+	../../../terminal/examples/arenaSmarts/Smart_AddingResource.h \
+	../../../terminal/examples/arenaSmarts/Smart_AlternatingEntityCreation.h \
+	../../../terminal/examples/arenaSmarts/Smart_ArrivalsElementStopsEntitiesArrivingAfterASetTime.h \
+	../../../terminal/examples/arenaSmarts/Smart_ArrivalsEntityTypeVsAttribute.h \
+	../../../terminal/examples/arenaSmarts/Smart_AssignExample.h \
+	../../../terminal/examples/arenaSmarts/Smart_AutomaticStatisticsCollection.h \
+	../../../terminal/examples/arenaSmarts/Smart_BasicModeling.h \
+	../../../terminal/examples/arenaSmarts/Smart_BatchAndSeparate.h \
+	../../../terminal/examples/arenaSmarts/Smart_ContinuousFlowEntities.h \
+	../../../terminal/examples/arenaSmarts/Smart_Create.h \
+	../../../terminal/examples/arenaSmarts/Smart_DecideNWayByChance.h \
+	../../../terminal/examples/arenaSmarts/Smart_DefiningAttributesAsStrings.h \
+	../../../terminal/examples/arenaSmarts/Smart_DefiningControlLogic.h \
+	../../../terminal/examples/arenaSmarts/Smart_DefiningResourceCapacity.h \
+	../../../terminal/examples/arenaSmarts/Smart_DelayBasedOnReplication.h \
+	../../../terminal/examples/arenaSmarts/Smart_EntitiesProcessedByPriority.h \
+	../../../terminal/examples/arenaSmarts/Smart_EvaluatingConditionsBeforeEnteringQueue.h \
+	../../../terminal/examples/arenaSmarts/Smart_Expression.h \
+	../../../terminal/examples/arenaSmarts/Smart_InventoryAndHoldingCosts.h \
+	../../../terminal/examples/arenaSmarts/Smart_MaxArrivalsField.h \
+	../../../terminal/examples/arenaSmarts/Smart_ModelRunUntil1000Parts.h \
+	../../../terminal/examples/arenaSmarts/Smart_ModuleDisplayVariables.h \
+	../../../terminal/examples/arenaSmarts/Smart_OverlappingResources.h \
+	../../../terminal/examples/arenaSmarts/Smart_ParallelProcessingOfEntities.h \
+	../../../terminal/examples/arenaSmarts/Smart_PlacingEntitiesInQueueSets.h \
+	../../../terminal/examples/arenaSmarts/Smart_PriorityExample.h \
+	../../../terminal/examples/arenaSmarts/Smart_ProcessArena.h \
+	../../../terminal/examples/arenaSmarts/Smart_Record_Arena.h \
+	../../../terminal/examples/arenaSmarts/Smart_RemovingAndReorderingEntitiesInAQueue.h \
+	../../../terminal/examples/arenaSmarts/Smart_ResourceCosting.h \
+	../../../terminal/examples/arenaSmarts/Smart_ResourceScheduleCosting.h \
+	../../../terminal/examples/arenaSmarts/Smart_ResourceSets.h \
+	../../../terminal/examples/arenaSmarts/Smart_SeizingMultipleSimultaneosly.h \
+	../../../terminal/examples/arenaSmarts/Smart_SelectingRouteBasedOnProbability.h \
+	../../../terminal/examples/arenaSmarts/Smart_SelectingShorterQueue.h \
+	../../../terminal/examples/arenaSmarts/Smart_SynchronizingParallelEntities.h \
+	../../../terminal/examples/arenaSmarts/Smart_ValueAdded.h \
+	../../../terminal/examples/arenaSmarts/Smart_WaitForSignal.h \
+	../../../terminal/examples/book/Book_Cap02_Example01.h \
+	../../../terminal/examples/smarts/Smart_AssignWriteSeizes.h \
+	../../../terminal/examples/smarts/Smart_BatchSeparate.h \
+	../../../terminal/examples/smarts/Smart_Buffer.h \
 	../../../terminal/examples/smarts/Smart_CellularAutomata.h \
+	../../../terminal/examples/smarts/Smart_CellularAutomata1.h \
+	../../../terminal/examples/smarts/Smart_Clone.h \
+	../../../terminal/examples/smarts/Smart_CppForG.h \
+	../../../terminal/examples/smarts/Smart_Delay.h \
+	../../../terminal/examples/smarts/Smart_Dummy.h \
+	../../../terminal/examples/smarts/Smart_EFSM1.h \
+	../../../terminal/examples/smarts/Smart_EFSM2.h \
+	../../../terminal/examples/smarts/Smart_ExtendedFSM.h \
+	../../../terminal/examples/smarts/Smart_Failures.h \
+	../../../terminal/examples/smarts/Smart_FiniteStateMachine.h \
+	../../../terminal/examples/smarts/Smart_HoldSearchRemove.h \
+	../../../terminal/examples/smarts/Smart_LSODE.h \
+	../../../terminal/examples/smarts/Smart_MarkovChain.h \
+	../../../terminal/examples/smarts/Smart_ModelInfoModelSimulation.h \
+	../../../terminal/examples/smarts/Smart_ODE.h \
+	../../../terminal/examples/smarts/Smart_OnEvent.h \
+	../../../terminal/examples/smarts/Smart_Parser.h \
+	../../../terminal/examples/smarts/Smart_ParserModelFunctions.h \
+	../../../terminal/examples/smarts/Smart_Plugin.h \
+	../../../terminal/examples/smarts/Smart_Process.h \
+	../../../terminal/examples/smarts/Smart_ProcessSet.h \
+	../../../terminal/examples/smarts/Smart_Record.h \
+	../../../terminal/examples/smarts/Smart_RouteStation.h \
+	../../../terminal/examples/smarts/Smart_SeizeDelayRelease.h \
+	../../../terminal/examples/smarts/Smart_SeizeDelayReleaseMany.h \
+	../../../terminal/examples/smarts/Smart_SeizeDelayReleaseNoDataDefs.h \
+	../../../terminal/examples/smarts/Smart_Sequence.h \
+	../../../terminal/examples/smarts/Smart_SimulationControlResponse.h \
+	../../../terminal/examples/smarts/Smart_WaitScanCondition.h \
+	../../../terminal/examples/smarts/Smart_WaitSignal.h \
+	../../../terminal/examples/teaching/AnElectronicAssemblyAndTestSystem.h \
+	../../../terminal/examples/teaching/BufferFIFO.h \
+	../../../terminal/examples/teaching/ContinuousModel.h \
+	../../../terminal/examples/teaching/FullSimulationOfComplexModel.h \
         ../../../terminal/examples/teaching/Half_Adder.h \
+	../../../terminal/examples/teaching/Loja/Loja01.h \
+	../../../terminal/examples/teaching/OperatingSystem02.h \
+	../../../terminal/examples/teaching/OperatingSystem03.h \
         ../../../terminal/examples/teaching/Rectifier.h \
 	CodeEditor.h \
 	LineNumberArea.h \
@@ -500,6 +673,7 @@ else: unix:!android: target.path = /opt/$${TARGET}/bin
 
 DISTFILES += \
 	../../../../../autoloadplugins.txt \
+	../../../terminal/examples/arenaSmarts/Arrivals Element Stops Entities Arriving After a Set Time Modificado.doe \
 	qtpropertybrowser/CMakeLists.txt \
 	qtpropertybrowser/images/cursor-arrow.png \
 	qtpropertybrowser/images/cursor-busy.png \
