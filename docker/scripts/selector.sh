@@ -1,5 +1,3 @@
-source ./scripts/env.sh
-
 while true
 do
 read -p "
