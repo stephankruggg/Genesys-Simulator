@@ -21,7 +21,7 @@ xhost +local:docker
 
 # Build
 echo "🔧 Construindo imagem Docker para o modo GUI..."
-docker build -t "$IMAGE_NAME" -f "$DOCKERFILE" "$GENESYS_ROOT"
+docker build -t "$IMAGE_NAME" -f "$DOCKERFILE" "$GENESYS_ROOT" --rm
 
 # Execução
 echo "🚀 Executando GenESyS GUI..."
