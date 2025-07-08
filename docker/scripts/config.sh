@@ -7,7 +7,9 @@ CONTAINER_PATH=/app
 GENESYS_ROOT=$(realpath "$(dirname "${BASH_SOURCE[0]}")/../..")
 
 # Path para execução do GenESyS Shell
-GENESYS_NOGUI_SUBPATH=source/applications/terminal/GenesysShell
+GENESYS_SHELL_SUBPATH=projects/GenesysTerminalApplication
+GENESYS_SHELL_MAKEFILE_PATH=$GENESYS_SHELL_SUBPATH/Makefile
+GENESYS_SHELL_EXECUTABLE_PATH=$GENESYS_SHELL_SUBPATH/dist/GenesysShell
 
 # Paths para execução do GenESyS GUI
 GENSYS_GUI_SUBPATH=source/applications/gui/qt/GenesysQtGUI

@@ -2,6 +2,7 @@
 
 set -e
 
+# Configurações de ambiente
 source "$(realpath "$(dirname "${BASH_SOURCE[0]}")/config.sh")"
 
 # Nome da imagem
