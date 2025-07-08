@@ -17,3 +17,8 @@ RUN apt-get update && apt-get install -y \
   && rm -rf /var/lib/apt/lists/*
 
 WORKDIR /app
+
+COPY docker/gui/entry.sh /entry.sh
+RUN chmod +x /entry.sh
+
+ENTRYPOINT [ "/entry.sh" ]
