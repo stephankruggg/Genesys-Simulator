@@ -1,11 +1,11 @@
 while true
 do
 read -p "
-Menu: O que deseja executar?
+Menu: O que deseja abrir?
 .............................
 1. GenESyS GUI
 2. GenESyS Shell
-3. IDE do GenESyS (QtCreator)
+3. Painel do Desenvolvedor
 4. Sair da aplicação
 > " input
 
@@ -21,7 +21,7 @@ Menu: O que deseja executar?
         bash ./scripts/shell.sh
         ;;
         "3")
-        bash ./scripts/qt.sh
+        bash ./scripts/developer_selector.sh
         ;;
         *)
         echo -e "\nOpção inválida."
