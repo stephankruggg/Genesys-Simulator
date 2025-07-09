@@ -14,10 +14,16 @@ Painel do Desenvolvedor: O que deseja fazer?
 5. Recompilar o código Shell localmente
 6. Recompilar o código GUI localmente
 7. Recompilar o código IDE QtCreator localmente
-8. Sair da aplicação
+8. Baixar dependências GenESyS Shell localmente
+9. Baixar dependências GenESyS GUI localmente
+10. Baixar dependências GenESyS IDE QtCreator localmente
+11. Executar o GenESyS Shell localmente
+12. Executar o GenESyS GUI localmente
+13. Executar o GenESyS IDE QtCreator localmente
+14. Sair da aplicação
 > " input
 
-    if [ "$input" == "8" ]; then
+    if [ "$input" == "14" ]; then
         break
     fi
 
@@ -51,6 +57,30 @@ Painel do Desenvolvedor: O que deseja fazer?
           echo "🔄 Recompilando o GenESyS IDE QtCreator..."
           qmake6 "../$GENESYS_QT_PRO_PATH" -o "../$GENESYS_QT_MAKEFILE_PATH"
           make -C "../$GENESYS_QT_RELEASE_SUBPATH"
+          ;;
+        "8")
+          echo "🔄 Baixando dependências GenESyS Shell localmente"
+          bash ./scripts/local/shell.sh
+          ;;
+        "9")
+          echo "🔄 Baixando dependências GenESyS GUI localmente"
+          bash ./scripts/local/gui.sh
+          ;;
+        "10")
+          echo "🔄 Baixando dependências GenESyS IDE QtCreator localmente"
+          bash ./scripts/local/qt.sh
+          ;;
+        "11")
+          echo "🔄 Iniciando GenESyS Shell localmente"
+          exec "../$GENESYS_SHELL_EXECUTABLE_PATH"
+          ;;
+        "12")
+          echo "🔄 Iniciando GenESyS GUI localmente"
+          exec "../$GENESYS_GUI_EXECUTABLE_PATH"
+          ;;
+        "13")
+          echo "🔄 Iniciando GenESyS IDE QtCreator localmente"
+          exec qtcreator "../$GENESYS_QT_PRO_PATH"
           ;;
         *)
           echo -e "\nOpção inválida."
