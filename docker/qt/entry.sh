@@ -4,7 +4,7 @@ set -e
 # Verifica se deve recompilar o código
 if [ "$RECOMPILE" = "1" ]; then
   echo "🔄 Recompilando o GenESyS Qt..."
-  qmake6 "$GENESYS_QT_PRO_PATH"
+  qmake6 "$GENESYS_QT_PRO_PATH" -o "$GENESYS_QT_MAKEFILE_PATH"
   make -C "$GENESYS_QT_RELEASE_SUBPATH"
 fi
 

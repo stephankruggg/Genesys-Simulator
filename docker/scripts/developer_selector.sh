@@ -13,10 +13,11 @@ Painel do Desenvolvedor: O que deseja fazer?
 4. Realizar pull do repositório localmente
 5. Recompilar o código Shell localmente
 6. Recompilar o código GUI localmente
-7. Sair da aplicação
+7. Recompilar o código IDE QtCreator localmente
+8. Sair da aplicação
 > " input
 
-    if [ "$input" == "7" ]; then
+    if [ "$input" == "8" ]; then
         break
     fi
 
@@ -45,6 +46,11 @@ Painel do Desenvolvedor: O que deseja fazer?
           echo "🔄 Recompilando o GenESyS GUI..."
           qmake6 "../$GENESYS_GUI_PRO_PATH" -o "../$GENESYS_GUI_MAKEFILE_PATH"
           make -C "../$GENESYS_GUI_RELEASE_SUBPATH"
+          ;;
+        "7")
+          echo "🔄 Recompilando o GenESyS IDE QtCreator..."
+          qmake6 "../$GENESYS_QT_PRO_PATH" -o "../$GENESYS_QT_MAKEFILE_PATH"
+          make -C "../$GENESYS_QT_RELEASE_SUBPATH"
           ;;
         *)
           echo -e "\nOpção inválida."
