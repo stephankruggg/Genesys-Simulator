@@ -31,7 +31,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 
 WORKDIR /app
 
-# Configuração para suporte a X11/GUI
-ENV QT_X11_NO_MITSHM=1
-ENV DISPLAY=:0
-ENV QT_QUICK_BACKEND=software 
+COPY docker/qt/entry.sh /entry.sh
+RUN chmod +x /entry.sh
+
+ENTRYPOINT [ "/entry.sh" ] 
