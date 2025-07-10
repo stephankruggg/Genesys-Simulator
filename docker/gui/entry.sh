@@ -4,8 +4,10 @@ set -e
 # Verifica se deve recompilar o código
 if [ "$RECOMPILE" = "1" ]; then
   echo "🔄 Recompilando o GenESyS GUI..."
-  qmake6 "$GENESYS_GUI_PRO_PATH" -o "$GENESYS_GUI_MAKEFILE_PATH"
-  make -C "$GENESYS_GUI_RELEASE_SUBPATH"
+  cd "$GENESYS_GUI_RELEASE_SUBPATH"
+  qmake6 "../../GenesysQtGUI.pro"
+  make
+  cd ~
 fi
 
 # Executa o binário
